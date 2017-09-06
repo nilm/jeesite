@@ -96,7 +96,7 @@ public class GenUtils {
 			column.setIsPk(genTable.getPkList().contains(column.getName())?"1":"0");
 
 			// 插入字段
-			column.setIsInsert("1");
+			column.setIsInsert(column.getIsPk().equals("1")?"0":"1");
 			
 			// 编辑字段
 			if (!StringUtils.equalsIgnoreCase(column.getName(), "id")
@@ -255,7 +255,7 @@ public class GenUtils {
 	/**
 	 * 根据分类获取模板列表
 	 * @param config
-	 * @param genScheme
+	 * @param category
 	 * @param isChildTable 是否是子表
 	 * @return
 	 */
@@ -292,7 +292,6 @@ public class GenUtils {
 	/**
 	 * 获取数据模型
 	 * @param genScheme
-	 * @param genTable
 	 * @return
 	 */
 	public static Map<String, Object> getDataModel(GenScheme genScheme){
@@ -328,7 +327,7 @@ public class GenUtils {
 	 * 生成到文件
 	 * @param tpl
 	 * @param model
-	 * @param replaceFile
+	 * @param isReplaceFile
 	 * @return
 	 */
 	public static String generateToFile(GenTemplate tpl, Map<String, Object> model, boolean isReplaceFile){

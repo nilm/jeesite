@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sms.dao.SmsLogDao">
+    
+	<sql id="smsLogColumns">
+		a.id AS "id",
+		a.site_id AS "siteId",
+		a.company_id AS "companyId",
+		a.user_id AS "user.id",
+		a.mobile AS "mobile",
+		a.status AS "status",
+		a.content AS "content",
+		a.user_type AS "userType",
+		a.apply_ip AS "applyIp",
+		a.create_date AS "createDate",
+		a.del_flag AS "delFlag",
+		a.result AS "result",
+		u4.name AS "user.name"
+	</sql>
+	
+	<sql id="smsLogJoins">
+		LEFT JOIN sys_user u4 ON u4.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="SmsLog">
+		SELECT 
+			<include refid="smsLogColumns"/>
+		FROM base_sms_log a
+		<include refid="smsLogJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SmsLog">
+		SELECT 
+			<include refid="smsLogColumns"/>
+		FROM base_sms_log a
+		<include refid="smsLogJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="mobile != null and mobile != ''">
+				AND a.mobile LIKE 
+					<if test="dbName == 'oracle'">'%'||#{mobile}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{mobile}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{mobile},'%')</if>
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="beginCreateDate != null and endCreateDate != null and beginCreateDate != '' and endCreateDate != ''">
+				AND a.create_date BETWEEN #{beginCreateDate} AND #{endCreateDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SmsLog">
+		SELECT 
+			<include refid="smsLogColumns"/>
+		FROM base_sms_log a
+		<include refid="smsLogJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO base_sms_log(
+			site_id,
+			company_id,
+			user_id,
+			mobile,
+			status,
+			content,
+			user_type,
+			apply_ip,
+			create_date,
+			del_flag,
+			result
+		) VALUES (
+			#{siteId},
+			#{companyId},
+			#{user.id},
+			#{mobile},
+			#{status},
+			#{content},
+			#{userType},
+			#{applyIp},
+			#{createDate},
+			#{delFlag},
+			#{result}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE base_sms_log SET 	
+			site_id = #{siteId},
+			company_id = #{companyId},
+			user_id = #{user.id},
+			mobile = #{mobile},
+			status = #{status},
+			content = #{content},
+			user_type = #{userType},
+			apply_ip = #{applyIp},
+			result = #{result}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE base_sms_log SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

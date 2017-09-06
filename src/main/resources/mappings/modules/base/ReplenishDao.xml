@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.base.dao.ReplenishDao">
+    
+	<sql id="replenishColumns">
+		a.id AS "id",
+		a.orderid AS "orderid",
+		a.replenishfee AS "replenishfee",
+		a.replenishusefee AS "replenishusefee",
+		a.replenishday AS "replenishday",
+		a.replenishstatus AS "replenishstatus",
+		a.replenishtype AS "replenishtype",
+		a.replenishendday AS "replenishendday",
+		a.userid AS "userid"
+	</sql>
+	
+	<sql id="replenishJoins">
+	</sql>
+    
+	<select id="get" resultType="Replenish">
+		SELECT 
+			<include refid="replenishColumns"/>
+		FROM base_replenish a
+		<include refid="replenishJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findByOrderNo" resultType="Replenish">
+		SELECT 
+			<include refid="replenishColumns"/>
+		FROM base_replenish a
+		<include refid="replenishJoins"/>
+		WHERE a.orderid = #{orderid}
+	</select>
+	
+	<select id="findList" resultType="Replenish">
+		SELECT 
+			<include refid="replenishColumns"/>
+		FROM base_replenish a
+		<include refid="replenishJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Replenish">
+		SELECT 
+			<include refid="replenishColumns"/>
+		FROM base_replenish a
+		<include refid="replenishJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO base_replenish(
+			id,
+			orderid,
+			replenishfee,
+			replenishusefee,
+			replenishday,
+			replenishstatus,
+			replenishtype,
+			replenishendday,
+			userid
+		) VALUES (
+			#{id},
+			#{orderid},
+			#{replenishfee},
+			#{replenishusefee},
+			#{replenishday},
+			#{replenishstatus},
+			#{replenishtype},
+			#{replenishendday},
+			#{userid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE base_replenish SET 	
+			orderid = #{orderid},
+			replenishfee = #{replenishfee},
+			replenishusefee = #{replenishusefee},
+			replenishday = #{replenishday},
+			replenishstatus = #{replenishstatus},
+			replenishtype = #{replenishtype},
+			replenishendday = #{replenishendday},
+			userid = #{userid}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM base_replenish
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -39,6 +39,16 @@
 				    </ul>
 				    <!--[if lte IE 6]><script type="text/javascript">$('#themeSwitch').hide();</script><![endif]-->
 			    </li>
+				<li style="padding-top: 15px;">
+					<c:if test="${sessionScope.WEB_USER != null }">
+						欢迎 <a href="${ctx}/user/" style="display: inline">${sessionScope.WEB_USER.mobile }</a>，
+						<a href="${ctx}/u/loginout" style="display: inline">安全退出</a>
+					</c:if>
+					<c:if test="${sessionScope.WEB_USER == null }">
+						<a href="${ctx}/u/login" style="display: inline"><span>登录</span></a>
+						<a href="${ctx}/u/register" style="display: inline"> <span>注册</span></a>
+					</c:if>
+				</li>
             </ul>
             <form class="navbar-form pull-right" action="${ctx}/search" method="get">
               	<input type="text" name="q" maxlength="20" style="width:65px;" placeholder="全站搜索..." value="${q}">

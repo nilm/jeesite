@@ -45,7 +45,7 @@ public class TestAuditService extends CrudService<TestAuditDao, TestAudit> {
 	 * @param testAudit
 	 */
 	@Transactional(readOnly = false)
-	public void save(TestAudit testAudit) {
+	public TestAudit save(TestAudit testAudit) {
 		
 		// 申请发起
 		if (StringUtils.isBlank(testAudit.getId())){
@@ -69,6 +69,7 @@ public class TestAuditService extends CrudService<TestAuditDao, TestAudit> {
 			vars.put("pass", "yes".equals(testAudit.getAct().getFlag())? "1" : "0");
 			actTaskService.complete(testAudit.getAct().getTaskId(), testAudit.getAct().getProcInsId(), testAudit.getAct().getComment(), testAudit.getContent(), vars);
 		}
+		return testAudit;
 	}
 
 	/**

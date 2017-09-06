@@ -390,5 +390,37 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     	result.append(val.substring(1));
     	return result.toString();
     }
-    
+
+	/**
+	 * 是否 是email 地址 使用了此正则表达�?^[0-9a-zA-Z\_\.]+@(([0-9a-zA-Z]+)[.])+[a-z]{2,4}$
+	 *
+	 * @param str
+	 * @return
+	 */
+	public static boolean isEmailAddress(String str) {
+		return matcher(str, "^[0-9a-zA-Z\\_\\.]+@(([0-9a-zA-Z]+)[.])+[a-z]{2,4}$");
+	}
+	/**
+	 * 验证是否是手机号  使用了此正则表达 ： ^[1][3,4,5,7,8][0-9]{9}$
+	 * @param str
+	 * @return
+	 */
+	public static boolean isMobile(String str) {
+		return matcher(str, "^[1][3,4,5,7,8][0-9]{9}$");
+	}
+
+	/**
+	 * 正则匹配
+	 * @param String -- 要验证的文字
+	 * @param test --- 正则表达式
+	 * @return
+	 */
+	public static boolean matcher(String String, String test){
+		if (isEmpty(String)) {
+			return false;
+		}
+		Pattern pattern = Pattern.compile(test);
+		Matcher matcher = pattern.matcher(String);
+		return matcher.matches();
+	}
 }

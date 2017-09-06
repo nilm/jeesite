@@ -40,8 +40,8 @@ public class ${ClassName}Service extends TreeService<${ClassName}Dao, ${ClassNam
 	}
 	
 	@Transactional(readOnly = false)
-	public void save(${ClassName} ${className}) {
-		super.save(${className});
+	public ${ClassName} save(${ClassName} ${className}) {
+		return super.save(${className});
 	}
 	
 	@Transactional(readOnly = false)

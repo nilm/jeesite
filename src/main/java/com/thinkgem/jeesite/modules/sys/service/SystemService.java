@@ -112,7 +112,7 @@ public class SystemService extends BaseService implements InitializingBean {
 
 	/**
 	 * 通过部门ID获取用户列表，仅返回用户id和name（树查询用户时用）
-	 * @param user
+	 * @param officeId
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
@@ -541,5 +541,23 @@ public class SystemService extends BaseService implements InitializingBean {
 	}
 	
 	///////////////// Synchronized to the Activiti end //////////////////
-	
+
+	//-- Role Service --//
+	/**
+	 * 获取用户是否有指定的 数据范围
+	 * @author evan
+	 * @date 2015-11-21
+	 * @param user
+	 * @param roleDataScope
+	 * @return
+	 */
+	public boolean isOwnDataScope(User user, String roleDataScope){
+		List<Role> roleList = user.getRoleList();
+		for (Role role : roleList) {
+			if(role.getDataScope().equals(roleDataScope)){
+				return true;
+			}
+		}
+		return false;
+	}
 }

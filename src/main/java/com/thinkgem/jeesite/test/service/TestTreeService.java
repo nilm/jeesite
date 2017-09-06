@@ -34,8 +34,8 @@ public class TestTreeService extends TreeService<TestTreeDao, TestTree> {
 	}
 	
 	@Transactional(readOnly = false)
-	public void save(TestTree testTree) {
-		super.save(testTree);
+	public TestTree save(TestTree testTree) {
+		return super.save(testTree);
 	}
 	
 	@Transactional(readOnly = false)

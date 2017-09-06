@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.account.dao.AccountAlipayInfoDao">
+    
+	<sql id="accountAlipayInfoColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.owner AS "owner",
+		a.alipay_no AS "alipayNo",
+		a.del_flag AS "delFlag",
+		a.remarks AS "remarks",
+		a.create_date AS "createDate"
+	</sql>
+	
+	<sql id="accountAlipayInfoJoins">
+		LEFT JOIN web_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="AccountAlipayInfo">
+		SELECT 
+			<include refid="accountAlipayInfoColumns"/>
+		FROM base_account_alipay a
+		<include refid="accountAlipayInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findListByUser" resultType="AccountAlipayInfo">
+		SELECT 
+			<include refid="accountAlipayInfoColumns"/>
+		FROM base_account_alipay a
+		WHERE	a.del_flag = #{DEL_FLAG_NORMAL}
+		AND  a.user_id = #{userId}
+	</select>
+	<select id="findList" resultType="AccountAlipayInfo">
+		SELECT 
+			<include refid="accountAlipayInfoColumns"/>
+		FROM base_account_alipay a
+		<include refid="accountAlipayInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="owner != null and owner != ''">
+				AND a.owner LIKE 
+					<if test="dbName == 'oracle'">'%'||#{owner}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{owner}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{owner},'%')</if>
+			</if>
+			<if test="alipayNo != null and alipayNo != ''">
+				AND a.alipay_no LIKE 
+					<if test="dbName == 'oracle'">'%'||#{alipayNo}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{alipayNo}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{alipayNo},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="AccountAlipayInfo">
+		SELECT 
+			<include refid="accountAlipayInfoColumns"/>
+		FROM base_account_alipay a
+		<include refid="accountAlipayInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO base_account_alipay(
+			user_id,
+			owner,
+			alipay_no,
+			del_flag,
+			remarks,
+			create_date
+		) VALUES (
+			#{userId},
+			#{owner},
+			#{alipayNo},
+			#{delFlag},
+			#{remarks},
+			#{createDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE base_account_alipay SET 	
+			user_id = #{userId},
+			owner = #{owner},
+			alipay_no = #{alipayNo},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE base_account_alipay SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

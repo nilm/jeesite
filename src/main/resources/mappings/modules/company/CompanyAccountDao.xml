@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.company.dao.CompanyAccountDao">
+    
+	<sql id="companyAccountColumns">
+		a.id AS "id",
+		o2.name AS "company.name",
+		a.company_id AS "companyId",
+		a.balance AS "balance",
+		a.frozen_amount AS "frozenAmount",
+		a.create_ip AS "createIp",
+		a.create_date AS "createDate",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="companyAccountJoins">
+		LEFT JOIN sys_office o2 ON o2.id = a.company_id
+	</sql>
+    
+	<select id="get" resultType="CompanyAccount">
+		SELECT 
+			<include refid="companyAccountColumns"/>
+		FROM company_account a
+		<include refid="companyAccountJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	<select id="getByCompanyId" resultType="CompanyAccount">
+		SELECT 
+			<include refid="companyAccountColumns"/>
+		FROM company_account a
+		<include refid="companyAccountJoins"/>
+		WHERE a.company_id = #{companyId}
+	</select>
+	
+	<select id="findList" resultType="CompanyAccount">
+		SELECT 
+			<include refid="companyAccountColumns"/>
+		FROM company_account a
+		<include refid="companyAccountJoins"/>
+		<where>
+			
+			<if test="companyId != null and companyId != ''">
+				AND a.company_id = #{companyId}
+			</if>
+			<if test="beginBalance != null and endBalance != null and beginBalance != '' and endBalance != ''">
+				AND a.balance BETWEEN #{beginBalance} AND #{endBalance}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CompanyAccount">
+		SELECT 
+			<include refid="companyAccountColumns"/>
+		FROM company_account a
+		<include refid="companyAccountJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO company_account(
+			company_id,
+			balance,
+			frozen_amount,
+			create_ip,
+			create_date,
+			remarks
+		) VALUES (
+			#{company.id},
+			#{balance},
+			#{frozenAmount},
+			#{createIp},
+			#{createDate},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE company_account SET 	
+			company_id = #{company.id},
+			balance = #{balance},
+			frozen_amount = #{frozenAmount},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM company_account
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

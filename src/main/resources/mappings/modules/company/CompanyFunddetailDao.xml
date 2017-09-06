@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.company.dao.CompanyFunddetailDao">
+    
+	<sql id="companyFunddetailColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.site_id AS "siteId",
+		a.company_id AS "company.id",
+		a.change_type AS "changeType",
+		a.operate AS "operate",
+		a.balance AS "balance",
+		a.frozen_amount AS "frozenAmount",
+		a.fund_direction AS "fundDirection",
+		a.change_desc AS "changeDesc",
+		a.target_type AS "targetType",
+		a.target AS "target",
+		a.fund_timestamp AS "fundTimestamp",
+		a.create_date AS "createDate",
+		a.del_flag AS "delFlag",
+		a.remark AS "remark",
+		u2.name AS "user.name",
+		o4.name AS "company.name"
+	</sql>
+	
+	<sql id="companyFunddetailJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+		LEFT JOIN sys_office o4 ON o4.id = a.company_id
+	</sql>
+    
+	<select id="get" resultType="CompanyFunddetail">
+		SELECT 
+			<include refid="companyFunddetailColumns"/>
+		FROM company_funddetail a
+		<include refid="companyFunddetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CompanyFunddetail">
+		SELECT 
+			<include refid="companyFunddetailColumns"/>
+		FROM company_funddetail a
+		<include refid="companyFunddetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="company != null and company.id != null and company.id != ''">
+				AND a.company_id = #{company.id}
+			</if>
+			<if test="changeType != null and changeType != ''">
+				AND a.change_type = #{changeType}
+			</if>
+			<if test="fundDirection != null and fundDirection != ''">
+				AND a.fund_direction = #{fundDirection}
+			</if>
+			<if test="beginCreateDate != null and endCreateDate != null and beginCreateDate != '' and endCreateDate != ''">
+				AND a.create_date BETWEEN #{beginCreateDate} AND #{endCreateDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy} desc
+			</when>
+			<otherwise>
+				ORDER BY a.create_date desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CompanyFunddetail">
+		SELECT 
+			<include refid="companyFunddetailColumns"/>
+		FROM company_funddetail a
+		<include refid="companyFunddetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO company_funddetail(
+			user_id,
+			site_id,
+			company_id,
+			change_type,
+			operate,
+			balance,
+			frozen_amount,
+			fund_direction,
+			change_desc,
+			target_type,
+			target,
+			fund_timestamp,
+			create_date,
+			del_flag,
+			remark
+		) VALUES (
+			#{user.id},
+			#{siteId},
+			#{company.id},
+			#{changeType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+			#{operate},
+			#{balance},
+			#{frozenAmount},
+			#{fundDirection, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+			#{changeDesc},
+			#{targetType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+			#{target},
+			#{fundTimestamp},
+			#{createDate},
+			#{delFlag},
+			#{remark}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE company_funddetail SET 	
+			company_id = #{company.id},
+			change_type = #{changeType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+			operate = #{operate},
+			balance = #{balance},
+			frozen_amount = #{frozenAmount},
+			fund_direction = #{fundDirection, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+			change_desc = #{changeDesc},
+			target_type = #{targetType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+			target = #{target},
+			fund_timestamp = #{fundTimestamp},
+			remark = #{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE company_funddetail SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

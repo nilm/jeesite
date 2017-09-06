@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.account.dao.BanksDao">
+    
+	<sql id="banksColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.bankcard_owner AS "bankcardOwner",
+		a.bank_name AS "bankName",
+		a.bank_branch_name AS "bankBranchName",
+		a.bank_no AS "bankNo",
+		a.bank_code AS "bankCode",
+		a.del_flag AS "delFlag",
+		a.remarks AS "remarks",
+		a.create_date AS "createDate",
+		a.default_bank AS "defaultBank"
+	</sql>
+	
+	<sql id="banksJoins">
+		LEFT JOIN web_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="Banks">
+		SELECT 
+			<include refid="banksColumns"/>
+		FROM base_account_banks a
+		<include refid="banksJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findListByUser" resultType="Banks">
+		SELECT 
+			<include refid="banksColumns"/>
+		FROM base_account_banks a
+				<include refid="banksJoins"/>
+		WHERE	a.del_flag = 0
+		AND a.user_id = #{userId}
+	</select>
+	<select id="findList" resultType="Banks">
+		SELECT 
+			<include refid="banksColumns"/>
+		FROM base_account_banks a
+		<include refid="banksJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Banks">
+		SELECT 
+			<include refid="banksColumns"/>
+		FROM base_account_banks a
+		<include refid="banksJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO base_account_banks(
+			user_id,
+			bankcard_owner,
+			bank_name,
+			bank_branch_name,
+			bank_no,
+			bank_code,
+			del_flag,
+			remarks,
+			create_date,
+			default_bank
+		) VALUES (
+			#{userId},
+			#{bankcardOwner},
+			#{bankName},
+			#{bankBranchName},
+			#{bankNo},
+			#{bankCode},
+			#{delFlag},
+			#{remarks},
+			#{createDate},
+			#{defaultBank}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE base_account_banks SET 	
+			user_id = #{userId},
+			bankcard_owner = #{bankcardOwner},
+			bank_name = #{bankName},
+			bank_branch_name = #{bankBranchName},
+			bank_no = #{bankNo},
+			bank_code = #{bankCode},
+			default_bank = #{defaultBank}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE base_account_banks SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

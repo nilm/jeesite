@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.portal.dao.PortalFunddetailDao">
+    
+	<sql id="portalFunddetailColumns">
+		a.id AS "id",
+		a.create_date AS "createDate",
+		a.change_type AS "changeType",
+		a.operate AS "operate",
+		a.direction AS "direction",
+		a.target AS "target",
+		a.target_id AS "targetId",
+		a.business_class AS "businessClass",
+		a.business_id AS "businessId",
+		a.desc_content AS "descContent"
+	</sql>
+	
+	<sql id="portalFunddetailJoins">
+	</sql>
+    
+	<select id="get" resultType="PortalFunddetail">
+		SELECT 
+			<include refid="portalFunddetailColumns"/>
+		FROM sys_portal_funddetail a
+		<include refid="portalFunddetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PortalFunddetail">
+		SELECT 
+			<include refid="portalFunddetailColumns"/>
+		FROM sys_portal_funddetail a
+		<include refid="portalFunddetailJoins"/>
+		<where>
+			
+			<if test="beginCreateDate != null and endCreateDate != null and beginCreateDate != '' and endCreateDate != ''">
+				AND a.create_date BETWEEN #{beginCreateDate} AND #{endCreateDate}
+			</if>
+			<if test="changeType != null and changeType != ''">
+				AND a.change_type = #{changeType}
+			</if>
+			<if test="operate != null and operate != ''">
+				AND a.operate = #{operate}
+			</if>
+			<if test="direction != null and direction != ''">
+				AND a.direction = #{direction}
+			</if>
+			<if test="target != null and target != ''">
+				AND a.target = #{target}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PortalFunddetail">
+		SELECT 
+			<include refid="portalFunddetailColumns"/>
+		FROM sys_portal_funddetail a
+		<include refid="portalFunddetailJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO sys_portal_funddetail(
+			id,
+			create_date,
+			change_type,
+			operate,
+			direction,
+			target,
+			target_id,
+			business_class,
+			business_id,
+			desc_content
+		) VALUES (
+			#{id},
+			#{createDate},
+			#{changeType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+			#{operate},
+			#{direction, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+			#{target, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+			#{targetId},
+			#{businessClass},
+			#{businessId},
+			#{descContent}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_portal_funddetail SET 	
+			change_type = #{changeType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+			operate = #{operate},
+			direction = #{direction, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+			target = #{target, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+			target_id = #{targetId},
+			businessClass = #{businessClass},
+			business_id = #{businessId},
+			desc_content = #{descContent}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM sys_portal_funddetail
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

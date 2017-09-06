@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.common.utils;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -320,5 +321,10 @@ public class TimeUtils {
         }
         return true;
     }
-    
+    public static Timestamp getCurrentTimestamp() {
+        return new Timestamp(getCurrentTimeMillis());
+    }
+    public static long getCurrentTimeMillis() {
+        return System.currentTimeMillis();
+    }
 }

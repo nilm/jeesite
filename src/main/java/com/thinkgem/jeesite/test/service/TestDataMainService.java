@@ -44,7 +44,7 @@ public class TestDataMainService extends CrudService<TestDataMainDao, TestDataMa
 	}
 	
 	@Transactional(readOnly = false)
-	public void save(TestDataMain testDataMain) {
+	public TestDataMain save(TestDataMain testDataMain) {
 		super.save(testDataMain);
 		for (TestDataChild testDataChild : testDataMain.getTestDataChildList()){
 			if (testDataChild.getId() == null){
@@ -63,6 +63,7 @@ public class TestDataMainService extends CrudService<TestDataMainDao, TestDataMa
 				testDataChildDao.delete(testDataChild);
 			}
 		}
+		return  testDataMain;
 	}
 	
 	@Transactional(readOnly = false)

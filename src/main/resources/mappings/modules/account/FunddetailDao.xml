@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.account.dao.FunddetailDao">
+    
+	<sql id="funddetailColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.site_id AS "siteId",
+		a.company_id AS "companyId",
+		a.change_type AS "changeType",
+		a.operate AS "operate",
+		a.balance AS "balance",
+		a.frozen_amount AS "frozenAmount",
+		a.fund_direction AS "fundDirection",
+		a.change_desc AS "changeDesc",
+		a.target_type AS "targetType",
+		a.target AS "target",
+		a.fund_timestamp AS "fundTimestamp",
+		a.create_date AS "createDate",
+		a.del_flag AS "delFlag",
+		a.remark AS "remark"
+	</sql>
+	
+	<sql id="funddetailJoins">
+		LEFT JOIN web_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="Funddetail">
+		SELECT 
+			<include refid="funddetailColumns"/>
+		FROM base_account_funddetail a
+		<include refid="funddetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getLatelyByUserId" resultType="Funddetail">
+		SELECT 
+			<include refid="funddetailColumns"/>
+		FROM base_account_funddetail a
+		<include refid="funddetailJoins"/>
+		WHERE a.user_id = #{userId}
+		ORDER BY a.fund_timestamp DESC
+	</select>
+	
+	<select id="findList" resultType="Funddetail">
+		SELECT 
+			<include refid="funddetailColumns"/>
+		FROM base_account_funddetail a
+		<include refid="funddetailJoins"/>
+		
+		WHERE  a.del_flag = #{DEL_FLAG_NORMAL}
+		
+		<if test="beginDate != null and endDate != null">
+		
+		AND a.create_date BETWEEN #{beginDate} AND #{endDate}
+		
+		</if>
+		
+		<if test="userId != null and userId != ''">
+			AND a.user_id = #{userId}
+		</if>
+		<if test="fundDirection != null and fundDirection != ''">
+			AND a.fund_direction = #{fundDirection}
+		</if>
+		
+		ORDER BY a.fund_timestamp DESC
+	</select>
+	
+	<select id="findAllList" resultType="Funddetail">
+		SELECT 
+			<include refid="funddetailColumns"/>
+		FROM base_account_funddetail a
+		<include refid="funddetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO base_account_funddetail(
+			user_id,
+			site_id,
+			company_id,
+			change_type,
+			operate,
+			balance,
+			frozen_amount,
+			fund_direction,
+			change_desc,
+			target_type,
+			target,
+			fund_timestamp,
+			create_date,
+			del_flag,
+			remark
+		) VALUES (
+			#{userId},
+			#{siteId},
+			#{companyId},
+			#{changeType},
+			#{operate},
+			#{balance},
+			#{frozenAmount},
+			#{fundDirection},
+			#{changeDesc},
+			#{targetType},
+			#{target},
+			#{fundTimestamp},
+			#{createDate},
+			#{delFlag},
+			#{remark}
+		)
+	</insert>
+	
+	<update id="delete">
+		UPDATE base_account_funddetail SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

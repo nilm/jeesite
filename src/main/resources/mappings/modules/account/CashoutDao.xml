@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.account.dao.CashoutDao">
+    
+	<sql id="cashoutColumns">
+		a.id AS "id",
+		a.site_id AS "siteId",
+		a.company_id AS "companyId",
+		u15.id AS "webUser.id",
+		u15.user_name AS "webUser.userName",
+		u15.real_name AS "webUser.realName",
+		u15.mobile AS "webUser.mobile",
+		a.apply_amount AS "applyAmount",
+		a.cashout_fee AS "cashoutFee",
+		a.status AS "status",
+		a.content AS "content",
+		a.doing_date AS "doingDate",
+		a.audit_date AS "auditDate",
+		a.card_type AS "cardType",
+		a.card_id AS "cardId",
+		a.user_id AS "user.id",
+		a.apply_ip AS "applyIp",
+		a.create_date AS "createDate",
+		a.del_flag AS "delFlag",
+		u14.name AS "user.name"
+	</sql>
+	<sql id="cashoutBanksColumns">
+		u16.bank_name AS "bankName",
+		u16.bank_branch_name AS "bankBranchName",
+		u16.bank_no AS "bankNo",
+	</sql>
+	<sql id="cashoutAlipayColumns">
+		u17.alipay_no AS "alipayNo",
+	</sql>
+	
+	<sql id="cashoutJoins">
+		LEFT JOIN sys_user u14 ON u14.id = a.user_id
+	</sql>
+	<sql id="cashoutWebUserJoins">
+		LEFT JOIN web_user u15 ON u15.id = a.webUser_id
+	</sql>
+	<sql id="cashoutBankJoins">
+		LEFT JOIN base_account_banks u16 ON u16.id = a.card_id
+	</sql>
+	<sql id="cashoutAlipayJoins">
+		LEFT JOIN base_account_alipay u17 ON u17.id = a.card_id
+	</sql>
+    
+	<select id="get" resultType="Cashout">
+		SELECT 
+			<include refid="cashoutBanksColumns"/>
+			<include refid="cashoutAlipayColumns"/>
+			<include refid="cashoutColumns"/>
+		FROM base_account_cashout a
+		<include refid="cashoutJoins"/>
+		<include refid="cashoutWebUserJoins"/>
+		<include refid="cashoutBankJoins"/>
+		<include refid="cashoutAlipayJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Cashout">
+		SELECT 
+			<include refid="cashoutBanksColumns"/>
+			<include refid="cashoutAlipayColumns"/>
+			<include refid="cashoutColumns"/>
+		FROM base_account_cashout a
+		<include refid="cashoutJoins"/>
+		<include refid="cashoutWebUserJoins"/>
+		<include refid="cashoutBankJoins"/>
+		<include refid="cashoutAlipayJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+<!-- 			<if test="webuserId != null and webuserId != ''">
+				AND a.webuser_id = #{webuserId}
+			</if> -->
+			<if test="applyAmount != null and applyAmount != ''">
+				AND a.apply_amount = #{applyAmount}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="auditDate != null and auditDate != ''">
+				AND a.audit_date = #{auditDate}
+			</if>
+			<if test="doingDate != null and doingDate != ''">
+				AND a.doing_date = #{doingDate}
+			</if>
+			<if test="createDate != null and createDate != ''">
+				AND a.create_date = #{createDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Cashout">
+		SELECT 
+			<include refid="cashoutBanksColumns"/>
+			<include refid="cashoutAlipayColumns"/>
+			<include refid="cashoutColumns"/>
+		FROM base_account_cashout a
+		<include refid="cashoutJoins"/>
+		<include refid="cashoutWebUserJoins"/>
+		<include refid="cashoutBankJoins"/>
+		<include refid="cashoutAlipayJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO base_account_cashout(
+			site_id,
+			company_id,
+			webuser_id,
+			apply_amount,
+			cashout_fee,
+			status,
+			content,
+			doing_date,
+			audit_date,
+			card_type,
+			card_id,
+			user_id,
+			apply_ip,
+			create_date,
+			del_flag
+		) VALUES (
+			#{siteId},
+			#{companyId},
+			#{webUser.id},
+			#{applyAmount},
+			#{cashoutFee},
+			#{status},
+			#{content},
+			#{doingDate},
+			#{auditDate},
+			#{cardType},
+			#{cardId},
+			#{user.id},
+			#{applyIp},
+			#{createDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE base_account_cashout SET 	
+			webuser_id = #{webUser.id},
+			apply_amount = #{applyAmount},
+			cashout_fee = #{cashoutFee},
+			status = #{status},
+			content = #{content},
+			doing_date = #{doingDate},
+			audit_date = #{auditDate},
+			card_type = #{cardType},
+			card_id = #{cardId},
+			user_id = #{user.id},
+			apply_ip = #{applyIp}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE base_account_cashout SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.base.dao.WebUserDao">
+    
+	<sql id="webUserColumns">
+		a.id AS "id",
+		a.user_name AS "userName",
+		a.password AS "password",
+		a.real_name AS "realName",
+		a.email AS "email",
+		a.email_validated AS "emailValidated",
+		a.mobile AS "mobile",
+		a.mobile_validated AS "mobileValidated",
+		a.user_type AS "userType",
+		a.id_card AS "idCard",
+		a.photo AS "photo",
+		a.sex AS "sex",
+		a.birthday AS "birthday",
+		a.province AS "province",
+		a.city AS "city",
+		a.region AS "region",
+		a.address AS "address",
+		a.create_ip AS "createIp",
+		a.login_ip AS "loginIp",
+		a.login_date AS "loginDate",
+		a.login_flag AS "loginFlag",
+		a.referrer AS "referrer",
+		a.balance AS "balance",
+		a.frozen_amount AS "frozenAmount",
+		a.points AS "points",
+		a.visit_count AS "visitCount",
+		a.qq AS "qq",
+		a.salt AS "salt",
+		a.wx_openId AS "wxOpenId",
+		a.invite_code AS "inviteCode",
+		a.passwd_question AS "passwdQuestion",
+		a.passwd_answer AS "passwdAnswer",
+		a.create_date AS "createDate",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="webUserJoins">
+	</sql>
+	
+    <!-- 根据登录名查询用户 -->
+	<select id="getByUserName" resultType="WebUser"  parameterType="WebUser">
+		SELECT 
+			<include refid="webUserColumns"/>
+		FROM web_user a
+		<include refid="webUserJoins"/>
+		WHERE a.user_name = #{loginName}
+	</select>
+    <!-- 根据推荐Id 查询用户 -->
+	<select id="getByInviteCode" resultType="WebUser"  parameterType="WebUser">
+		SELECT 
+			<include refid="webUserColumns"/>
+		FROM web_user a
+		<include refid="webUserJoins"/>
+		WHERE a.invite_code = #{inviteCode}
+	</select>
+    <!-- 根据手机号查询用户 -->
+	<select id="getByMobile" resultType="WebUser"  parameterType="WebUser">
+		SELECT 
+			<include refid="webUserColumns"/>
+		FROM web_user a
+		<include refid="webUserJoins"/>
+		WHERE a.mobile = #{mobile}
+	</select>
+    <!-- 根据邮箱查询用户 -->
+	<select id="getByEmail" resultType="WebUser"  parameterType="WebUser">
+		SELECT 
+			<include refid="webUserColumns"/>
+		FROM web_user a
+		<include refid="webUserJoins"/>
+		WHERE a.email = #{email}
+	</select>
+    <!-- 根据微信OpenId查询用户 -->
+	<select id="getByWxOpenId" resultType="WebUser"  parameterType="WebUser">
+		SELECT 
+			<include refid="webUserColumns"/>
+		FROM web_user a
+		<include refid="webUserJoins"/>
+		WHERE a.wx_openId = #{wxOpenId}
+	</select>
+	
+	<!-- 更新登录信息，如登录IP、登录时间 -->
+	<update id="updateUserLoginInfo">
+		UPDATE web_user  SET 
+			login_ip = #{loginIp}, 
+			<if test="wxOpenId != null">  
+	         wx_openId = #{wxOpenId} , 
+	     </if>
+			login_date = #{loginDate},
+			visit_count = #{visitCount} 
+		WHERE id = #{id}
+	</update>
+	<select id="get" resultType="WebUser">
+		SELECT 
+			<include refid="webUserColumns"/>
+		FROM web_user a
+		<include refid="webUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findReferrerList" resultType="WebUser">
+		SELECT 
+			baf.operate AS "awardMoney",
+			<include refid="webUserColumns"/>
+		FROM web_user a
+		<include refid="webUserJoins"/>
+		LEFT JOIN base_account_funddetail baf ON a.id = baf.target 	
+		 WHERE a.referrer = #{referrer} 
+		 AND baf.target_type='WebUser'
+		 AND baf.change_type='referreAward'
+		  ORDER by a.create_date DESC
+	</select>
+	<select id="getSumAward" resultType="WebUser">
+		SELECT 
+			sum(baf.operate) AS "sumAwardMoney",
+			<include refid="webUserColumns"/>
+		FROM web_user a
+		<include refid="webUserJoins"/>
+		LEFT JOIN base_account_funddetail baf ON a.id = baf.target 	
+		 WHERE a.referrer = #{referrer} 
+		 AND baf.target_type='WebUser'
+		 AND baf.change_type='referreAward'
+		  ORDER by a.create_date DESC
+	</select>
+	<select id="findList" resultType="WebUser">
+		SELECT 
+			<include refid="webUserColumns"/>
+		FROM web_user a
+		<include refid="webUserJoins"/>
+		<where>
+			
+			<if test="userName != null and userName != ''">
+				AND a.user_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{userName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{userName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{userName},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WebUser">
+		SELECT 
+			<include refid="webUserColumns"/>
+		FROM web_user a
+		<include refid="webUserJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO web_user(
+			user_name,
+			password,
+			real_name,
+			email,
+			email_validated,
+			mobile,
+			mobile_validated,
+			user_type,
+			id_card,
+			photo,
+			sex,
+			birthday,
+			province,
+			city,
+			region,
+			address,
+			create_ip,
+			login_ip,
+			login_date,
+			login_flag,
+			referrer,
+			balance,
+			frozen_amount,
+			points,
+			visit_count,
+			qq,
+			salt,
+			wx_openId,
+			invite_Code,
+			passwd_question,
+			passwd_answer,
+			create_date,
+			remarks
+		) VALUES (
+			#{userName},
+			#{password},
+			#{realName},
+			#{email},
+			#{emailValidated},
+			#{mobile},
+			#{mobileValidated},
+			#{userType},
+			#{idCard},
+			#{photo},
+			#{sex},
+			#{birthday},
+			#{province},
+			#{city},
+			#{region},
+			#{address},
+			#{createIp},
+			#{loginIp},
+			#{loginDate},
+			#{loginFlag},
+			#{referrer},
+			#{balance},
+			#{frozenAmount},
+			#{points},
+			#{visitCount},
+			#{qq},
+			#{salt},
+			#{wxOpenId},
+			#{inviteCode},
+			#{passwdQuestion},
+			#{passwdAnswer},
+			#{createDate},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE web_user SET 	
+			user_name = #{userName},
+			password = #{password},
+			real_name = #{realName},
+			email = #{email},
+			email_validated = #{emailValidated},
+			mobile = #{mobile},
+			mobile_validated = #{mobileValidated},
+			user_type = #{userType},
+			id_card = #{idCard},
+			photo = #{photo},
+			sex = #{sex},
+			birthday = #{birthday},
+			province = #{province},
+			city = #{city},
+			region = #{region},
+			address = #{address},
+			login_flag = #{loginFlag},
+			referrer = #{referrer},
+			balance = #{balance},
+			frozen_amount = #{frozenAmount},
+			points = #{points},
+			qq = #{qq},
+			wx_openId = #{wxOpenId},
+			passwd_question = #{passwdQuestion},
+			passwd_answer = #{passwdAnswer},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM web_user
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

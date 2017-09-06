@@ -7,12 +7,16 @@ import java.beans.PropertyEditorSupport;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 
+import com.google.code.kaptcha.servlet.KaptchaExtend;
+import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.utils.WebUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.slf4j.Logger;
@@ -35,7 +39,7 @@ import com.thinkgem.jeesite.common.utils.DateUtils;
  * @author ThinkGem
  * @version 2013-3-23
  */
-public abstract class BaseController {
+public abstract class BaseController extends KaptchaExtend{
 
 	/**
 	 * 日志对象
@@ -114,7 +118,7 @@ public abstract class BaseController {
 	
 	/**
 	 * 添加Model消息
-	 * @param message
+	 * @param messages
 	 */
 	protected void addMessage(Model model, String... messages) {
 		StringBuilder sb = new StringBuilder();
@@ -126,7 +130,7 @@ public abstract class BaseController {
 	
 	/**
 	 * 添加Flash消息
-	 * @param message
+	 * @param messages
 	 */
 	protected void addMessage(RedirectAttributes redirectAttributes, String... messages) {
 		StringBuilder sb = new StringBuilder();
@@ -212,5 +216,36 @@ public abstract class BaseController {
 //			}
 		});
 	}
-	
+	/**
+	 * 检查手机验证码是否正确
+	 *
+	 * @param paramValidateCode
+	 * @param mobile
+	 * @return
+	 *
+	 * 21 == 手机验证码超时或不正确
+	 * 22 == 接受验证码的手机号与现在的手机号不一致
+	 * 23 == 手机验证码不正确
+	 * 20 == 正确
+	 */
+	protected int checkMobileValidateCode(String paramValidateCode , String validateCode,String mobile) {
+		// 检查手机验证码是否匹配
+		paramValidateCode = paramValidateCode.equals("")?"valideCode":paramValidateCode;
+		Map<String, Object> sendMobileResult = (Map<String, Object>) WebUtils.get(WebUtils.SMS_VALIDE_CODE);
+
+		if(sendMobileResult == null){
+			return 21;
+		}
+
+		if(StringUtils.isMobile(mobile) == false || mobile.equals(sendMobileResult.get("mobile")) == false) {
+			return 22;
+		}
+
+		if(validateCode == null ||validateCode.equals(sendMobileResult.get(paramValidateCode)) == false){
+			return 23;
+		}
+
+		sendMobileResult.remove(sendMobileResult);
+		return 20;
+	}
 }

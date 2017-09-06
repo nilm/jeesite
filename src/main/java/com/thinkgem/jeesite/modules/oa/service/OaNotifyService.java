@@ -59,7 +59,7 @@ public class OaNotifyService extends CrudService<OaNotifyDao, OaNotify> {
 	}
 	
 	@Transactional(readOnly = false)
-	public void save(OaNotify oaNotify) {
+	public OaNotify save(OaNotify oaNotify) {
 		super.save(oaNotify);
 		
 		// 更新发送接受人记录
@@ -67,6 +67,7 @@ public class OaNotifyService extends CrudService<OaNotifyDao, OaNotify> {
 		if (oaNotify.getOaNotifyRecordList().size() > 0){
 			oaNotifyRecordDao.insertAll(oaNotify.getOaNotifyRecordList());
 		}
+		return oaNotify;
 	}
 	
 	/**

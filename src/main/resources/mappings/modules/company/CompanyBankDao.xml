@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.company.dao.CompanyBankDao">
+    
+	<sql id="companyBankColumns">
+		a.id AS "id",
+		o2.name AS "company.name",
+		a.company_id AS "company.id",
+		a.bankcard_owner AS "bankcardOwner",
+		a.bank_name AS "bankName",
+		a.bank_branch_name AS "bankBranchName",
+		a.bank_no AS "bankNo",
+		a.bank_code AS "bankCode",
+		a.del_flag AS "delFlag",
+		a.remarks AS "remarks",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.create_by AS "createBy.id",
+		a.useable AS "useable",
+		a.audit_by AS "auditBy",
+		a.audit_date AS "auditDate"
+	</sql>
+	
+	<sql id="companyBankJoins">
+		LEFT JOIN sys_office o2 ON o2.id = a.company_id
+		LEFT JOIN sys_user u13 ON u13.id = a.create_by
+		LEFT JOIN sys_user u15 ON u15.id = a.audit_by
+	</sql>
+    
+	<select id="get" resultType="CompanyBank">
+		SELECT 
+			<include refid="companyBankColumns"/>
+		FROM company_bank a
+		<include refid="companyBankJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CompanyBank">
+		SELECT 
+			<include refid="companyBankColumns"/>
+		FROM company_bank a
+		<include refid="companyBankJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="companyId != null and companyId != ''">
+				AND a.company_id = #{companyId}
+			</if>
+			<if test="bankName != null and bankName != ''">
+				AND a.bank_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{bankName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{bankName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{bankName},'%')</if>
+			</if>
+			<if test="bankNo != null and bankNo != ''">
+				AND a.bank_no LIKE 
+					<if test="dbName == 'oracle'">'%'||#{bankNo}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{bankNo}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{bankNo},'%')</if>
+			</if>
+			<if test="useable != null and useable != ''">
+				AND a.useable = #{useable}
+			</if>
+			<if test="auditBy != null and auditBy != ''">
+				AND a.audit_by = #{auditBy}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CompanyBank">
+		SELECT 
+			<include refid="companyBankColumns"/>
+		FROM company_bank a
+		<include refid="companyBankJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO company_bank(
+			company_id,
+			bankcard_owner,
+			bank_name,
+			bank_branch_name,
+			bank_no,
+			bank_code,
+			del_flag,
+			remarks,
+			create_date,
+			update_date,
+			update_by,
+			create_by,
+			useable,
+			audit_by,
+			audit_date
+		) VALUES (
+			#{company.id},
+			#{bankcardOwner},
+			#{bankName},
+			#{bankBranchName},
+			#{bankNo},
+			#{bankCode},
+			#{delFlag},
+			#{remarks},
+			#{createDate},
+			#{updateDate},
+			#{updateBy.id},
+			#{createBy.id},
+			#{useable},
+			#{auditBy},
+			#{auditDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE company_bank SET 	
+			company_id = #{company.id},
+			bankcard_owner = #{bankcardOwner},
+			bank_name = #{bankName},
+			bank_branch_name = #{bankBranchName},
+			bank_no = #{bankNo},
+			bank_code = #{bankCode},
+			remarks = #{remarks},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			useable = #{useable},
+			audit_by = #{auditBy},
+			audit_date = #{auditDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE company_bank SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

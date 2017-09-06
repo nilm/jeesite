@@ -35,8 +35,9 @@ public class TestDataService extends CrudService<TestDataDao, TestData> {
 	}
 	
 	@Transactional(readOnly = false)
-	public void save(TestData testData) {
+	public TestData save(TestData testData) {
 		super.save(testData);
+		return testData;
 	}
 	
 	@Transactional(readOnly = false)

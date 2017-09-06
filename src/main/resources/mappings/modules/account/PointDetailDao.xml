@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.account.dao.PointDetailDao">
+    
+	<sql id="pointDetailColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.site_id AS "siteId",
+		a.company_id AS "companyId",
+		a.change_type AS "changeType",
+		a.operate AS "operate",
+		a.balance AS "balance",
+		a.fund_direction AS "fundDirection",
+		a.change_desc AS "changeDesc",
+		a.target_type AS "targetType",
+		a.target AS "target",
+		a.fund_timestamp AS "fundTimestamp",
+		a.create_date AS "createDate",
+		a.del_flag AS "delFlag",
+		a.remark AS "remark"
+	</sql>
+	
+	<sql id="pointDetailJoins">
+	LEFT JOIN web_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="PointDetail">
+		SELECT 
+			<include refid="pointDetailColumns"/>
+		FROM base_point_detail a
+		<include refid="pointDetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+<!-- 	
+	<select id="findWebUserPointUseStatus" parameterType="string" resultMap="java.util.Map">
+	  select a.change_type AS "changeType",sum(a.operate) AS "operate" FROM base_point_detail a WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+	  
+	  AND a.user_id = #{userId} GROUP BY a.fund_direction
+	  
+	</select>
+ -->
+
+	<select id="findWebUserSumFundDirection" resultType="PointDetail">
+	  select sum(a.operate) AS "sumPoints" FROM base_point_detail a WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+	  
+	  AND a.user_id = #{userId} AND a.fund_direction = #{fundDirection}
+	  
+	</select>
+	<select id="findWebUserList" resultType="PointDetail">
+		SELECT 
+			<include refid="pointDetailColumns"/>
+		FROM base_point_detail a
+		<include refid="pointDetailJoins"/>
+		
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		
+		<if test="beginDate != null and endDate != null">
+		
+		AND a.create_date BETWEEN #{beginDate} AND #{endDate}
+		
+		</if>
+		
+		<if test="userId != null and userId != ''">
+			AND a.user_id = #{userId}
+		</if>
+		<if test="fundDirection != null and fundDirection != ''">
+			AND a.fund_direction = #{fundDirection}
+		</if>
+		
+		ORDER BY a.fund_timestamp DESC
+	</select>
+	
+	<select id="findList" resultType="PointDetail">
+		SELECT 
+			<include refid="pointDetailColumns"/>
+		FROM base_point_detail a
+		<include refid="pointDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="companyId != null and companyId != ''">
+				AND a.company_id = #{companyId}
+			</if>
+			<if test="changeType != null and changeType != ''">
+				AND a.change_type = #{changeType}
+			</if>
+			<if test="fundDirection != null and fundDirection != ''">
+				AND a.fund_direction = #{fundDirection}
+			</if>
+			<if test="beginCreateDate != null and endCreateDate != null and beginCreateDate != '' and endCreateDate != ''">
+				AND a.create_date BETWEEN #{beginCreateDate} AND #{endCreateDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PointDetail">
+		SELECT 
+			<include refid="pointDetailColumns"/>
+		FROM base_point_detail a
+		<include refid="pointDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO base_point_detail(
+			user_id,
+			site_id,
+			company_id,
+			change_type,
+			operate,
+			balance,
+			fund_direction,
+			change_desc,
+			target_type,
+			target,
+			fund_timestamp,
+			create_date,
+			del_flag,
+			remark
+		) VALUES (
+			#{userId},
+			#{siteId},
+			#{companyId},
+			#{changeType},
+			#{operate},
+			#{balance},
+			#{fundDirection},
+			#{changeDesc},
+			#{targetType},
+			#{target},
+			#{fundTimestamp},
+			#{createDate},
+			#{delFlag},
+			#{remark}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE base_point_detail SET 	
+			user_id = #{userId},
+			site_id = #{siteId},
+			company_id = #{companyId},
+			change_type = #{changeType},
+			operate = #{operate},
+			balance = #{balance},
+			fund_direction = #{fundDirection},
+			change_desc = #{changeDesc},
+			target_type = #{targetType},
+			target = #{target},
+			fund_timestamp = #{fundTimestamp},
+			remark = #{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE base_point_detail SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

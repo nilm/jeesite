@@ -43,7 +43,7 @@
 		ORDER BY a.update_date DESC
 	</select>
 	
-	<insert id="insert">
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO gen_scheme(
 			name,
 			category, 

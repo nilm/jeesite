@@ -938,12 +938,17 @@
 								<sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}"
 									 onerror="continue" encoding="${project.build.sourceEncoding}">
 									<classpath refid="maven.test.classpath" />
+									<!-- 字段类型修改 -->
+									<transaction src="db/update_pk_ids__${jdbc.type}.sql"/>
+
+									<!--  原始数据初始化化
 									<transaction src="db/sys/jeesite_${jdbc.type}.sql"/>
 									<transaction src="db/cms/jeesite_${jdbc.type}.sql"/>
 									<transaction src="db/oa/jeesite_${jdbc.type}.sql"/>
 									<transaction src="db/gen/jeesite_${jdbc.type}.sql"/>
 									<transaction src="db/gen/example_${jdbc.type}.sql"/>
 									<transaction src="db/test/jeesite_${jdbc.type}.sql"/>
+									-->
 									<transaction src="db/act/drop/activiti.${jdbc.type}.drop.engine.sql"/>
 									<transaction src="db/act/drop/activiti.${jdbc.type}.drop.history.sql"/>
 									<transaction src="db/act/drop/activiti.${jdbc.type}.drop.identity.sql"/>
@@ -954,14 +959,14 @@
 
 								<taskdef name="dbunit" classname="org.dbunit.ant.DbUnitTask" classpathref="maven.test.classpath" />
 
-								<!-- mysql、mssql -->
+								<!-- mysql、mssql
 								<dbunit driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}"
 										password="${jdbc.password}">
-
+									-->
 									<!-- oracle
                                     <dbunit driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}"
                                         password="${jdbc.password}" schema="${jdbc.username}" > -->
-
+							<!--
 									<dbconfig>
 										<property name="datatypeFactory" value="${dbunit.datatype}" />
 									</dbconfig>
@@ -970,7 +975,7 @@
 									<operation type="INSERT" src="db/cms/jeesite_data.xls" format="xls" transaction="true"/>
 
 								</dbunit>
-
+							-->
 							</target>
 						</configuration>
 					</plugin>

@@ -71,7 +71,6 @@
 	
 	<insert id="insert">
 		INSERT INTO cms_comment(
-			id,
 			category_id,
 			content_id,
 			title,
@@ -83,7 +82,6 @@
 			audit_date,
 			del_flag
 		) VALUES (
-			#{id},
 			#{category.id},
 			#{contentId},
 			#{title},

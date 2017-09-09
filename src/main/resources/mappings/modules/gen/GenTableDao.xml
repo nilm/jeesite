@@ -69,8 +69,7 @@
 	
 	<insert id="insert">
 		INSERT INTO gen_table(
-			id, 
-			name, 
+			name,
 			comments, 
 			class_name, 
 			parent_table, 
@@ -82,8 +81,7 @@
 			remarks, 
 			del_flag
 		) VALUES (
-			#{id}, 
-			#{name}, 
+			#{name},
 			#{comments}, 
 			#{className}, 
 			#{parentTable}, 

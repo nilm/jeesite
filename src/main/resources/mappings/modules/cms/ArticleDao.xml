@@ -107,7 +107,6 @@
 	
 	<insert id="insert">
 		INSERT INTO cms_article(
-			id,
 			category_id,
 			title,
 			link,
@@ -128,7 +127,6 @@
 			remarks,
 			del_flag
 		) VALUES (
-			#{id},
 			#{category.id},
 			#{title},
 			#{link},

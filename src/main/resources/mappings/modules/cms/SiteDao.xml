@@ -76,7 +76,6 @@
 	
 	<insert id="insert">
 		INSERT INTO cms_site(
-			id,
 			name,
 			title,
 			logo,
@@ -93,7 +92,6 @@
 			remarks,
 			del_flag
 		) VALUES (
-			#{id},
 			#{name},
 			#{title},
 			#{logo},

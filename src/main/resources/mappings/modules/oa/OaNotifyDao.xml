@@ -95,7 +95,6 @@
 	
 	<insert id="insert">
 		INSERT INTO oa_notify(
-			ID,
 			TYPE,
 			TITLE,
 			CONTENT,
@@ -108,7 +107,6 @@
 			REMARKS,
 			DEL_FLAG
 		) VALUES (
-			#{id},
 			#{type},
 			#{title},
 			#{content},

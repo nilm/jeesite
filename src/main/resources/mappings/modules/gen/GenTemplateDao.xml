@@ -50,8 +50,7 @@
 	
 	<insert id="insert">
 		INSERT INTO gen_template(
-			id, 
-			name, 
+			name,
 			category, 
 			file_path, 
 			file_name, 
@@ -63,8 +62,7 @@
 			remarks, 
 			del_flag
 		) VALUES (
-			#{id}, 
-			#{name}, 
+			#{name},
 			#{category},  
 			#{filePath},  
 			#{fileName},  

@@ -45,8 +45,7 @@
 	
 	<insert id="insert">
 		INSERT INTO sys_user(
-			id, 
-			name, 
+			name,
 			create_by, 
 			create_date, 
 			update_by, 
@@ -54,8 +53,7 @@
 			remarks, 
 			del_flag
 		) VALUES (
-			#{id}, 
-			#{name}, 
+			#{name},
 			#{createBy.id}, 
 			#{createDate}, 
 			#{updateBy.id}, 

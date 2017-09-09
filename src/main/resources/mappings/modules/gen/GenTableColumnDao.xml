@@ -53,8 +53,7 @@
 	
 	<insert id="insert">
 		INSERT INTO gen_table_column(
-			id, 
-			gen_table_id, 
+			gen_table_id,
 			name, 
 			comments, 
 			jdbc_type, 
@@ -77,8 +76,7 @@
 			remarks, 
 			del_flag
 		) VALUES (
-			#{id}, 
-			#{genTable.id}, 
+			#{genTable.id},
 			#{name}, 
 			#{comments}, 
 			#{jdbcType}, 

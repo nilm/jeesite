@@ -77,7 +77,6 @@
 	
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO sys_portal_funddetail(
-			id,
 			create_date,
 			change_type,
 			operate,
@@ -88,7 +87,6 @@
 			business_id,
 			desc_content
 		) VALUES (
-			#{id},
 			#{createDate},
 			#{changeType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
 			#{operate},

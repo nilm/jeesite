@@ -37,8 +37,7 @@
 	
 	<insert id="insert">
 		INSERT INTO sys_log(
-			id, 
-			type, 
+			type,
 			title,
 			create_by, 
 			create_date, 
@@ -49,8 +48,7 @@
 			params, 
 			exception
 		) VALUES (
-			#{id}, 
-			#{type}, 
+			#{type},
 			#{title}, 
 			#{createBy.id}, 
 			#{createDate}, 

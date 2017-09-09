@@ -45,8 +45,7 @@
 	
 	<insert id="insert">
 		INSERT INTO gen_scheme(
-			id, 
-			name, 
+			name,
 			category, 
 			package_name, 
 			module_name, 
@@ -62,8 +61,7 @@
 			remarks, 
 			del_flag
 		) VALUES (
-			#{id}, 
-			#{name}, 
+			#{name},
 			#{category},  
 			#{packageName},  
 			#{moduleName},  

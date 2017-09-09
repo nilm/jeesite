@@ -79,8 +79,7 @@
 	
 	<insert id="insert">
 		INSERT INTO oa_test_audit(
-			id, 
-			user_id, 
+			user_id,
 			office_id, 
 			post, 
 			age, 
@@ -101,8 +100,7 @@
 			remarks, 
 			del_flag
 		) VALUES (
-			#{id}, 
-			#{user.id}, 
+			#{user.id},
 			#{office.id}, 
 			#{post}, 
 			#{age}, 

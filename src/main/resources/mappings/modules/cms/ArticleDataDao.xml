@@ -23,13 +23,11 @@
 		
 	<insert id="insert">
 		INSERT INTO cms_article_data(
-			id,
 			content,
 			copyfrom,
 			relation,
 			allow_comment
 		) VALUES (
-			#{id},
 			#{content},
 			#{copyfrom},
 			#{relation},

@@ -64,7 +64,7 @@ public class GenTableService extends BaseService {
 	
 	/**
 	 * 验证表名是否可用，如果已存在，则返回false
-	 * @param genTable
+	 * @param tableName
 	 * @return
 	 */
 	public boolean checkTableName(String tableName){

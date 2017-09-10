@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.base.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
@@ -53,7 +54,7 @@ public class WebUser extends DataEntity<WebUser> {
 	private String inviteCode;		// 校验码
 	private String passwdQuestion;		// 密保问题
 	private String passwdAnswer;		// 密保答案
-	
+	@JsonIgnore
 	private String newPassword;	// 新密码
 	private String validateCode;  
 	private String wxOpenId;// 微信openId  
@@ -275,6 +276,7 @@ public class WebUser extends DataEntity<WebUser> {
 	 * 检查两次输入的密码是否一致
 	 * @return
 	 */
+	@JsonIgnore
 	public boolean isNewPasswdOk(){
 		return this.password.equals(this.newPassword);
 	}

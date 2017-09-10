@@ -73,6 +73,7 @@
 		<dict value="checkbox" label="复选框"/>
 		<dict value="dateselect" label="日期选择"/>
 		<dict value="userselect" label="人员选择"/>
+		<dict value="webuserselect" label="用户选择"/>
 		<dict value="officeselect" label="部门选择"/>
 		<dict value="areaselect" label="区域选择"/>
 		<dict value="treeselect" label="树选择控件"/>

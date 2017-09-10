@@ -56,7 +56,7 @@ public class ${ClassName}Service extends CrudService<${ClassName}Dao, ${ClassNam
 	}
 	
 	@Transactional(readOnly = false)
-	public void save(${ClassName} ${className}) {
+	public ${ClassName} save(${ClassName} ${className}) {
 		super.save(${className});
 	<#list table.childList as c>
 		for (${c.className?cap_first} ${c.className?uncap_first} : ${className}.get${c.className?cap_first}List()){
@@ -83,6 +83,7 @@ public class ${ClassName}Service extends CrudService<${ClassName}Dao, ${ClassNam
 			}
 		}
 	</#list>
+	return ${className};
 	}
 	
 	@Transactional(readOnly = false)

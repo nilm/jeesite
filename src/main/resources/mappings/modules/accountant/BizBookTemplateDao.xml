@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.accountant.dao.BizBookTemplateDao">
+    
+	<sql id="bizBookTemplateColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.company_id AS "companyId",
+		a.biz_id AS "biz.id",
+		a.book_id AS "book.id",
+		book.name AS "bookName",
+		a.direction AS "direction",
+		a.fixed AS "fixed",
+		a.category AS "category",
+		a.status AS "status",
+		a.use_count AS "useCount",
+		a.create_date AS "createDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="bizBookTemplateJoins">
+		LEFT JOIN accountant_biz b ON b.id = a.biz_id
+		LEFT JOIN sys_office o3 ON o3.id = a.company_id
+		LEFT JOIN accountant_book book ON book.id = a.book_id
+	</sql>
+    
+	<select id="get" resultType="BizBookTemplate">
+		SELECT 
+			<include refid="bizBookTemplateColumns"/>
+		FROM accountant_biz_subject_template a
+		<include refid="bizBookTemplateJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BizBookTemplate">
+		SELECT 
+			<include refid="bizBookTemplateColumns"/>
+		FROM accountant_biz_subject_template a
+		<include refid="bizBookTemplateJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="user != null and user.id != null and user.id != ''">
+				AND a.user_id = #{user.id}
+			</if>
+			<if test="companyId != null and companyId != ''">
+				AND a.company_id = #{companyId}
+			</if>
+			<if test="biz != null and biz.id != null and biz.id != ''">
+				AND a.biz_id = #{biz.id}
+			</if>
+			<if test="book != null  and book.id != null and book.id != ''">
+				AND a.book_id = #{book.id}
+			</if>
+			<if test="direction != null and direction != ''">
+				AND a.direction = #{direction}
+			</if>
+			<if test="category != null and category != ''">
+				AND a.category = #{category}
+			</if>
+			<if test="useCount != null and useCount != ''">
+				AND a.use_count = #{useCount}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BizBookTemplate">
+		SELECT 
+			<include refid="bizBookTemplateColumns"/>
+		FROM accountant_biz_subject_template a
+		<include refid="bizBookTemplateJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO accountant_biz_subject_template(
+			company_id,
+			biz_id,
+			book_id,
+			direction,
+			fixed,
+			category,
+			status,
+			use_count,
+			create_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{companyId},
+			#{biz.id},
+			#{book.id},
+			#{direction},
+			#{fixed},
+			#{category},
+			#{status},
+			#{useCount},
+			#{createDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE accountant_biz_subject_template SET 	
+			biz_id = #{biz.id},
+			book_id = #{book.id},
+			direction = #{direction},
+			fixed = #{fixed},
+			category = #{category},
+			use_count = #{useCount},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE accountant_biz_subject_template SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE biz_id = #{biz.id}
+			</otherwise>
+		</choose>
+	</update>
+	
+</mapper>

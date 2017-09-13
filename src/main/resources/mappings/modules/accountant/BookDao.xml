@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.accountant.dao.BookDao">
+    
+	<sql id="bookColumns">
+		a.id AS "id",
+		a.parent_id AS "parent.id",
+		a.parent_ids AS "parentIds",
+		a.code AS "code",
+		a.sort AS "sort",
+		a.user_id AS "user.id",
+		a.company_id AS "companyId",
+		a.name AS "name",
+		a.assist_code AS "assistCode",
+		a.category AS "category",
+		a.accountant_category AS "accountantCategory",
+		a.property AS "property",
+		a.assets_category AS "assetsCategory",
+		a.profits_category AS "profitsCategory",
+		a.version AS "version",
+		a.type AS "type",
+		a.status AS "status",
+		a.create_date AS "createDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="bookJoins">
+	</sql>
+    
+	<select id="get" resultType="Book">
+		SELECT 
+			<include refid="bookColumns"/>
+		FROM accountant_book a
+		<include refid="bookJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Book">
+		SELECT 
+			<include refid="bookColumns"/>
+		FROM accountant_book a
+		<include refid="bookJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="parent != null and parent.id != null and parent.id != ''">
+				AND a.parent_id = #{parent.id}
+			</if>
+			<if test="parentIds != null and parentIds != ''">
+				AND a.parent_ids LIKE 
+					<if test="dbName == 'oracle'">'%'||#{parentIds}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{parentIds}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{parentIds},'%')</if>
+			</if>
+			<if test="code != null and code != ''">
+				AND a.code = #{code}
+			</if>
+			<if test="user != null and user.id != null and user.id != ''">
+				AND a.user_id = #{user.id}
+			</if>
+			<if test="companyId != null and companyId != ''">
+				AND a.company_id = #{companyId}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="assistCode != null and assistCode != ''">
+				AND a.assist_code LIKE 
+					<if test="dbName == 'oracle'">'%'||#{assistCode}</if>
+					<if test="dbName == 'mssql'">'%'+#{assistCode}</if>
+					<if test="dbName == 'mysql'">concat('%',#{assistCode})</if>
+			</if>
+			<if test="category != null and category != ''">
+				AND a.category = #{category}
+			</if>
+			<if test="accountantCategory != null and accountantCategory != ''">
+				AND a.accountant_category = #{accountantCategory}
+			</if>
+			<if test="property != null and property != ''">
+				AND a.property = #{property}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<select id="findAllList" resultType="Book">
+		SELECT 
+			<include refid="bookColumns"/>
+		FROM accountant_book a
+		<include refid="bookJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<select id="findByParentIdsLike" resultType="Book">
+		SELECT
+			a.id,
+			a.parent_id AS "parent.id",
+			a.parent_ids
+		FROM accountant_book a
+		<include refid="bookJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND a.parent_ids LIKE #{parentIds}
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO accountant_book(
+			parent_id,
+			parent_ids,
+			code,
+			sort,
+			user_id,
+			company_id,
+			name,
+			assist_code,
+			category,
+			accountant_category,
+			property,
+			assets_category,
+			profits_category,
+			version,
+			type,
+			status,
+			create_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{parent.id},
+			#{parentIds},
+			#{code},
+			#{sort},
+			#{user.id},
+			#{companyId},
+			#{name},
+			#{assistCode},
+			#{category},
+			#{accountantCategory},
+			#{property},
+			#{assetsCategory},
+			#{profitsCategory},
+			#{version},
+			#{type},
+			#{status},
+			#{createDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE accountant_book SET 	
+			parent_id = #{parent.id},
+			parent_ids = #{parentIds},
+			code = #{code},
+			sort = #{sort},
+			name = #{name},
+			assist_code = #{assistCode},
+			category = #{category},
+			accountant_category = #{accountantCategory},
+			property = #{property},
+			assets_category = #{assetsCategory},
+			profits_category = #{profitsCategory},
+			version = #{version},
+			type = #{type},
+			status = #{status},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateParentIds">
+		UPDATE accountant_book SET 
+			parent_id = #{parent.id}, 
+			parent_ids = #{parentIds}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE accountant_book SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id} OR parent_ids LIKE '%,'||#{id}||',%'
+	</update>
+	
+</mapper>

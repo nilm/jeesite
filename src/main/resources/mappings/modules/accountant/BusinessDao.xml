@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.accountant.dao.BusinessDao">
+    
+	<sql id="businessColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.company_id AS "companyId",
+		a.name AS "name",
+		a.sort AS "sort",
+		a.create_date AS "createDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.show_hide AS "showHide"
+	</sql>
+	
+	<sql id="businessJoins">
+	</sql>
+    
+	<select id="get" resultType="Business">
+		SELECT 
+			<include refid="businessColumns"/>
+		FROM accountant_biz a
+		<include refid="businessJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Business">
+		SELECT 
+			<include refid="businessColumns"/>
+		FROM accountant_biz a
+		<include refid="businessJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="user != null and user.id != null and user.id != ''">
+				AND a.user_id = #{user.id}
+			</if>
+			<if test="companyId != null and companyId != ''">
+				AND a.company_id = #{companyId}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="showHide != null and showHide != ''">
+				AND a.show_hide = #{showHide}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Business">
+		SELECT 
+			<include refid="businessColumns"/>
+		FROM accountant_biz a
+		<include refid="businessJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO accountant_biz(
+			user_id,
+			company_id,
+			name,
+			sort,
+			create_date,
+			remarks,
+			del_flag,
+			show_hide
+		) VALUES (
+			#{user.id},
+			#{companyId},
+			#{name},
+			#{sort},
+			#{createDate},
+			#{remarks},
+			#{delFlag},
+			#{showHide}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE accountant_biz SET 	
+			name = #{name},
+			sort = #{sort},
+			remarks = #{remarks},
+			show_hide = #{showHide}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE accountant_biz SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

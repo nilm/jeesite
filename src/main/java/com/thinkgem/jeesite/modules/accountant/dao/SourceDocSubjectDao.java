@@ -5,14 +5,14 @@ package com.thinkgem.jeesite.modules.accountant.dao;
 
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
-import com.thinkgem.jeesite.modules.accountant.entity.Business;
+import com.thinkgem.jeesite.modules.accountant.entity.SourceDocSubject;
 
 /**
- * 发生的业务DAO接口
+ * 原始业务记录DAO接口
  * @author 倪得渊
- * @version 2017-09-10
+ * @version 2017-09-16
  */
 @MyBatisDao
-public interface BusinessDao extends CrudDao<Business> {
-
+public interface SourceDocSubjectDao extends CrudDao<SourceDocSubject> {
+	
 }

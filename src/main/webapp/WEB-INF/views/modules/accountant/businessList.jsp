@@ -33,6 +33,9 @@
 			<li><label>业务名称：</label>
 				<form:input path="name" htmlEscape="false" maxlength="125" class="input-medium"/>
 			</li>
+			<li><label>业务类型：</label>
+				<form:radiobuttons path="bizType" items="${fns:getDictList('accountant_biz_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+			</li>
 			<li><label>显示否：</label>
 				<form:radiobuttons path="showHide" items="${fns:getDictList('show_hide')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 			</li>
@@ -46,6 +49,7 @@
 			<tr>
 				<th>主键</th>
 				<th>业务名称</th>
+				<th>业务类型</th>
 				<th>排序</th>
 				<th>备注</th>
 				<th>显示否</th>
@@ -60,6 +64,9 @@
 				</a></td>
 				<td>
 					${business.name}
+				</td>
+				<td>
+						${fns:getDictLabel(business.bizType, 'accountant_biz_type', '')}
 				</td>
 				<td>
 					${business.sort}

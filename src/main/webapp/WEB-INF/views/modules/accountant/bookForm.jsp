@@ -94,12 +94,14 @@
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
+		<!--
 		<div class="control-group">
 			<label class="control-label">资产负债表分类：</label>
 			<div class="controls">
 				<form:input path="assetsCategory" htmlEscape="false" maxlength="125" class="input-xlarge "/>
 			</div>
 		</div>
+
 		<div class="control-group">
 			<label class="control-label">利润表分类：</label>
 			<div class="controls">
@@ -111,19 +113,22 @@
 			<div class="controls">
 				<form:input path="version" htmlEscape="false" maxlength="125" class="input-xlarge "/>
 			</div>
-		</div>
+		</div>-->
+
 		<div class="control-group">
 			<label class="control-label">账本类型：</label>
 			<div class="controls">
-				<form:radiobuttons path="type" items="${fns:getDictList('accountant_type')}" itemLabel="label" itemValue="value" htmlEscape="false" class=""/>
+				<form:radiobuttons path="type" items="${fns:getDictList('accountant_type')}"  itemLabel="label" itemValue="value" htmlEscape="false" class=""/>
 			</div>
 		</div>
+		<!--
 		<div class="control-group">
 			<label class="control-label">当前状态：</label>
 			<div class="controls">
 				<form:input path="status" htmlEscape="false" maxlength="125" class="input-xlarge "/>
 			</div>
 		</div>
+		-->
 		<div class="control-group">
 			<label class="control-label">备注：</label>
 			<div class="controls">

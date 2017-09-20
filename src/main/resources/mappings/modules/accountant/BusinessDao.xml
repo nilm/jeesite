@@ -7,6 +7,7 @@
 		a.user_id AS "user.id",
 		a.company_id AS "companyId",
 		a.name AS "name",
+		a.biz_type AS "bizType",
 		a.sort AS "sort",
 		a.create_date AS "createDate",
 		a.remarks AS "remarks",
@@ -47,6 +48,9 @@
 			<if test="showHide != null and showHide != ''">
 				AND a.show_hide = #{showHide}
 			</if>
+			<if test="bizType != null and bizType != ''">
+				AND a.biz_Type = #{bizType}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -79,6 +83,7 @@
 			user_id,
 			company_id,
 			name,
+			biz_type,
 			sort,
 			create_date,
 			remarks,
@@ -88,6 +93,7 @@
 			#{user.id},
 			#{companyId},
 			#{name},
+			#{bizType},
 			#{sort},
 			#{createDate},
 			#{remarks},
@@ -99,6 +105,7 @@
 	<update id="update">
 		UPDATE accountant_biz SET 	
 			name = #{name},
+			biz_type = #{bizType},
 			sort = #{sort},
 			remarks = #{remarks},
 			show_hide = #{showHide}

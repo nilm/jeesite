@@ -46,8 +46,6 @@ public class WebUtils {
 	}
 	/**
 	 * 将值放入session
-	 * @param name
-	 * @param value
 	 */
 	public static WebUser getWebUser(){
 		return  (WebUser)getRequest().getSession().getAttribute(WEB_USER);
@@ -55,7 +53,6 @@ public class WebUtils {
 	/**
 	 * 从session取出指定对象
 	 * @param name
-	 * @param value
 	 */
 	public static Object get(String name){
 		return  getRequest().getSession().getAttribute(name);
@@ -63,7 +60,6 @@ public class WebUtils {
 	
 	/**
 	 * 从session取出指定对象
-	 * @param name
 	 */
 	public static void removeWebUser(){
 		remove(WebUtils.WEB_USER);
@@ -152,7 +148,7 @@ public class WebUtils {
 	
 	/**
 	 *  重定向到登录页面
-	 * @param String last_url
+	 * @param  last_url
 	 * @return
 	 */
 	public static  String redirectLoginUrl(String last_url){
@@ -176,7 +172,7 @@ public class WebUtils {
 	
 	/**
 	 *  重定向到手机端登录页面
-	 * @param String last_url
+	 * @param  last_url
 	 * @return
 	 */
 	public static  String redirectMobileLoginUrl(String last_url){
@@ -199,7 +195,7 @@ public class WebUtils {
 	
 	/**
 	 *  重定向到手机端登录页面
-	 * @param String last_url
+	 * @param  last_url
 	 * @return
 	 */
 	public static  String redirectWxAuthUrl(String last_url){

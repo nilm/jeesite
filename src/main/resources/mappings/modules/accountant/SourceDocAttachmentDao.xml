@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.accountant.dao.SourceDocAttachmentDao">
+    
+	<sql id="sourceDocAttachmentColumns">
+		a.id AS "id",
+		a.source_doc_id AS "sourceDocId",
+		a.files_path AS "filesPath",
+		a.type AS "type",
+		a.create_date AS "createDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="sourceDocAttachmentJoins">
+		LEFT JOIN accountant_source_doc b ON b.id = a.source_doc_id
+	</sql>
+    
+	<select id="get" resultType="SourceDocAttachment">
+		SELECT 
+			<include refid="sourceDocAttachmentColumns"/>
+		FROM accountant_source_doc_attachment a
+		<include refid="sourceDocAttachmentJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SourceDocAttachment">
+		SELECT 
+			<include refid="sourceDocAttachmentColumns"/>
+		FROM accountant_source_doc_attachment a
+		<include refid="sourceDocAttachmentJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="sourceDocId != null and sourceDocId != ''">
+				AND a.source_doc_id = #{sourceDocId}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SourceDocAttachment">
+		SELECT 
+			<include refid="sourceDocAttachmentColumns"/>
+		FROM accountant_source_doc_attachment a
+		<include refid="sourceDocAttachmentJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO accountant_source_doc_attachment(
+			source_doc_id,
+			files_path,
+			type,
+			create_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{sourceDocId},
+			#{filesPath},
+			#{type},
+			#{createDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE accountant_source_doc_attachment SET 	
+			source_doc_id = #{sourceDocId},
+			files_path = #{filesPath},
+			type = #{type},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE accountant_source_doc_attachment SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE source_doc_id = #{sourceDocId}
+			</otherwise>
+		</choose>
+	</update>
+	
+</mapper>

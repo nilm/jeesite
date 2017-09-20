@@ -26,6 +26,8 @@ public class BizBookTemplate extends DataEntity<BizBookTemplate> {
 	private String direction;		// 方向
 	private String fixed;		// 定选否
 	private String category;		// 账本类型
+	private String selectType;		// 单选 多选
+	private String groupTag;		// 组别辨识-- 同一业务不同组标识不一样
 	private String status;		// 当前状态
 	private String useCount="10";		// 使用次数
 
@@ -173,4 +175,19 @@ public class BizBookTemplate extends DataEntity<BizBookTemplate> {
 		this.bookName = bookName;
 	}
 
+	public String getSelectType() {
+		return selectType;
+	}
+
+	public void setSelectType(String selectType) {
+		this.selectType = selectType;
+	}
+
+	public String getGroupTag() {
+		return groupTag;
+	}
+
+	public void setGroupTag(String groupTag) {
+		this.groupTag = groupTag;
+	}
 }

@@ -1,7 +1,6 @@
 package com.thinkgem.jeesite.modules.views.common;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,7 @@ import com.thinkgem.jeesite.modules.sys.service.SystemService;
  */
 @Controller
 @RequestMapping(value = "${frontPath}/u")
-public class LoginRestController   extends BaseController{
+public class LoginWebController   extends BaseController{
 	// ========== 字段 ==========
 	
 	/**
@@ -93,8 +92,7 @@ public class LoginRestController   extends BaseController{
 	 * @return 登录页面
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String doLogin(WebUser webUser,HttpServletRequest request, Model model
-			,HttpServletResponse response,
+	public String doLogin(WebUser webUser,HttpServletRequest request,
 			RedirectAttributes redirectAttrs,boolean ajaxRequest) {
 /*		// 验证码
 		String vaildateCode = webUser.getVaildateCode();
@@ -104,7 +102,7 @@ public class LoginRestController   extends BaseController{
 			redirectAttrs.addFlashAttribute("vaildateCodeFailed", 1);
 			return "redirect:"+frontPath+"/login";
 		}*/
-		String isMobile = request.getParameter("rest");
+
 		WebUser entity = WebUtils.getWebUser();
 		if (entity != null){
 			// 已经登录则返回到首页
@@ -141,11 +139,9 @@ public class LoginRestController   extends BaseController{
 		updateLoginUserInfo(loginUser,request);
 		// 积分金钱 大奉送(仅限第一次登陆)
 		userEventService.doAward4First(CmsUtils.getSite(Site.defaultSiteId()).getId(),loginUser);
-		model.addAttribute("userName",mobile);
-		model.addAttribute("userType","1");//用来区分用户是什么类型的用户
-//		model.addAttribute("");
-		if("1".equals(isMobile)){
-			return renderString(response, model);
+
+		if(ajaxRequest){
+			 return "1";
 		}
 		return WebUtils.redirectLastUrl(request);
 	}

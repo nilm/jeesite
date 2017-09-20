@@ -7,6 +7,7 @@ import com.thinkgem.jeesite.modules.base.entity.WebUser;
 import com.thinkgem.jeesite.modules.base.service.WebUserService;
 import com.thinkgem.jeesite.modules.cms.entity.Site;
 import com.thinkgem.jeesite.modules.cms.utils.CmsUtils;
+import com.thinkgem.jeesite.modules.rest.json.BaseJson;
 import com.thinkgem.jeesite.modules.sys.service.SystemService;
 import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
 import org.slf4j.Logger;
@@ -90,9 +91,10 @@ public class RegisterRestController   extends BaseController{
 	 * @return 注册页面
 	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public String doRegister(WebUser webUser,Model model,HttpServletRequest request ,
-			RedirectAttributes redirectAttrs,boolean ajaxRequest) {
-		//TODO:
+	@ResponseBody
+	public String doRegister(WebUser webUser,Model model,HttpServletRequest request ) {
+
+		BaseJson json = new BaseJson();
 		
 		/*				// 验证码
 		String vaildateCode = webUser.getVaildateCode();
@@ -106,27 +108,27 @@ public class RegisterRestController   extends BaseController{
 		String mobile = webUser.getMobile().trim();
 		//检查手机号是正确
 		if(StringUtils.isMobile(mobile) == false){
-			addMessage(redirectAttrs, "你输入的手机号非法");
-			return "redirect:"+frontPath+"/u/register";
+			json.fail("你输入的手机号非法");
+			return json.toJson();
 		}
 		
 		//检查两次密码是否一致
 		if(webUser.isNewPasswdOk() == false){
-			addMessage(redirectAttrs, "你输入的两次密码不一致");
-			return "redirect:"+frontPath+"/u/register";
+			json.fail("你输入的两次密码不一致");
+			return json.toJson();
 		}
 		String vaildateCode = webUser.getValidateCode();
 		int validateResult = checkMobileValidateCode("",vaildateCode,mobile);
 		
 		if(validateResult ==21 ){
-			addMessage(redirectAttrs, "手机验证码超时或不正确");
-			return "redirect:"+frontPath+"/u/register";	
+			json.fail("手机验证码超时或不正确");
+			return json.toJson();
 		}else if(validateResult == 22){
-			addMessage(redirectAttrs, "接受验证码的手机号与现在的手机号不一致");
-			return "redirect:"+frontPath+"/u/register";
+			json.putMsg("接受验证码的手机号与现在的手机号不一致");
+			return json.toJson();
 		}else if(validateResult == 23){
-			addMessage(redirectAttrs, "验证码不正确");
-			return "redirect:"+frontPath+"/u/register";
+			json.fail("验证码不正确");
+			return  json.toJson();
 		}
 		//检查推荐人是否存在
 		String referrer = webUser.getReferrer();
@@ -146,9 +148,8 @@ public class RegisterRestController   extends BaseController{
 		}
 		
 		if(referrerUser == null && isIdReferrer){
-			addMessage(redirectAttrs, "推荐人不存在");
-			
-			return "redirect:"+frontPath+"/u/register";
+			json.putMsg("推荐人不存在");
+			return json.toJson();
 		}else if(isIdReferrer){
 			webUser.setReferrer(referrerUser.getId());
 		}else if (StringUtils.isEmpty(inviteCode) == false){
@@ -161,9 +162,8 @@ public class RegisterRestController   extends BaseController{
 		WebUser existsUser = webUserService.getByMobile(mobile);
 		
 		if(existsUser != null){
-			redirectAttrs.addFlashAttribute("existsUser", 1);
-			addMessage(redirectAttrs, "手机号已存在！");
-			return "redirect:"+frontPath+"/u/register";
+			json.fail("手机号已存在！");
+			return json.toJson();
 		}
 		
 		webUser.setCreateIp(StringUtils.getRemoteAddr(request));
@@ -176,12 +176,11 @@ public class RegisterRestController   extends BaseController{
 		webUser.setFrozenAmount(BigDecimal.ZERO);
 		webUser.setBalance(BigDecimal.ZERO);
 		webUserService.doRegister(webUser);
+		json.putMsg("注册成功！");
+		json.put("userName",webUser.getMobile());
 		
-		if(ajaxRequest){
-			return "1";
-		}
-		
-		return WebUtils.redirectLastUrl(request);
+
+		return json.toJson();
 	}
 
 
@@ -191,7 +190,7 @@ public class RegisterRestController   extends BaseController{
 	/**
 	 * 检查用户用户是否存在
 	 * 
-	 * @param token
+	 * @param referrer
 	 * @return
 	 */
 	@RequestMapping(value = "/check_referrer_user_exists", method = RequestMethod.GET, produces = { "text/html;charset=UTF-8" })
@@ -222,7 +221,7 @@ public class RegisterRestController   extends BaseController{
 	/**
 	 * 根据手机号 检查用户是否存在
 	 * 
-	 * @param token
+	 * @param mobile
 	 * @return
 	 */
 	@RequestMapping(value = "/check_user_exists", method = RequestMethod.GET, produces = { "text/html;charset=UTF-8" })
@@ -245,7 +244,7 @@ public class RegisterRestController   extends BaseController{
 	/**
 	 * 根据用户名或手机号 检查用户是否存在
 	 * 
-	 * @param token
+	 * @param userName
 	 * @return
 	 */
 	@RequestMapping(value = "/check_user_name_exists ", method = RequestMethod.GET, produces = { "text/html;charset=UTF-8" })
@@ -276,7 +275,7 @@ public class RegisterRestController   extends BaseController{
 	/**
 	 * 检查重复邮箱
 	 * 
-	 * @param token
+	 * @param
 	 * @return
 	 */
 	@RequestMapping(value = "/check_user_email_exists", produces = { "text/html;charset=UTF-8" })
@@ -384,7 +383,6 @@ public class RegisterRestController   extends BaseController{
 
 	/**
 	 * http://lcoahost/${frontPath}/u/sign-in/invite/CDSW
-	 * @param captcha
 	 * @param request
 	 * @return
 	 */

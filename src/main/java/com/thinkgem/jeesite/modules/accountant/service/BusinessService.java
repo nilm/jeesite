@@ -28,7 +28,10 @@ public class BusinessService extends CrudService<BusinessDao, Business> {
 
 	@Autowired
 	private BizBookTemplateDao bizBookTemplateDao;
-	
+
+	@Autowired
+	private BusinessDao businessDao;
+
 	public Business get(String id) {
 		Business business = super.get(id);
 		business.setBizBookTemplateList(bizBookTemplateDao.findList(new BizBookTemplate(business)));

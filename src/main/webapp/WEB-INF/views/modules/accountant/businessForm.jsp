@@ -72,6 +72,13 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">业务类型：</label>
+			<div class="controls">
+				<form:radiobuttons path="bizType" items="${fns:getDictList('accountant_biz_type')}" itemLabel="label" itemValue="value" htmlEscape="false" class="required"/>
+				<span class="help-inline"><font color="red">*</font> </span>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">排序：</label>
 			<div class="controls">
 				<form:input path="sort" htmlEscape="false" class="input-xlarge required"/>

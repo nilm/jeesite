@@ -1,4 +1,4 @@
-package cn.helloan.appservice.enums;
+package com.thinkgem.jeesite.modules.rest.enums;
 
 /**
  * 

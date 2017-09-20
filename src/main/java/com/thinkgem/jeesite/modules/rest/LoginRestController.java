@@ -10,6 +10,7 @@ import com.thinkgem.jeesite.modules.base.entity.WebUser;
 import com.thinkgem.jeesite.modules.base.service.WebUserService;
 import com.thinkgem.jeesite.modules.cms.entity.Site;
 import com.thinkgem.jeesite.modules.cms.utils.CmsUtils;
+import com.thinkgem.jeesite.modules.rest.json.BaseJson;
 import com.thinkgem.jeesite.modules.sys.service.SystemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -89,33 +91,35 @@ public class LoginRestController   extends BaseController{
 	/**
 	 * 进行登录页面
 	 * 
-	 * @return 登录页面
+	 * @return 登录结果
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String doLogin(WebUser webUser,HttpServletRequest request, Model model
-			,HttpServletResponse response,
-			RedirectAttributes redirectAttrs,boolean ajaxRequest) {
+	@ResponseBody
+	private String doLogin(WebUser webUser,HttpServletRequest request) {
 
+		BaseJson json = new BaseJson();
 		WebUser entity = WebUtils.getWebUser();
+
 		if (entity != null){
 			// 已经登录则返回到首页
-			model.addAttribute("message","已经登录");
-			return renderString(response, model);
+//			model.addAttribute("message","已经登录");
+			json.putMsg("已经登录");
+			return json.toJson();
 		}
 		
 		String mobile = webUser.getMobile();
 		WebUser loginUser = webUserService.getByMobile(mobile);
 		
 		if(loginUser == null){//限制登录了
-			addMessage(redirectAttrs, "登录失败，您的账号或密码错误！");
-			return WebUtils.redirectLoginUrl(WebUtils.getLastUrl(request));
+			json.fail("登录失败，您的账号或密码错误！");
+			return json.toJson();
 		}
 		if(loginUser.getLoginFlag().equals(Global.YES)){//限制登录了
-			addMessage(redirectAttrs, "该手机号登录限制，请联系管理员！");
-			return WebUtils.redirectLoginUrl(WebUtils.getLastUrl(request));
+			json.fail("该手机号登录限制，请联系管理员！");
+			return json.toJson();
 		}
 		
-		String password = webUser.getPassword();
+		String password = request.getParameter("password");
 		
 		boolean loginError = false;// 默认登录不出错
 		loginError = loginUser == null ; //用户不存在，那么错误
@@ -123,8 +127,8 @@ public class LoginRestController   extends BaseController{
 		loginError = loginError || !SystemService.validatePassword(password, loginUser.getPassword());// 密码不一致出错
 		// 验证密码是否正确
 		if (loginError) {
-			addMessage(redirectAttrs, "手机号或密码不正确！");
-			return WebUtils.redirectLoginUrl(WebUtils.getLastUrl(request));
+			json.fail("手机号或密码不正确！");
+			return json.toJson();
 		}
 		
 
@@ -133,10 +137,11 @@ public class LoginRestController   extends BaseController{
 		updateLoginUserInfo(loginUser,request);
 		// 积分金钱 大奉送(仅限第一次登陆)
 		userEventService.doAward4First(CmsUtils.getSite(Site.defaultSiteId()).getId(),loginUser);
-		model.addAttribute("userName",mobile);
-		model.addAttribute("userType","1");//用来区分用户是什么类型的用户
-//		model.addAttribute("");
-			return renderString(response, model);
+		json.putMsg("成功");
+		json.put("userName",mobile);
+		json.put("userType",1);//用来区分用户是什么类型的用户
+		json.put("token",request.getSession().getId());
+		return json.toJson();
 	}
 
 
@@ -150,9 +155,12 @@ public class LoginRestController   extends BaseController{
 	}
 	
 	@RequestMapping(value = "/loginout", method = RequestMethod.GET)
+	@ResponseBody
 	private String loginout() {
 		WebUtils.removeWebUser();
-		return "redirect:"+frontPath+"/";
+		BaseJson json = new BaseJson();
+		json.putMsg("成功退出");
+		return json.toJson();
 	}
 
 }

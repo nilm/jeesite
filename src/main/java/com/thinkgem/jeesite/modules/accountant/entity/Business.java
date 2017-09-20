@@ -4,6 +4,7 @@
 package com.thinkgem.jeesite.modules.accountant.entity;
 
 import com.thinkgem.jeesite.modules.base.entity.WebUser;
+import com.thinkgem.jeesite.modules.sys.entity.User;
 import org.hibernate.validator.constraints.Length;
 import java.util.List;
 import com.google.common.collect.Lists;
@@ -18,11 +19,14 @@ import com.thinkgem.jeesite.common.persistence.DataEntity;
 public class Business extends DataEntity<Business> {
 	
 	private static final long serialVersionUID = 1L;
-	private WebUser user;		// 用户id
+	private User  user;		// 用户id
 	private String companyId;		// 公司id
 	private String name;		// 业务名称
 	private String sort;		// 排序
 	private String showHide;		// 显示否
+
+	private String bizScope;		//  后调整为业务范围（银行存款 库存现金 应收款 应付款）
+	private String bizType; //   业务的增减？转账 accountant_biz_type
 	private List<BizBookTemplate> bizBookTemplateList = Lists.newArrayList();		// 子表列表
 	
 	public Business() {
@@ -33,11 +37,11 @@ public class Business extends DataEntity<Business> {
 		super(id);
 	}
 
-	public WebUser getUser() {
+	public User getUser() {
 		return user;
 	}
 
-	public void setUser(WebUser user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 	
@@ -82,5 +86,14 @@ public class Business extends DataEntity<Business> {
 
 	public void setBizBookTemplateList(List<BizBookTemplate> bizBookTemplateList) {
 		this.bizBookTemplateList = bizBookTemplateList;
+	}
+
+
+	public String getBizType() {
+		return bizType;
+	}
+
+	public void setBizType(String bizType) {
+		this.bizType = bizType;
 	}
 }

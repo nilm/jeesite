@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.accountant.dao.SourceDocSubjectDao">
+    
+	<sql id="sourceDocSubjectColumns">
+		a.id AS "id",
+		a.source_doc_id AS "sourceDocId",
+		a.subject_id AS "subjectId",
+		a.amount AS "amount",
+		a.direction AS "direction",
+		a.create_date AS "createDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="sourceDocSubjectJoins">
+		LEFT JOIN accountant_source_doc b ON b.id = a.source_doc_id
+	</sql>
+    
+	<select id="get" resultType="SourceDocSubject">
+		SELECT 
+			<include refid="sourceDocSubjectColumns"/>
+		FROM accountant_source_doc_subject a
+		<include refid="sourceDocSubjectJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SourceDocSubject">
+		SELECT 
+			<include refid="sourceDocSubjectColumns"/>
+		FROM accountant_source_doc_subject a
+		<include refid="sourceDocSubjectJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="sourceDoc != null and sourceDoc.id != null and sourceDoc.id != ''">
+				AND a.source_doc_id = #{sourceDocId}
+			</if>
+			<if test="subjectId != null and subjectId != ''">
+				AND a.subject_id = #{subjectId}
+			</if>
+			<if test="amount != null and amount != ''">
+				AND a.amount = #{amount}
+			</if>
+			<if test="direction != null and direction != ''">
+				AND a.direction = #{direction}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SourceDocSubject">
+		SELECT 
+			<include refid="sourceDocSubjectColumns"/>
+		FROM accountant_source_doc_subject a
+		<include refid="sourceDocSubjectJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO accountant_source_doc_subject(
+			source_doc_id,
+			subject_id,
+			amount,
+			direction,
+			create_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{sourceDoc.id},
+			#{subjectId},
+			#{amount},
+			#{direction},
+			#{createDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE accountant_source_doc_subject SET 	
+			source_doc_id = #{sourceDoc.id},
+			subject_id = #{subjectId},
+			amount = #{amount},
+			direction = #{direction},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE accountant_source_doc_subject SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE source_doc_id = #{sourceDoc.id}
+			</otherwise>
+		</choose>
+	</update>
+	
+</mapper>

@@ -3,11 +3,14 @@
  */
 package com.thinkgem.jeesite.modules.accountant.web;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.persistence.Page;
+import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.accountant.entity.Book;
+import com.thinkgem.jeesite.modules.accountant.entity.Business;
 import com.thinkgem.jeesite.modules.accountant.service.BookService;
+import com.thinkgem.jeesite.modules.accountant.service.BusinessService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,23 +20,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.thinkgem.jeesite.common.config.Global;
-import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.web.BaseController;
-import com.thinkgem.jeesite.common.utils.StringUtils;
-import com.thinkgem.jeesite.modules.accountant.entity.Business;
-import com.thinkgem.jeesite.modules.accountant.service.BusinessService;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
- * 发生的业务Controller
+ * 记账Controller
  * @author 倪得渊
  * @version 2017-09-10
  */
 @Controller
-@RequestMapping(value = "${adminPath}/accountant/business")
-public class BusinessController extends BaseController {
+@RequestMapping(value = "${adminPath}/accountant/sourcerecord")
+public class SourceDocRecordController extends BaseController {
 
 	@Autowired
 	private BusinessService businessService;
@@ -53,40 +51,23 @@ public class BusinessController extends BaseController {
 		return entity;
 	}
 	
-	@RequiresPermissions("accountant:business:view")
+	@RequiresPermissions("source:record:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(Business business, HttpServletRequest request, HttpServletResponse response, Model model) {
-		Page<Business> page = businessService.findPage(new Page<Business>(request, response), business); 
-		model.addAttribute("page", page);
-		return "modules/accountant/businessList";
+//		business.setBizType("income");
+		business.setShowHide("1");// 显示 收入的
+
+		Page<Business> businesses = businessService.findPage(new Page<Business>(request, response), business);
+		model.addAttribute("businesses", businesses);
+
+		return "modules/accountant/sourceRecord";
 	}
 
 	@RequiresPermissions("accountant:business:view")
 	@RequestMapping(value = "form")
-	public String form(Business business,Book book, Model model) {
+	public String form(Business business, Model model) {
 		model.addAttribute("business", business);
 
-
-		if (book.getParent()!=null && StringUtils.isNotBlank(book.getParent().getId())){
-			book.setParent(bookService.get(book.getParent().getId()));
-			// 获取排序号，最末节点排序号+30
-			if (StringUtils.isBlank(book.getId())){
-				Book bookChild = new Book();
-				bookChild.setParent(new Book(book.getParent().getId()));
-				List<Book> list = bookService.findList(book);
-				if (list.size() > 0){
-					book.setSort(list.get(list.size()-1).getSort());
-					if (book.getSort() != null){
-						book.setSort(book.getSort() + 30);
-					}
-				}
-			}
-		}
-		if (book.getSort() == null){
-			book.setSort(30);
-		}
-
-		model.addAttribute("books",book);
 		return "modules/accountant/businessForm";
 	}
 
@@ -94,7 +75,7 @@ public class BusinessController extends BaseController {
 	@RequestMapping(value = "save")
 	public String save(Business business, Model model, RedirectAttributes redirectAttributes) {
 		if (!beanValidator(model, business)){
-			return form(business,null, model);
+			return form(business,model);
 		}
 		businessService.save(business);
 		addMessage(redirectAttributes, "保存会计业务成功");

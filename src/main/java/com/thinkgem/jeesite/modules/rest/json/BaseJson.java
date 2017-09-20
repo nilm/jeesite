@@ -1,15 +1,14 @@
-package cn.helloan.appservice.rest.json;
+package com.thinkgem.jeesite.modules.rest.json;
+
+import com.thinkgem.jeesite.common.mapper.JsonMapper;
+import com.thinkgem.jeesite.common.utils.DateUtils;
+import com.thinkgem.jeesite.modules.rest.enums.ResponseStatusCode;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonGenerationException;
-
-import cn.helloan.appservice.enums.ResponseStatusCode;
-import net.cloudsun.util.DateUtils;
-import net.cloudsun.util.StringUtils;
 
 public class BaseJson implements Serializable {
 
@@ -30,7 +29,7 @@ public class BaseJson implements Serializable {
 		result = new HashMap<String, Object>();
 		result.put("code", ResponseStatusCode.success.getCode());
 		result.put("message", ResponseStatusCode.success.getDesc());
-		result.put("responseTime", DateUtils.parseDateForStandard(new Date()));
+		result.put("responseTime", DateUtils.formatDateTime(new Date()));
 	}
 	
 	public void putData(Object value){
@@ -45,24 +44,29 @@ public class BaseJson implements Serializable {
 	public void put(String key, Object value){
 		result.put(key, value);
 	}
+
+
 	public void get(String key){
 		result.get(key);
 	}
 
-	public String toJson(){
-		if(result == null){
-			
-			return fail();
-		}
-		return StringUtils.paseObjToString(result);
+	public  void putMsg(String msg){
+		put("message",msg);
 	}
 
-	private String fail() {
+	public String toJson(){
+		if(result == null){
+			fail("");
+		}
+		return JsonMapper.toJsonString(result);
+	}
+
+	public BaseJson fail(String msg) {
 		result = new HashMap<String, Object>();
 		result.put("code", ResponseStatusCode.serverError.getCode());
-		result.put("message", "failed");
-		result.put("responseTime", DateUtils.parseDateForStandard(new Date()));
-		return null;
+		result.put("message", (msg == null || "".equals(msg))?"failed":msg);
+		result.put("responseTime", DateUtils.formatDateTime(new Date()));
+		return this;
 	}
 
 	

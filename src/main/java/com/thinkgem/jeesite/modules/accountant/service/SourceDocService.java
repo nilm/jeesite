@@ -26,8 +26,7 @@ import com.thinkgem.jeesite.modules.accountant.dao.SourceDocSubjectDao;
 @Transactional(readOnly = true)
 public class SourceDocService extends CrudService<SourceDocDao, SourceDoc> {
 
-	@Autowired
-	private SourceDocAttachmentDao sourceDocAttachmentDao;
+
 	@Autowired
 	private SourceDocSubjectDao sourceDocSubjectDao;
 	
@@ -93,7 +92,6 @@ public class SourceDocService extends CrudService<SourceDocDao, SourceDoc> {
 	@Transactional(readOnly = false)
 	public void delete(SourceDoc sourceDoc) {
 		super.delete(sourceDoc);
-		sourceDocAttachmentDao.delete(new SourceDocAttachment(sourceDoc));
 		sourceDocSubjectDao.delete(new SourceDocSubject(sourceDoc));
 	}
 	

@@ -34,7 +34,6 @@ public class SourceDoc extends DataEntity<SourceDoc> {
 	private Date assignDate;		// 分配时间
 	private User accountantUserId;		// 处理人
 	private Date handleDate;		// 处理时间
-	private List<SourceDocAttachment> sourceDocAttachmentList = Lists.newArrayList();		// 子表列表
 	private List<SourceDocSubject> sourceDocSubjectList = Lists.newArrayList();		// 子表列表
 	
 	public SourceDoc() {
@@ -152,13 +151,6 @@ public class SourceDoc extends DataEntity<SourceDoc> {
 		this.handleDate = handleDate;
 	}
 	
-	public List<SourceDocAttachment> getSourceDocAttachmentList() {
-		return sourceDocAttachmentList;
-	}
-
-	public void setSourceDocAttachmentList(List<SourceDocAttachment> sourceDocAttachmentList) {
-		this.sourceDocAttachmentList = sourceDocAttachmentList;
-	}
 	public List<SourceDocSubject> getSourceDocSubjectList() {
 		return sourceDocSubjectList;
 	}

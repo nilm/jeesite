@@ -85,7 +85,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">账本属性：</label>
+			<label class="control-label">账本分类：</label>
 			<div class="controls">
 				<form:select path="property" class="input-xlarge required">
 					<form:option value="" label=""/>

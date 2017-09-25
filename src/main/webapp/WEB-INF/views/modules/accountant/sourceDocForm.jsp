@@ -152,6 +152,7 @@
 				<form:input path="attachmentCount" htmlEscape="false" maxlength="128" class="input-xlarge "/>
 			</div>
 		</div>
+		<!--
 		<div class="control-group">
 			<label class="control-label">账户类型：</label>
 			<div class="controls">
@@ -162,6 +163,7 @@
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
+		-->
 
 		<div class="control-group">
 			<label class="control-label">摘要：</label>

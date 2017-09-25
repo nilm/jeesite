@@ -30,15 +30,23 @@
 	<select id="get" resultType="BizBookTemplate">
 		SELECT 
 			<include refid="bizBookTemplateColumns"/>
-		FROM accountant_biz_subject_template a
+		FROM accountant_biz_book_template a
 		<include refid="bizBookTemplateJoins"/>
 		WHERE a.id = #{id}
 	</select>
-	
+
+	<select id="findByBizAndBook" resultType="BizBookTemplate"  parameterType="BizBookTemplate">
+		SELECT
+			<include refid="bizBookTemplateColumns"/>
+		FROM accountant_biz_book_template a
+		<include refid="bizBookTemplateJoins"/>
+		WHERE a.biz_id = #{biz.id} AND  a.book_id= #{book.id}
+	</select>
+
 	<select id="findList" resultType="BizBookTemplate">
 		SELECT 
 			<include refid="bizBookTemplateColumns"/>
-		FROM accountant_biz_subject_template a
+		FROM accountant_biz_book_template a
 		<include refid="bizBookTemplateJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
@@ -77,7 +85,7 @@
 	<select id="findAllList" resultType="BizBookTemplate">
 		SELECT 
 			<include refid="bizBookTemplateColumns"/>
-		FROM accountant_biz_subject_template a
+		FROM accountant_biz_book_template a
 		<include refid="bizBookTemplateJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
@@ -93,7 +101,7 @@
 	</select>
 	
 	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO accountant_biz_subject_template(
+		INSERT INTO accountant_biz_book_template(
 			company_id,
 			biz_id,
 			book_id,
@@ -125,7 +133,7 @@
 	</insert>
 	
 	<update id="update">
-		UPDATE accountant_biz_subject_template SET 	
+		UPDATE accountant_biz_book_template SET
 			biz_id = #{biz.id},
 			book_id = #{book.id},
 			direction = #{direction},
@@ -137,7 +145,7 @@
 	</update>
 	
 	<update id="delete">
-		UPDATE accountant_biz_subject_template SET 
+		UPDATE accountant_biz_book_template SET
 			del_flag = #{DEL_FLAG_DELETE}
 		<choose>
 			<when test="id !=null and id != ''">

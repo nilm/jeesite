@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.accountant.dao.BookRecordDao">
+    
+	<sql id="bookRecordColumns">
+		a.record_date AS "recordDate",
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.company_id AS "company.id",
+		a.biz_id AS "bizId",
+		a.source_doc_id AS "sourceDocId",
+		a.digest AS "digest",
+		a.amount AS "amount",
+		a.status AS "status",
+		a.attachment_count AS "attachmentCount",
+		a.audit_user_id AS "auditUserId",
+		a.audit_date AS "auditDate",
+		a.assign_date AS "assignDate",
+		a.create_date AS "createDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		u3.name AS "user.name",
+		o4.name AS "company.name",
+		o5.name AS "biz.name"
+	</sql>
+	
+	<sql id="bookRecordJoins">
+		LEFT JOIN sys_user u3 ON u3.id = a.user_id
+		LEFT JOIN sys_office o4 ON o4.id = a.company_id
+		LEFT JOIN accountant_biz o5 ON o5.id = a.biz_id
+	</sql>
+    
+	<select id="get" resultType="BookRecord">
+		SELECT 
+			<include refid="bookRecordColumns"/>
+		FROM accountant_book_record a
+		<include refid="bookRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BookRecord">
+		SELECT 
+			<include refid="bookRecordColumns"/>
+		FROM accountant_book_record a
+		<include refid="bookRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="user != null and user.id != null and user.id != ''">
+				AND a.user_id = #{user.id}
+			</if>
+			<if test="company != null and company.id != null and company.id != ''">
+				AND a.company_id = #{company.id}
+			</if>
+			<if test="bizId != null and bizId != ''">
+				AND a.biz_id = #{bizId}
+			</if>
+			<if test="amount != null and amount != ''">
+				AND a.amount &lt;= #{amount}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BookRecord">
+		SELECT 
+			<include refid="bookRecordColumns"/>
+		FROM accountant_book_record a
+		<include refid="bookRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO accountant_book_record(
+			record_date,
+			user_id,
+			company_id,
+			biz_id,
+			source_doc_id,
+			digest,
+			amount,
+			status,
+			attachment_count,
+			audit_user_id,
+			audit_date,
+			assign_date,
+			create_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{recordDate},
+			#{user.id},
+			#{company.id},
+			#{bizId},
+			#{sourceDocId},
+			#{digest},
+			#{amount},
+			#{status},
+			#{attachmentCount},
+			#{auditUserId},
+			#{auditDate},
+			#{assignDate},
+			#{createDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE accountant_book_record SET 	
+			record_date = #{recordDate},
+			user_id = #{user.id},
+			company_id = #{company.id},
+			biz_id = #{bizId},
+			source_doc_id = #{sourceDocId},
+			digest = #{digest},
+			amount = #{amount},
+			status = #{status},
+			attachment_count = #{attachmentCount},
+			audit_user_id = #{auditUserId},
+			audit_date = #{auditDate},
+			assign_date = #{assignDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE accountant_book_record SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

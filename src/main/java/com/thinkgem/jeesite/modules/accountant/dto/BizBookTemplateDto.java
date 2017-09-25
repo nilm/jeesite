@@ -4,16 +4,16 @@ package com.thinkgem.jeesite.modules.accountant.dto;
  * Created by 倪得渊 on 2017/9/16.
  */
 public class BizBookTemplateDto {
-     private String bizId;		// 业务 父类
-    private String subjectId;		// 账本
-    private String subjectName;		// 账本
-    private String direction;		// 方向
-    private String lrDirection;		// 方向
-    private String fixed;		// 定选否
-    private String selectType;		// 单选 多选
-    private String groupTag;		// 组别辨识-- 同一业务不同组标识不一样
-    private String category;		// 账本类型
-    private String status;		// 当前状态
+    private String bizId;        // 业务 父类
+    private String bookId;        // 账本
+    private String bookName;        // 账本
+    private String direction;        // 方向
+    private String lrDirection;        // 方向
+    private String fixed;        // 定选否
+    private String selectType;        // 单选 多选
+    private String groupTag;        // 组别辨识-- 同一业务不同组标识不一样
+    private String category;        // 账本类型
+    private String status;        // 当前状态
 
     public String getBizId() {
         return bizId;
@@ -23,13 +23,6 @@ public class BizBookTemplateDto {
         this.bizId = bizId;
     }
 
-    public String getSubjectId() {
-        return subjectId;
-    }
-
-    public void setSubjectId(String subjectId) {
-        this.subjectId = subjectId;
-    }
 
     public String getDirection() {
         return direction;
@@ -63,12 +56,20 @@ public class BizBookTemplateDto {
         this.status = status;
     }
 
-    public String getSubjectName() {
-        return subjectName;
+    public String getBookId() {
+        return bookId;
     }
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 
     public String getLrDirection() {

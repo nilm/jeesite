@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.accountant.dao.BookRecordDetailDao">
+    
+	<sql id="bookRecordDetailColumns">
+		a.id AS "id",
+		a.record_id AS "record.id",
+		a.book_id AS "bookId",
+		a.amount AS "amount",
+		a.balance AS "balance",
+		a.direction AS "direction",
+		a.remarks AS "remarks",
+		a.create_date AS "createDate",
+		a.del_flag AS "delFlag",
+		c.name AS  "bookName"
+	</sql>
+	
+	<sql id="bookRecordDetailJoins">
+		LEFT JOIN accountant_book_record b ON b.id = a.record_id
+		LEFT JOIN accountant_book c ON c.id = a.book_id
+	</sql>
+    
+	<select id="get" resultType="BookRecordDetail">
+		SELECT 
+			<include refid="bookRecordDetailColumns"/>
+		FROM accountant_book_record_detail a
+		<include refid="bookRecordDetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BookRecordDetail">
+		SELECT 
+			<include refid="bookRecordDetailColumns"/>
+		FROM accountant_book_record_detail a
+		<include refid="bookRecordDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="record != null and record.id != null and record.id != ''">
+				AND a.record_id = #{record.id}
+			</if>
+			<if test="book !=null and book.id != null and book.id != ''">
+				AND a.book_id = #{book.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY record_timestamp DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BookRecordDetail">
+		SELECT 
+			<include refid="bookRecordDetailColumns"/>
+		FROM accountant_book_record_detail a
+		<include refid="bookRecordDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY record_timestamp DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getLastDetailByBook" resultType="BookRecordDetail">
+		SELECT
+			<include refid="bookRecordDetailColumns"/>
+		FROM accountant_book_record_detail a
+		<include refid="bookRecordDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+			  ORDER BY record_timestamp DESC limit 0,1
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO accountant_book_record_detail(
+			record_id,
+			book_id,
+			amount,
+			balance,
+			direction,
+			record_timestamp,
+			remarks,
+			create_date,
+			del_flag
+		) VALUES (
+			#{record.id},
+			#{book.id},
+			#{amount},
+			#{balance},
+			#{direction},
+			#{recordTimestamp},
+			#{remarks},
+			#{createDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE accountant_book_record_detail SET 	
+			record_id = #{record.id},
+			book_id = #{book.id},
+			amount = #{amount},
+			balance = #{balance},
+			direction = #{direction},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE accountant_book_record_detail SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE record_id = #{record.id}
+			</otherwise>
+		</choose>
+	</update>
+	
+</mapper>

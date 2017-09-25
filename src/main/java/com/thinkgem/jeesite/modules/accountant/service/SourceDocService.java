@@ -14,8 +14,6 @@ import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.accountant.entity.SourceDoc;
 import com.thinkgem.jeesite.modules.accountant.dao.SourceDocDao;
-import com.thinkgem.jeesite.modules.accountant.entity.SourceDocAttachment;
-import com.thinkgem.jeesite.modules.accountant.dao.SourceDocAttachmentDao;
 import com.thinkgem.jeesite.modules.accountant.entity.SourceDocSubject;
 import com.thinkgem.jeesite.modules.accountant.dao.SourceDocSubjectDao;
 

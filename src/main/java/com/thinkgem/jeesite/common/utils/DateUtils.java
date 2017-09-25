@@ -169,6 +169,15 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 		long afterTime = after.getTime();
 		return (afterTime - beforeTime) / (1000 * 60 * 60 * 24);
 	}
+
+	/**
+	 * 获取当前时间戳
+	 * @return
+	 */
+	public static long getCurrentTimeMillis(){
+		return System.currentTimeMillis();
+	}
+
 	
 	/**
 	 * @param args
@@ -179,5 +188,14 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 //		System.out.println(getDate("yyyy年MM月dd日 E"));
 //		long time = new Date().getTime()-parseDate("2012-11-19").getTime();
 //		System.out.println(time/(24*60*60*1000));
+		String filePath = " |/jeesite/userfiles/1/images/accountant/2017/09/js.jpeg";
+//		filePath = filePath.replaceAll("|",";");
+		String [] filesPath = filePath.split("\\|");
+		for (String f: filesPath ) {
+
+			System.out.println("==="+f);
+//			System.out.print(f.substring(f.lastIndexOf("."),f.length()));
+		}
+
 	}
 }

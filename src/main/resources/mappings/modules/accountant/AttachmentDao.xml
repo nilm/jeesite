@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.thinkgem.jeesite.modules.accountant.dao.SourceDocAttachmentDao">
+<mapper namespace="com.thinkgem.jeesite.modules.accountant.dao.AttachmentDao">
     
-	<sql id="sourceDocAttachmentColumns">
+	<sql id="attachmentColumns">
 		a.id AS "id",
+		a.record_id AS "record.id",
 		a.source_doc_id AS "sourceDocId",
 		a.files_path AS "filesPath",
 		a.type AS "type",
@@ -12,30 +13,27 @@
 		a.del_flag AS "delFlag"
 	</sql>
 	
-	<sql id="sourceDocAttachmentJoins">
-		LEFT JOIN accountant_source_doc b ON b.id = a.source_doc_id
+	<sql id="attachmentJoins">
+		LEFT JOIN accountant_book_record b ON b.id = a.record_id
 	</sql>
     
-	<select id="get" resultType="SourceDocAttachment">
+	<select id="get" resultType="Attachment">
 		SELECT 
-			<include refid="sourceDocAttachmentColumns"/>
-		FROM accountant_source_doc_attachment a
-		<include refid="sourceDocAttachmentJoins"/>
+			<include refid="attachmentColumns"/>
+		FROM accountant_attachment a
+		<include refid="attachmentJoins"/>
 		WHERE a.id = #{id}
 	</select>
 	
-	<select id="findList" resultType="SourceDocAttachment">
+	<select id="findList" resultType="Attachment">
 		SELECT 
-			<include refid="sourceDocAttachmentColumns"/>
-		FROM accountant_source_doc_attachment a
-		<include refid="sourceDocAttachmentJoins"/>
+			<include refid="attachmentColumns"/>
+		FROM accountant_attachment a
+		<include refid="attachmentJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
-			<if test="sourceDocId != null and sourceDocId != ''">
-				AND a.source_doc_id = #{sourceDocId}
-			</if>
-			<if test="type != null and type != ''">
-				AND a.type = #{type}
+			<if test="record != null and record.id != null and record.id != ''">
+				AND a.record_id = #{record.id}
 			</if>
 		</where>
 		<choose>
@@ -48,11 +46,11 @@
 		</choose>
 	</select>
 	
-	<select id="findAllList" resultType="SourceDocAttachment">
+	<select id="findAllList" resultType="Attachment">
 		SELECT 
-			<include refid="sourceDocAttachmentColumns"/>
-		FROM accountant_source_doc_attachment a
-		<include refid="sourceDocAttachmentJoins"/>
+			<include refid="attachmentColumns"/>
+		FROM accountant_attachment a
+		<include refid="attachmentJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 		</where>		
@@ -67,7 +65,8 @@
 	</select>
 	
 	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO accountant_source_doc_attachment(
+		INSERT INTO accountant_attachment(
+			record_id,
 			source_doc_id,
 			files_path,
 			type,
@@ -75,6 +74,7 @@
 			remarks,
 			del_flag
 		) VALUES (
+			#{record.id},
 			#{sourceDocId},
 			#{filesPath},
 			#{type},
@@ -85,7 +85,8 @@
 	</insert>
 	
 	<update id="update">
-		UPDATE accountant_source_doc_attachment SET 	
+		UPDATE accountant_attachment SET 	
+			record_id = #{record.id},
 			source_doc_id = #{sourceDocId},
 			files_path = #{filesPath},
 			type = #{type},
@@ -94,14 +95,14 @@
 	</update>
 	
 	<update id="delete">
-		UPDATE accountant_source_doc_attachment SET 
+		UPDATE accountant_attachment SET 
 			del_flag = #{DEL_FLAG_DELETE}
 		<choose>
 			<when test="id !=null and id != ''">
 				WHERE id = #{id}
 			</when>
 			<otherwise>
-				WHERE source_doc_id = #{sourceDocId}
+				WHERE record_id = #{record.id}
 			</otherwise>
 		</choose>
 	</update>

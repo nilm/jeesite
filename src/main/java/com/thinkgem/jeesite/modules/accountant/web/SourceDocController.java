@@ -92,8 +92,8 @@ public class SourceDocController extends BaseController {
 		for (BizBookTemplate template: bizBookTemplates ) {
 			BizBookTemplateDto dto = new BizBookTemplateDto();
 			dto.setBizId(template.getBiz().getId());
-			dto.setSubjectId(template.getBook().getId());
-			dto.setSubjectName(template.getBookName());
+//			dto.setSubjectId(template.getBook().getId());
+//			dto.setSubjectName(template.getBookName());
 			dto.setDirection(template.getDirection());
 			dto.setLrDirection(template.getLrDirection());
 			dto.setFixed(template.getFixed());

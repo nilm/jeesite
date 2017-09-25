@@ -8,35 +8,42 @@ import org.hibernate.validator.constraints.Length;
 import com.thinkgem.jeesite.common.persistence.DataEntity;
 
 /**
- * 原始业务记录Entity
+ * 账本记录Entity
  * @author 倪得渊
- * @version 2017-09-16
+ * @version 2017-09-24
  */
-public class SourceDocAttachment extends DataEntity<SourceDocAttachment> {
+public class Attachment extends DataEntity<Attachment> {
 	
 	private static final long serialVersionUID = 1L;
-	private SourceDoc sourceDocId;		// 详尽业务id 父类
+	private BookRecord record;		// 账本id 父类
+	private String sourceDocId;		// 原始业务id
 	private String filesPath;		// 文件路径
 	private String type;		// 文件类型
 	
-	public SourceDocAttachment() {
+	public Attachment() {
 		super();
 	}
 
-	public SourceDocAttachment(String id){
+	public Attachment(String id){
 		super(id);
 	}
 
-	public SourceDocAttachment(SourceDoc sourceDocId){
-		this.sourceDocId = sourceDocId;
+	public Attachment(BookRecord record){
+		this.record = record;
 	}
 
-	@Length(min=1, max=64, message="详尽业务id长度必须介于 1 和 64 之间")
-	public SourceDoc getSourceDocId() {
+	@Length(min=0, max=64, message="账本id长度必须介于 0 和 64 之间")
+	public BookRecord getRecord() {
+		return record;
+	}
+
+
+	@Length(min=1, max=64, message="原始业务id长度必须介于 1 和 64 之间")
+	public String getSourceDocId() {
 		return sourceDocId;
 	}
 
-	public void setSourceDocId(SourceDoc sourceDocId) {
+	public void setSourceDocId(String sourceDocId) {
 		this.sourceDocId = sourceDocId;
 	}
 	

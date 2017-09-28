@@ -31,6 +31,7 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.accountant.entity.BookRecord;
 import com.thinkgem.jeesite.modules.accountant.service.BookRecordService;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,6 +106,7 @@ public class BookRecordController extends BaseController {
 		return "modules/accountant/accountRecordForm";
 	}
 
+	
 	@RequiresPermissions("accountant:bookRecord:edit")
 	@RequestMapping(value = "save")
 	public String save(BookRecord bookRecord, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
@@ -112,7 +114,6 @@ public class BookRecordController extends BaseController {
 		bookRecord.setUser(UserUtils.getUser());
 		bookRecord.setCompany(UserUtils.getUser().getCompany());
 		bookRecord.setStatus("user_record");
-
 		String filesPath = request.getParameter("filesPath");
 
 		if (!beanValidator(model, bookRecord)){

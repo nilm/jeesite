@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sun.tools.classfile.Annotation.element_value;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.StringUtils;
@@ -90,7 +91,7 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 //			}
 //		}
 		for (BookRecordDetail bookRecordDetail : bookRecord.getBookRecordDetailList()){
-			if (bookRecordDetail.getId() == null){
+			if (bookRecordDetail.getId() == null || ""==bookRecordDetail.getId()){
 				continue;
 			}
 			if (BookRecordDetail.DEL_FLAG_NORMAL.equals(bookRecordDetail.getDelFlag())){
@@ -98,6 +99,24 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 					bookRecordDetail.preInsert();
 					bookRecordDetail.setCreateDate(bookRecord.getCreateDate());
 					bookRecordDetail.setRecord(bookRecord);
+					String amount = bookRecordDetail.getAmount();
+					try {
+						if(amount.contains(",")){
+							String[] amounts = amount.split(",");
+							if(amounts.length==0) {
+								continue;
+							}else if(amounts.length==1) {
+								amount=amounts[0];
+							}else {
+								BigDecimal rightAmount=new BigDecimal(amounts[1]);
+								amount=rightAmount+"";
+							}
+						}
+					} catch (NullPointerException e) {
+						continue;
+					} 
+					bookRecordDetail.setAmount(amount);
+					
 					handleBalance(bookRecordDetail);
 //TODO: 规则检验  有左必有右 左右必相等
 					bookRecordDetailDao.insert(bookRecordDetail);

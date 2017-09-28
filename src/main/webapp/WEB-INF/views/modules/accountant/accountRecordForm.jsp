@@ -33,6 +33,16 @@ input{padding:0 0; border-width:0; }
 <script type="text/javascript">
 	
 	$(document).ready(function() {
+		calcu();
+		$(document).on('input', 'input', function(){
+		     var _index = $(this).parent().index();
+             var tempTotal = 0;
+             $('#form tr').each(function(item, index){
+                 tempTotal += ~~($(index).find('td').eq(_index).find('input').val());
+             });
+             console.log(tempTotal);
+             document.getElementById("sum"+(_index-3)).innerHTML = tempTotal;
+		});
 		$("#inputForm").validate({
 			submitHandler: function(form){
 				loading('正在提交，请稍等...');
@@ -56,19 +66,37 @@ input{padding:0 0; border-width:0; }
 	    	}
 	        initFirstSelectItem($(this).val());
 	    });
-	    // initFirstSelectItem(${businesses[0].id});
-	    $("#amount").blur(function(){
-	        var rowCount = $("#bookRecordDetailList").find("tr").size();
-			console.log("=="+rowCount);
-	        for(var i = 0; i < rowCount; i++){
-	            changeRowData('#bookRecordDetailList', i,"amount",$(this).val());
-			}
-		});
+	    $("#saveBtn").click(function(){
+	    	var sum1=parseFloat($("#sum1").text());
+	    	var sum2=parseFloat($("#sum2").text());
+	    	if(sum1==sum2){
+	    		document.getElementById("amount").value=sum1+"";
+		    	$("#inputForm").submit();
+	    	}else{
+	    		alert("左右金额总额不相等，请检查平衡");
+	    	}
+	    });
 	});
+	
+	
 	$(function(){
 		initTable();
 	}); 
-	
+	function calcu(){
+		var totalRow1 = 0 
+		var totalRow2 = 0 
+		$('#form tbody tr').each(function() { 
+			$(this).find('td:eq(3)').each(function(){ 
+				totalRow1 += parseFloat($(this).find("input").val()); 
+			}); 
+			$(this).find('td:eq(4)').each(function(){ 
+				totalRow2 += parseFloat($(this).find("input").val()); 
+			}); 
+		}); 
+		console.log(totalRow1+'--'+totalRow2);
+		document.getElementById("sum1").innerHTML = totalRow1;
+		document.getElementById("sum2").innerHTML = totalRow2;
+	} 
 	function initTable() {
 		clearTable();
 		$("#addBtn").click();
@@ -191,7 +219,7 @@ input{padding:0 0; border-width:0; }
 			<td class="btn-control"><a class="btn btn-primary" >修改</a></td>
 			<td class="btn-control">
 				<shiro:hasPermission name="accountant:bookRecord:edit">
-					<input id="btnSubmit" class="btn btn-primary" type="submit" value="保存"/>
+					<button id="saveBtn" class="btn btn-primary" onclick="save()" >保存</button>
 				</shiro:hasPermission>
 			</td>
 			<td class="btn-control"><a class="btn btn-primary" >撤销</a></td>
@@ -205,10 +233,12 @@ input{padding:0 0; border-width:0; }
 	<br>
 	<form:form  id="inputForm" modelAttribute="bookRecord" action="${ctx}/accountant/bookRecord/save" method="post"  class="form-horizontal">
 		<form:hidden path="id"/>
+		<input id="amount" type="hidden" value="0" name="amount">
 		<sys:message content="${message}"/>	
-		<div class="control-group" align="center">
-			<div class="controls">
-				记账时间： <input name="recordDate" type="text" readonly="readonly"
+		<div class="control-group" >
+			<div id="dNewShowTitle"
+				style="width: 100%; margin: 0px 0px 0px 0px; font-weight: bold; font-size: large; color: #666666; text-align: center;">
+				记账时间： <input name="recordDate" type="text" readonly="readonly" style="align-self: center;"
 					maxlength="20" class="input-medium Wdate required"
 					value="<fmt:formatDate value="${bookRecord.recordDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"
 					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" />
@@ -246,8 +276,8 @@ input{padding:0 0; border-width:0; }
 							</div>
 						</td>
 						<th class="post_mao">合　　计</th>
-						<td ></td>
-						<td ></td>
+						<td id="sum1" ></td>
+						<td id="sum2"></td>
 					</tr>
 					<tr>
 						<th>备注:</th>
@@ -255,7 +285,7 @@ input{padding:0 0; border-width:0; }
 					</tr>
 					<tr id="TableRow1" class="fb red t_left">
 						<th id="addLine">增行&nbsp;</th>
-                        <td colspan="4"><button id="addBtn" class="btn btn-primary ml-8" onclick="addRow('#bookRecordDetailList', bookRecordDetailRowIdx, bookRecordDetailTpl);bookRecordDetailRowIdx = bookRecordDetailRowIdx + 1;">增加一行</button></td>
+                        <td colspan="4"><button id="addBtn" type="button" class="btn btn-primary ml-8" onclick="addRow('#bookRecordDetailList', bookRecordDetailRowIdx, bookRecordDetailTpl);bookRecordDetailRowIdx = bookRecordDetailRowIdx + 1;">增加一行</button></td>
 					</tr>
 			</table>
 			
@@ -279,10 +309,10 @@ input{padding:0 0; border-width:0; }
 								<input id="bookRecordDetailList{{idx}}_customer" name="bookRecordDetailList[{{idx}}].customer" type="text" value="{{row.customer}}" />
 							</td>
 							<td>
-								<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].leftAmount" type="text" value="{{row.amount}}" class="input-small "/>
+								<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="{{row.amount}}" class="input-small "/>
 							</td>
 							<td>
-								<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].rightAmount" type="text" value="{{row.amount}}" class="input-small "/>
+								<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="{{row.amount}}" class="input-small "/>
 							</td>
 						</tr>//-->
 				</script>
@@ -297,10 +327,6 @@ input{padding:0 0; border-width:0; }
                         }
                     });
 				</script>
-		</div>
-		<div class="form-actions">
-			<shiro:hasPermission name="accountant:bookRecord:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
-			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 		</div>
 	</form:form>
 </body>

@@ -116,6 +116,12 @@
 		</div>-->
 
 		<div class="control-group">
+			<label class="control-label">末级账本：</label>
+			<div class="controls">
+				<form:radiobuttons path="finalStage" items="${fns:getDictList('yes_no')}"  itemLabel="label" itemValue="value" htmlEscape="false" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">账本类型：</label>
 			<div class="controls">
 				<form:radiobuttons path="type" items="${fns:getDictList('accountant_type')}"  itemLabel="label" itemValue="value" htmlEscape="false" class=""/>

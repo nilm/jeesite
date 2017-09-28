@@ -39,13 +39,13 @@
                             $('.more_wrap').hide();
                         }else{
                             var  flag = false;
-//                            <select name='targetBookName'>
-                            var bookRecordDetailRowIdx = 0, bookRecordDetailTpl = $("#bookRecordDetailTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
+                            var  bookRecordDetailTpl = $("#bookRecordDetailTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
                             $("#bookRecordDetailList").html('');
+                            bookRecordDetailRowIdx=0;
                             for(var i = 0; i < sum; i++){
                                 addRow('#bookRecordDetailList', bookRecordDetailRowIdx, bookRecordDetailTpl, data[i]);
                                 bookRecordDetailRowIdx = bookRecordDetailRowIdx + 1;
-
+//console.log(bookRecordDetailRowIdx);
                                 if (data[i].fixed == "1" ){
                                     result += "定选<b>"+ data[i].bookName +"</b>";
                                     result +=  data[i].direction =="1" ?"增加 ; ":"减少 ; ";

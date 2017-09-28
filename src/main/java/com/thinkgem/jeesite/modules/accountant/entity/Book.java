@@ -32,7 +32,8 @@ public class Book extends TreeEntity<Book> {
 	private String assetsCategory;		// 资产负债表分类
 	private String profitsCategory;		// 利润表分类
 	private String version;		// 会计科目版本（标准）
-	private String type;		// 账本类型
+	private String type = "enterprise";		// 账本类型  对应字典accountant_type
+	private String finalStage;		// 末级账本类型 使用字典 yes_no
 	private String status;		// 当前状态
 	
 	public Book() {
@@ -188,5 +189,13 @@ public class Book extends TreeEntity<Book> {
 	
 	public String getParentId() {
 		return parent != null && parent.getId() != null ? parent.getId() : "0";
+	}
+
+	public String getFinalStage() {
+		return finalStage;
+	}
+
+	public void setFinalStage(String finalStage) {
+		this.finalStage = finalStage;
 	}
 }

@@ -133,6 +133,19 @@ public class BookRecordController extends BaseController {
 		json.fail("请选择所发生的业务");
 		return json.toJson();
 	}
+	@RequestMapping(value = "getBiz")
+	@ResponseBody
+	public String getBiz(HttpServletRequest request, HttpServletResponse response, Model model) {
+		String  bizId = request.getParameter("bizId");
+		Business biz = businessService.gedById(bizId);
+		BaseJson json = new BaseJson();
+		if(biz != null ){
+			json.putData(biz.getRemarks());
+			return  json.toJson();
+		}
+		json.fail("请选择所发生的业务");
+		return json.toJson();
+	}
 
 
 	private List<BizBookTemplateDto> convertList2Dto(List<BizBookTemplate> bizBookTemplates){

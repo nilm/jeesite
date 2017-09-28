@@ -5,7 +5,7 @@ package com.thinkgem.jeesite.modules.accountant.dao;
 
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
-import com.thinkgem.jeesite.modules.accountant.entity.Attachment;
+import com.thinkgem.jeesite.modules.accountant.entity.Source;
 
 /**
  * 原始业务记录DAO接口
@@ -13,6 +13,6 @@ import com.thinkgem.jeesite.modules.accountant.entity.Attachment;
  * @version 2017-09-26
  */
 @MyBatisDao
-public interface AttachmentDao extends CrudDao<Attachment> {
+public interface SourceDao extends CrudDao<Source> {
 	
 }

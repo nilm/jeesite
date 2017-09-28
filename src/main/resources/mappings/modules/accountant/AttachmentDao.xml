@@ -4,7 +4,7 @@
     
 	<sql id="attachmentColumns">
 		a.id AS "id",
-		a.record_id AS "record.id",
+		a.record_id AS "recordId",
 		a.source_doc_id AS "sourceDocId",
 		a.files_path AS "filesPath",
 		a.type AS "type",
@@ -14,7 +14,6 @@
 	</sql>
 	
 	<sql id="attachmentJoins">
-		LEFT JOIN accountant_book_record b ON b.id = a.record_id
 	</sql>
     
 	<select id="get" resultType="Attachment">
@@ -32,16 +31,12 @@
 		<include refid="attachmentJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
-			<if test="record != null and record.id != null and record.id != ''">
-				AND a.record_id = #{record.id}
-			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.create_date ASC
 			</otherwise>
 		</choose>
 	</select>
@@ -59,7 +54,6 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.create_date ASC
 			</otherwise>
 		</choose>
 	</select>
@@ -74,7 +68,7 @@
 			remarks,
 			del_flag
 		) VALUES (
-			#{record.id},
+			#{recordId},
 			#{sourceDocId},
 			#{filesPath},
 			#{type},
@@ -86,7 +80,7 @@
 	
 	<update id="update">
 		UPDATE accountant_attachment SET 	
-			record_id = #{record.id},
+			record_id = #{recordId},
 			source_doc_id = #{sourceDocId},
 			files_path = #{filesPath},
 			type = #{type},
@@ -97,14 +91,7 @@
 	<update id="delete">
 		UPDATE accountant_attachment SET 
 			del_flag = #{DEL_FLAG_DELETE}
-		<choose>
-			<when test="id !=null and id != ''">
-				WHERE id = #{id}
-			</when>
-			<otherwise>
-				WHERE record_id = #{record.id}
-			</otherwise>
-		</choose>
+		WHERE id = #{id}
 	</update>
 	
 </mapper>

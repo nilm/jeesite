@@ -20,6 +20,7 @@
 		a.version AS "version",
 		a.type AS "type",
 		a.status AS "status",
+		a.final_stage AS "finalStage",
 		a.create_date AS "createDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag"
@@ -132,6 +133,7 @@
 			version,
 			type,
 			status,
+			final_stage,
 			create_date,
 			remarks,
 			del_flag
@@ -152,6 +154,7 @@
 			#{version},
 			#{type},
 			#{status},
+			#{finalStage},
 			#{createDate},
 			#{remarks},
 			#{delFlag}
@@ -174,6 +177,7 @@
 			version = #{version},
 			type = #{type},
 			status = #{status},
+			final_stage = #{finalStage},
 			remarks = #{remarks}
 		WHERE id = #{id}
 	</update>

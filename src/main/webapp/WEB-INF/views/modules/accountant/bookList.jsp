@@ -130,8 +130,8 @@
 			</td>
 			<shiro:hasPermission name="accountant:book:edit"><td>
    				<a href="${ctx}/accountant/book/form?id={{row.id}}">修改</a>
-				<a href="${ctx}/accountant/book/delete?id={{row.id}}" onclick="return confirmx('确认要删除该会计国标账本(科目)及所有子会计国标账本(科目)吗？', this.href)">删除</a>
-				<a href="${ctx}/accountant/book/form?parent.id={{row.id}}">添加下级会计国标账本(科目)</a> 
+				<a href="${ctx}/accountant/book/delete?id={{row.id}}" onclick="return confirmx('确认要删除该账本(科目)及所有子账本(科目)吗？', this.href)">删除</a>
+				<a href="${ctx}/accountant/book/form?parent.id={{row.id}}">添加下级账本(科目)</a>
 			</td></shiro:hasPermission>
 		</tr>
 	</script>

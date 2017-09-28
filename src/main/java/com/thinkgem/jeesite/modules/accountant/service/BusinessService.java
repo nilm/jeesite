@@ -37,7 +37,11 @@ public class BusinessService extends CrudService<BusinessDao, Business> {
 		business.setBizBookTemplateList(bizBookTemplateDao.findList(new BizBookTemplate(business)));
 		return business;
 	}
-	
+	public Business gedById(String id) {
+		Business business = super.get(id);
+		return business;
+	}
+
 	public List<Business> findList(Business business) {
 		return super.findList(business);
 	}

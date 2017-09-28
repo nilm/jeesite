@@ -13,13 +13,13 @@ import com.thinkgem.jeesite.common.persistence.DataEntity;
  * @version 2017-09-24
  */
 public class Attachment extends DataEntity<Attachment> {
-	
+
 	private static final long serialVersionUID = 1L;
 	private BookRecord record;		// 账本id 父类
 	private String sourceDocId;		// 原始业务id
 	private String filesPath;		// 文件路径
 	private String type;		// 文件类型
-	
+
 	public Attachment() {
 		super();
 	}
@@ -46,7 +46,7 @@ public class Attachment extends DataEntity<Attachment> {
 	public void setSourceDocId(String sourceDocId) {
 		this.sourceDocId = sourceDocId;
 	}
-	
+
 	@Length(min=1, max=200, message="文件路径长度必须介于 1 和 200 之间")
 	public String getFilesPath() {
 		return filesPath;
@@ -55,7 +55,7 @@ public class Attachment extends DataEntity<Attachment> {
 	public void setFilesPath(String filesPath) {
 		this.filesPath = filesPath;
 	}
-	
+
 	@Length(min=1, max=125, message="文件类型长度必须介于 1 和 125 之间")
 	public String getType() {
 		return type;
@@ -64,5 +64,5 @@ public class Attachment extends DataEntity<Attachment> {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+
 }

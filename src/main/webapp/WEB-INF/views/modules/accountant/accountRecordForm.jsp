@@ -33,7 +33,11 @@ input{padding:0 0; border-width:0; }
 <script type="text/javascript">
 	
 	$(document).ready(function() {
-		calcu();
+		var idStr=$("#id").val();
+		var id=parseInt(idStr);
+	    if(isNaN(id)){
+		    initTable();
+	    }
 		$(document).on('input', 'input', function(){
 		     var _index = $(this).parent().index();
              var tempTotal = 0;
@@ -77,25 +81,10 @@ input{padding:0 0; border-width:0; }
 	    	}
 	    });
 	});
-	
-	
-	$(function(){
-		initTable();
-	}); 
 	function calcu(){
-		var totalRow1 = 0 
-		var totalRow2 = 0 
-		$('#form tbody tr').each(function() { 
-			$(this).find('td:eq(3)').each(function(){ 
-				totalRow1 += parseFloat($(this).find("input").val()); 
-			}); 
-			$(this).find('td:eq(4)').each(function(){ 
-				totalRow2 += parseFloat($(this).find("input").val()); 
-			}); 
-		}); 
-		console.log(totalRow1+'--'+totalRow2);
-		document.getElementById("sum1").innerHTML = totalRow1;
-		document.getElementById("sum2").innerHTML = totalRow2;
+		var amount=$("#amount").val();
+		document.getElementById("sum1").innerHTML = amount;
+		document.getElementById("sum2").innerHTML = amount;
 	} 
 	function initTable() {
 		clearTable();
@@ -112,6 +101,22 @@ input{padding:0 0; border-width:0; }
 	
 	function changeRowData(list, idx,name,val) {
 	    $(list+idx+"_"+name).val(val);
+	}
+	function viewRow(list, idx, tpl, row){
+		$(list).append(Mustache.render(tpl, {
+			idx: idx, delBtn: true, row: row, direction:(row.book.category=='left')
+		}));
+		$(list+idx).find("select").each(function(){
+			$(this).val($(this).attr("data-value"));
+		});
+		$(list+idx).find("input[type='checkbox'], input[type='radio']").each(function(){
+			var ss = $(this).attr("data-value").split(',');
+			for (var i=0; i<ss.length; i++){
+				if($(this).val() == ss[i]){
+					$(this).attr("checked","checked");
+				}
+			}
+		});
 	}
 	function addRow(list, idx, tpl, row){
 		$(list).append(Mustache.render(tpl, {
@@ -197,7 +202,7 @@ input{padding:0 0; border-width:0; }
 	<ul class="nav nav-tabs">
 		<li><a href="${ctx}/accountant/bookRecord/">账本记录列表</a></li>
 		<li class="active"><a
-			href="${ctx}/accountant/bookRecord/accountForm?id=${bookRecord.id}">会计凭证<shiro:hasPermission
+			href="${ctx}/accountant/account/accountForm?id=${bookRecord.id}">会计凭证<shiro:hasPermission
 					name="accountant:bookRecord:edit">${not empty bookRecord.id?'修改':'添加'}</shiro:hasPermission>
 				<shiro:lacksPermission name="accountant:bookRecord:edit">查看</shiro:lacksPermission></a></li>
 	</ul>
@@ -232,8 +237,8 @@ input{padding:0 0; border-width:0; }
 	</tbody></table>
 	<br>
 	<form:form  id="inputForm" modelAttribute="bookRecord" action="${ctx}/accountant/bookRecord/save" method="post"  class="form-horizontal">
-		<form:hidden path="id"/>
-		<input id="amount" type="hidden" value="0" name="amount">
+		<input type="hidden" id="id" name="id" value="${bookRecord.id }">
+		<input id="amount" type="hidden" value="${bookRecord.amount }" name="amount" >
 		<sys:message content="${message}"/>	
 		<div class="control-group" >
 			<div id="dNewShowTitle"
@@ -245,16 +250,24 @@ input{padding:0 0; border-width:0; }
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 			<div class="control-group" align="left">
-			&nbsp;&nbsp;业务：<%-- <form:select path="bizId" class="input-xlarge required" >
+			：<%-- <form:select path="bizId" class="input-xlarge required" >
 					<form:option value="" label=""/>
 					<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
 				</form:select> --%>
-				<select name="bizId" id="bizId" style="width: 200px;">
+				<%-- <select name="bizId" id="bizId" style="width: 200px;">
 					<option value="">请选择...</option>
 					<c:forEach items="${businesses}" var="biz">
-						<option value="${biz.id}" >${biz.name}</option>
+						<option value="${biz.id}">${biz.name}</option>
 					</c:forEach>
-				</select>
+				</select> --%>
+				<div style="align-self: auto;">
+				&nbsp;&nbsp;业务
+					<form:select path="bizId" class="input-xlarge required" >
+						<form:option value="" label=""/>
+						<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
+					</form:select>
+					<span class="help-inline"><font lor="red">*</font> </span>
+				</div>
 			</div>
 			<table id="form" style="width: 100%;">
 				<!-- Replace "table-1" with any of the design numbers -->
@@ -288,8 +301,8 @@ input{padding:0 0; border-width:0; }
                         <td colspan="4"><button id="addBtn" type="button" class="btn btn-primary ml-8" onclick="addRow('#bookRecordDetailList', bookRecordDetailRowIdx, bookRecordDetailTpl);bookRecordDetailRowIdx = bookRecordDetailRowIdx + 1;">增加一行</button></td>
 					</tr>
 			</table>
-			
-			<script type="text/template" id="bookRecordDetailTpl">//<!--
+			<%-- <c:if test="{{row.book.category=='left'}}">value="{{row.amount}}</c:if> --%>
+			<script type="text/x-jquery-tmpl" id="bookRecordDetailTpl">//<!--
 						<tr id="bookRecordDetailList{{idx}}">
 							<td class="hide">
 								<input id="bookRecordDetailList{{idx}}_id" name="bookRecordDetailList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
@@ -309,10 +322,20 @@ input{padding:0 0; border-width:0; }
 								<input id="bookRecordDetailList{{idx}}_customer" name="bookRecordDetailList[{{idx}}].customer" type="text" value="{{row.customer}}" />
 							</td>
 							<td>
-								<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="{{row.amount}}" class="input-small "/>
+								{{#direction}}
+									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="{{row.amount}}" class="input-small "/>
+								{{/direction}}
+								{{^direction}}
+									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text"  class="input-small "/>
+								{{/direction}}
 							</td>
 							<td>
-								<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="{{row.amount}}" class="input-small "/>
+								{{#direction}}
+									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" class="input-small "/>
+								{{/direction}}
+								{{^direction}}
+									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text"  value="{{row.amount}}"  class="input-small "/>
+								{{/direction}}
 							</td>
 						</tr>//-->
 				</script>
@@ -320,11 +343,19 @@ input{padding:0 0; border-width:0; }
                     var bookRecordDetailRowIdx = 0, bookRecordDetailTpl = $("#bookRecordDetailTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
                     $(document).ready(function() {
                         var data = ${fns:toJson(bookRecord.bookRecordDetailList)};
-                        //console.log(data);
                         for (var i=0; i<data.length; i++){
-                            addRow('#bookRecordDetailList', bookRecordDetailRowIdx, bookRecordDetailTpl, data[i]);
+                            viewRow('#bookRecordDetailList', bookRecordDetailRowIdx, bookRecordDetailTpl, data[i]);
                             bookRecordDetailRowIdx = bookRecordDetailRowIdx + 1;
                         }
+                        var length = $("#form tbody tr").length-3;
+                        debugger;
+                        if(length<4){
+                        	num=4-length;
+                        	 for(var i = 0; i < num; i++){
+                        		 $("#addBtn").click();
+                        	 }
+                        }
+                        calcu();
                     });
 				</script>
 		</div>

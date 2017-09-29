@@ -124,7 +124,7 @@
 		<div class="control-group">
 			<label class="control-label">业务(摘要)：</label>
 			<div class="controls">
-				<form:select path="bizId" class="input-xlarge required">
+				<form:select path="bizId" class="input-xlarge required" >
 					<form:option value="" label=""/>
 					<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
 				</form:select>

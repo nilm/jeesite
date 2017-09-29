@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>账本记录管理</title>
+	<title>凭证记录管理</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -18,9 +18,8 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/accountant/bookRecord/">账本记录列表</a></li>
-		<shiro:hasPermission name="accountant:bookRecord:edit"><li><a href="${ctx}/accountant/bookRecord/form">账本记录添加</a></li></shiro:hasPermission>
-		<shiro:hasPermission name="accountant:bookRecord:edit"><li><a href="${ctx}/accountant/bookRecord/accountForm">会计凭证录入</a></li></shiro:hasPermission>
+		<li class="active"><a href="${ctx}/accountant/bookRecord/">凭证记录列表</a></li>
+		<shiro:hasPermission name="accountant:bookRecord:edit"><li><a href="${ctx}/accountant/account/accountForm">会计凭证录入</a></li></shiro:hasPermission>
 	</ul>
 	<form:form id="searchForm" modelAttribute="bookRecord" action="${ctx}/accountant/bookRecord/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
@@ -67,7 +66,7 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="bookRecord">
 			<tr>
-				<td><a href="${ctx}/accountant/bookRecord/form?id=${bookRecord.id}">
+				<td><a href="${ctx}/accountant/account/accountForm?id=${bookRecord.id}">
 					${bookRecord.user.name}
 				</a></td>
 				<td>
@@ -89,8 +88,8 @@
 					${bookRecord.remarks}
 				</td>
 				<shiro:hasPermission name="accountant:bookRecord:edit"><td>
-    				<a href="${ctx}/accountant/bookRecord/form?id=${bookRecord.id}">修改</a>
-					<a href="${ctx}/accountant/bookRecord/delete?id=${bookRecord.id}" onclick="return confirmx('确认要删除该账本记录吗？', this.href)">删除</a>
+    				<a href="${ctx}/accountant/account/accountForm?id=${bookRecord.id}">修改</a>
+					<a href="${ctx}/accountant/account/delete?id=${bookRecord.id}" onclick="return confirmx('确认要删除该账本记录吗？', this.href)">删除</a>
 				</td></shiro:hasPermission>
 			</tr>
 		</c:forEach>

@@ -31,6 +31,7 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.accountant.entity.BookRecord;
 import com.thinkgem.jeesite.modules.accountant.service.BookRecordService;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,7 +93,20 @@ public class BookRecordController extends BaseController {
 		model.addAttribute("businesses",businesses);
 		return "modules/accountant/bookRecordForm";
 	}
+	@RequiresPermissions("accountant:bookRecord:view")
+	@RequestMapping(value = "accountForm")
+	public String accountForm(BookRecord bookRecord, Model model) {
+		model.addAttribute("bookRecord", bookRecord);
+		Business business = new Business();
+		business.setDelFlag("0");
+		business.setShowHide("1");
+		
+		List<Business> businesses = businessService.findList(business);
+		model.addAttribute("businesses",businesses);
+		return "modules/accountant/accountRecordForm";
+	}
 
+	
 	@RequiresPermissions("accountant:bookRecord:edit")
 	@RequestMapping(value = "save")
 	public String save(BookRecord bookRecord, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
@@ -100,7 +114,6 @@ public class BookRecordController extends BaseController {
 		bookRecord.setUser(UserUtils.getUser());
 		bookRecord.setCompany(UserUtils.getUser().getCompany());
 		bookRecord.setStatus("user_record");
-
 		String filesPath = request.getParameter("filesPath");
 
 		if (!beanValidator(model, bookRecord)){

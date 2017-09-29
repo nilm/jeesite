@@ -128,7 +128,7 @@
 					<form:option value="" label=""/>
 					<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
 				</form:select>
-				<span class="help-inline"><font lor="red">*</font> </span>
+				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">

@@ -20,7 +20,7 @@
 		a.version AS "version",
 		a.type AS "type",
 		a.status AS "status",
-		a.final_stage AS "finalStage",
+-- 		a.final_stage AS "finalStage",
 		a.create_date AS "createDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag"

@@ -38,14 +38,14 @@ input{padding:0 0; border-width:0; }
 	    if(isNaN(id)){
 		    initTable();
 	    }
-		/* $(document).on('input', 'input', function(){
+	/* 	$(document).on('input', 'input', function(){
 		     var _index = $(this).parent().index();
-             var tempTotal = 0;
+             var tempTotal =  0;
              $('#form tr').each(function(item, index){
                  tempTotal += ~~($(index).find('td').eq(_index).find('input').val());
              });
              console.log(tempTotal);
-             document.getElementById("sum"+(_index-3)).innerHTML = tempTotal;
+             document.getElementById("sum"+(_index-2)).innerHTML =  tempTotal;
 		}); */
 		$(document).on('keyup', 'input', function(){
             
@@ -53,7 +53,7 @@ input{padding:0 0; border-width:0; }
 			var tempTotal = 0, rowNum = $('#form tr').size()-3;
 			debugger;
 			$('#form tr').each(function(item, index){
-				if(item !== 0 && item < rowNum ){
+				if(item !== 0 && item < rowNum && item > 1){
                     var currentNum = $(index).find('td').eq(_index).find('input').val();
                     currentNum = currentNum === ''?0:currentNum;
 					tempTotal += parseFloat(currentNum);
@@ -61,7 +61,7 @@ input{padding:0 0; border-width:0; }
 				
 			});
 			console.log(tempTotal);
-			document.getElementById("sum"+(_index-3)).innerHTML = tempTotal.toFixed(2);
+			document.getElementById("sum"+(_index-2)).innerHTML = tempTotal.toFixed(2);
 		});
 		$("#inputForm").validate({
 			submitHandler: function(form){
@@ -216,9 +216,9 @@ input{padding:0 0; border-width:0; }
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/accountant/bookRecord/">账本记录列表</a></li>
-		<li class="active"><a
-			href="${ctx}/accountant/account/accountForm?id=${bookRecord.id}">会计凭证<shiro:hasPermission
+		<li class="active"><a href="${ctx}/accountant/opening/">期初预览</a></li>
+		<li ><a
+			href="${ctx}/accountant/account/accountForm?id=${bookRecord.id}">期初<shiro:hasPermission
 					name="accountant:bookRecord:edit">${not empty bookRecord.id?'修改':'添加'}</shiro:hasPermission>
 				<shiro:lacksPermission name="accountant:bookRecord:edit">查看</shiro:lacksPermission></a></li>
 	</ul>
@@ -226,40 +226,17 @@ input{padding:0 0; border-width:0; }
 	
 	<div id="dNewShowTitle"
 		style="width: 100%; margin: 0px 0px 0px 0px; font-weight: bold; font-size: large; color: #666666; text-align: center;">
-		会计凭证</div>
+		科目期初<</div>
 	<br>	
-	<table  style="width:525px;;margin-top: 1px;;" >
-		<tbody><tr>
-			<td style="display:none;"><a class="btn btn-primary" >首页</a></td>
-			<td style="display:none;"><a class="btn btn-primary" >前页</a></td>
-			<td style="display:none;"><a class="btn btn-primary" >下页</a></td>
-			<td style="display:none;"><a class="btn btn-primary" >末页</a></td>
-			<td class="btn-control"><a class="btn btn-primary" >查询</a></td>
-			<td class="btn-control"><a class="btn btn-primary ">删除</a></td>
-			<td class="btn-control"><a class="btn btn-primary " >增加</a></td>
-			<td class="btn-control"><a class="btn btn-primary" >修改</a></td>
-			<td class="btn-control">
-				<shiro:hasPermission name="accountant:bookRecord:edit">
-					<button id="saveBtn" class="btn btn-primary" onclick="save()" >保存</button>
-				</shiro:hasPermission>
-			</td>
-			<td class="btn-control"><a class="btn btn-primary" >撤销</a></td>
-			<td class="btn-control"><a class="btn btn-primary" >刷新</a></td>
-			<td class="btn-control"><a class="btn btn-primary" >打印</a></td>
-			<td class="btn-control">
-				<input id="btnCancel" class="btn" type="button" value="关闭" onclick="history.go(-1)"/>
-			</td>
-		</tr>
-	</tbody></table>
 	<br>
 	<form:form  id="inputForm" modelAttribute="bookRecord" action="${ctx}/accountant/bookRecord/save" method="post"  class="form-horizontal">
 		<input type="hidden" id="id" name="id" value="${bookRecord.id }">
-		<input id="amount" type="hidden" value="${bookRecord.amount }" name="amount" >
+		<input id="amount" type="hidden" value="0.00" name="amount" >
 		<sys:message content="${message}"/>	
 		<div class="control-group" >
 			<div id="dNewShowTitle"
 				style="width: 100%; margin: 0px 0px 0px 0px; font-weight: bold; font-size: large; color: #666666; text-align: center;">
-				记账时间： <input name="recordDate" type="text" readonly="readonly" style="align-self: center;"
+				记录时间： <input name="recordDate" type="text" readonly="readonly" style="align-self: center;"
 					maxlength="20" class="input-medium Wdate required"
 					value="<fmt:formatDate value="${bookRecord.recordDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"
 					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" />
@@ -289,9 +266,12 @@ input{padding:0 0; border-width:0; }
 				<!-- Replace "table-1" with any of the design numbers -->
 				<thead>
 					<tr>
-						<th style="width: 14%;">摘要</th>
-						<th style="width: 30%;">会计账本</th>
-						<th style="width: 20%;">往来单位</th>
+						<th style="width: 14%;" rowspan="2">科目编码</th>
+						<th style="width: 30%;" rowspan="2">会计账本</th>
+						<th style="width: 36%;" colspan="2">期初余额</th>
+						<th style="width: 20%;" rowspan="2">备注</th>
+					</tr>
+					<tr>
 						<th style="width: 18%;">左方金额</th>
 						<th style="width: 18%;">右方金额</th>
 					</tr>
@@ -299,16 +279,10 @@ input{padding:0 0; border-width:0; }
 				<tbody id="bookRecordDetailList">
 				</tbody>
 					<tr>
-						<th>附件:</th>
-						<td >
-							<div class="controls">
-								<sys:ckfinder input="bookRecordAttachmentList_filesPath" type="images" uploadPath="/accountant" selectMultiple="true" maxWidth="100" maxHeight="100"/>
-								<input id="bookRecordAttachmentList_filesPath" name="filesPath" type="hidden" value="" maxlength="200" class="input-small required"/>
-							</div>
-						</td>
-						<th class="post_mao">合　　计</th>
-						<td id="sum1" ></td>
+						<th class="post_mao" colspan="2">合　　计</th>
+						<td id="sum1"></td>
 						<td id="sum2"></td>
+						<td ></td>
 					</tr>
 					<tr>
 						<th>备注:</th>

@@ -13,8 +13,6 @@ import com.thinkgem.jeesite.modules.accountant.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.sun.tools.classfile.Annotation.element_value;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.StringUtils;
@@ -38,10 +36,20 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 	@Autowired
 	private BizBookTemplateDao bizBookTemplateDao;
 
+	public BookRecord get(BookRecord rec) {
+		BookRecord bookRecord = super.get(rec);
+		if(bookRecord!=null && bookRecord.getId()!=null) {
+			bookRecord.setAttachmentList(attachmentDao.findList(new Attachment(bookRecord)));
+			bookRecord.setBookRecordDetailList(bookRecordDetailDao.findList(new BookRecordDetail(bookRecord)));
+		}
+		return bookRecord;
+	}
 	public BookRecord get(String id) {
 		BookRecord bookRecord = super.get(id);
-		bookRecord.setAttachmentList(attachmentDao.findList(new Attachment(bookRecord)));
-		bookRecord.setBookRecordDetailList(bookRecordDetailDao.findList(new BookRecordDetail(bookRecord)));
+		if(bookRecord!=null) {
+			bookRecord.setAttachmentList(attachmentDao.findList(new Attachment(bookRecord)));
+			bookRecord.setBookRecordDetailList(bookRecordDetailDao.findList(new BookRecordDetail(bookRecord)));
+		}
 		return bookRecord;
 	}
 	

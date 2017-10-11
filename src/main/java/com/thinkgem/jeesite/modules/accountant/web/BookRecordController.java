@@ -50,8 +50,6 @@ public class BookRecordController extends BaseController {
 	private BusinessService businessService;
 	@Autowired
 	private BizBookTemplateService bizBookTemplateService;
-	@Autowired
-	private BookService bookService;
 	
 	@ModelAttribute
 	public BookRecord get(@RequestParam(required=false) String id) {

@@ -48,6 +48,16 @@ public class AccountRecordController  extends BaseController {
 
 		return entity;
 	}
+	/**
+	 * 列表查询
+	 * @param bookRecord
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @author Mars9527
+	 * @date 2017年10月11日
+	 */
 	@RequiresPermissions("accountant:bookRecord:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(BookRecord bookRecord, HttpServletRequest request, HttpServletResponse response, Model model) {
@@ -82,7 +92,16 @@ public class AccountRecordController  extends BaseController {
 		return "modules/accountant/accountRecordForm";
 	}
 
-	
+	/**
+	 * 保存记录
+	 * @param bookRecord
+	 * @param request
+	 * @param model
+	 * @param redirectAttributes
+	 * @return
+	 * @author Mars9527
+	 * @date 2017年10月11日
+	 */
 	@RequiresPermissions("accountant:bookRecord:edit")
 	@RequestMapping(value = "save")
 	public String save(BookRecord bookRecord, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {

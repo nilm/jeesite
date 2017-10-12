@@ -53,8 +53,6 @@ public class AccountOpeningController {
 	@RequestMapping(value = {"list", ""})
 	public String view(BookRecord bookRecord, Model model) {
 		model.addAttribute("bookRecord", bookRecord);
-		
-		
 
 		return "modules/accountant/accountOpeningList";
 	}
@@ -78,5 +76,4 @@ public class AccountOpeningController {
 		model.addAttribute("bookRecord", bookRecord);
 		return "modules/accountant/accountOpeningForm";
 	}
-	
 }

@@ -38,20 +38,10 @@ input{padding:0 0; border-width:0; }
 	    if(isNaN(id)){
 		    initTable();
 	    }
-	/* 	$(document).on('input', 'input', function(){
-		     var _index = $(this).parent().index();
-             var tempTotal =  0;
-             $('#form tr').each(function(item, index){
-                 tempTotal += ~~($(index).find('td').eq(_index).find('input').val());
-             });
-             console.log(tempTotal);
-             document.getElementById("sum"+(_index-2)).innerHTML =  tempTotal;
-		}); */
 		$(document).on('keyup', 'input', function(){
-            
+            console.log($(this).val());
 			var _index = $(this).parent().index();
 			var tempTotal = 0, rowNum = $('#form tr').size()-3;
-			debugger;
 			$('#form tr').each(function(item, index){
 				if(item !== 0 && item < rowNum && item > 1){
                     var currentNum = $(index).find('td').eq(_index).find('input').val();
@@ -216,17 +206,17 @@ input{padding:0 0; border-width:0; }
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/accountant/opening/">期初预览</a></li>
-		<li ><a
-			href="${ctx}/accountant/account/accountForm?id=${bookRecord.id}">期初<shiro:hasPermission
-					name="accountant:bookRecord:edit">${not empty bookRecord.id?'修改':'添加'}</shiro:hasPermission>
-				<shiro:lacksPermission name="accountant:bookRecord:edit">查看</shiro:lacksPermission></a></li>
+		<li ><a href="${ctx}/accountant/opening/">期初预览</a></li>
+		<li class="active"><a
+				href="${ctx}/accountant/opening/form?id=${bookRecord.id}">期初<shiro:hasPermission
+				name="accountant:bookRecord:edit">${not empty bookRecord.id?'修改':'添加'}</shiro:hasPermission>
+			<shiro:lacksPermission name="accountant:bookRecord:edit">查看</shiro:lacksPermission></a></li>
 	</ul>
 	<br />
 	
 	<div id="dNewShowTitle"
 		style="width: 100%; margin: 0px 0px 0px 0px; font-weight: bold; font-size: large; color: #666666; text-align: center;">
-		科目期初<</div>
+		科目期初</div>
 	<br>	
 	<br>
 	<form:form  id="inputForm" modelAttribute="bookRecord" action="${ctx}/accountant/bookRecord/save" method="post"  class="form-horizontal">
@@ -243,18 +233,8 @@ input{padding:0 0; border-width:0; }
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 			<div class="control-group" align="left">
-			：<%-- <form:select path="bizId" class="input-xlarge required" >
-					<form:option value="" label=""/>
-					<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
-				</form:select> --%>
-				<%-- <select name="bizId" id="bizId" style="width: 200px;">
-					<option value="">请选择...</option>
-					<c:forEach items="${businesses}" var="biz">
-						<option value="${biz.id}">${biz.name}</option>
-					</c:forEach>
-				</select> --%>
 				<div style="align-self: auto;">
-				&nbsp;&nbsp;业务
+				&nbsp;&nbsp;业务：
 					<form:select path="bizId" class="input-xlarge required" >
 						<form:option value="" label=""/>
 						<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
@@ -266,7 +246,7 @@ input{padding:0 0; border-width:0; }
 				<!-- Replace "table-1" with any of the design numbers -->
 				<thead>
 					<tr>
-						<th style="width: 14%;" rowspan="2">科目编码</th>
+						<th style="width: 14%;" rowspan="2">类别</th>
 						<th style="width: 30%;" rowspan="2">会计账本</th>
 						<th style="width: 36%;" colspan="2">期初余额</th>
 						<th style="width: 20%;" rowspan="2">备注</th>
@@ -301,18 +281,16 @@ input{padding:0 0; border-width:0; }
 								<input id="bookRecordDetailList{{idx}}_delFlag" name="bookRecordDetailList[{{idx}}].delFlag" type="hidden" value="0"/>
 							</td>
 							<td>
-								<input id="bookRecordDetailList{{idx}}_digest" name="bookRecordDetailList[{{idx}}].digest" type="text" style="border-width:0px;" value="{{row.digest}}" />
+								<input id="bookRecordDetailList{{idx}}_remark" name="bookRecordDetailList[{{idx}}].digest" type="text" style="border-width:0px;" value="{{row.digest}}" />
 							</td>
 							<td>
-						<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="bookName" labelValue="{{row.bookName}}"
-					title="选择账本" url="/accountant/book/treeData" extId="bookRecordDetailList[{{idx}}]._bookId" cssClass="" allowClear="true"/>
+								<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="" labelValue="{{row.bookName}}"
+							title="选择账本" url="/accountant/book/treeData"  cssClass="" allowClear="true"/>
 							<shiro:hasPermission name="accountant:bookRecord:edit">
 								{{#delBtn}}<a href="javascript:;" class="close" onclick="delRow(this, '#bookRecordDetailList{{idx}}')" title="删除本行">&times;</a>{{/delBtn}}
 							</shiro:hasPermission>
 							</td>
-							<td>
-								<input id="bookRecordDetailList{{idx}}_customer" name="bookRecordDetailList[{{idx}}].customer" type="text" value="{{row.customer}}" />
-							</td>
+
 							<td>
 								{{#direction}}
 									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="{{row.amount}}" class="input-small "/>
@@ -329,6 +307,9 @@ input{padding:0 0; border-width:0; }
 									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text"  value="{{row.amount}}"  class="input-small "/>
 								{{/direction}}
 							</td>
+							<td>
+								<input id="bookRecordDetailList{{idx}}_remark" name="bookRecordDetailList[{{idx}}].digest" type="text" style="border-width:0px;" value="{{row.digest}}" />
+							</td>
 						</tr>//-->
 				</script>
 				<script type="text/javascript">
@@ -340,7 +321,7 @@ input{padding:0 0; border-width:0; }
                             bookRecordDetailRowIdx = bookRecordDetailRowIdx + 1;
                         }
                         var length = $("#form tbody tr").length-3;
-                        debugger;
+
                         if(length<4){
                         	num=4-length;
                         	 for(var i = 0; i < num; i++){

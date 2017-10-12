@@ -51,7 +51,6 @@ input{padding:0 0; border-width:0; }
             
 			var _index = $(this).parent().index();
 			var tempTotal = 0, rowNum = $('#form tr').size()-3;
-			debugger;
 			$('#form tr').each(function(item, index){
 				if(item !== 0 && item < rowNum && item > 1){
                     var currentNum = $(index).find('td').eq(_index).find('input').val();
@@ -243,7 +242,7 @@ input{padding:0 0; border-width:0; }
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 			<div class="control-group" align="left">
-			：<%-- <form:select path="bizId" class="input-xlarge required" >
+			<%-- <form:select path="bizId" class="input-xlarge required" >
 					<form:option value="" label=""/>
 					<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
 				</form:select> --%>
@@ -254,7 +253,7 @@ input{padding:0 0; border-width:0; }
 					</c:forEach>
 				</select> --%>
 				<div style="align-self: auto;">
-				&nbsp;&nbsp;业务
+				&nbsp;&nbsp;业务：
 					<form:select path="bizId" class="input-xlarge required" >
 						<form:option value="" label=""/>
 						<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
@@ -340,7 +339,6 @@ input{padding:0 0; border-width:0; }
                             bookRecordDetailRowIdx = bookRecordDetailRowIdx + 1;
                         }
                         var length = $("#form tbody tr").length-3;
-                        debugger;
                         if(length<4){
                         	num=4-length;
                         	 for(var i = 0; i < num; i++){

@@ -51,7 +51,7 @@ input{padding:0 0; border-width:0; }
 				
 			});
 			console.log(tempTotal);
-			document.getElementById("sum"+(_index-2)).innerHTML = tempTotal.toFixed(2);
+			document.getElementById("sum"+(_index-1)).innerHTML = tempTotal.toFixed(2);
 		});
 		$("#inputForm").validate({
 			submitHandler: function(form){
@@ -86,6 +86,8 @@ input{padding:0 0; border-width:0; }
 	    		alert("左右金额总额不相等，请检查平衡");
 	    	}
 	    });
+	    //alert($("#bizId").val());
+        initFirstSelectItem($("#bizId").val());
 	});
 	function calcu(){
 		var amount=$("#amount").val();
@@ -217,7 +219,30 @@ input{padding:0 0; border-width:0; }
 	<div id="dNewShowTitle"
 		style="width: 100%; margin: 0px 0px 0px 0px; font-weight: bold; font-size: large; color: #666666; text-align: center;">
 		科目期初</div>
-	<br>	
+	<br>
+	<table  style="width:525px;;margin-top: 1px;;" >
+		<tbody><tr>
+			<td style="display:none;"><a class="btn btn-primary" >首页</a></td>
+			<td style="display:none;"><a class="btn btn-primary" >前页</a></td>
+			<td style="display:none;"><a class="btn btn-primary" >下页</a></td>
+			<td style="display:none;"><a class="btn btn-primary" >末页</a></td>
+			<td class="btn-control"><a class="btn btn-primary" >查询</a></td>
+			<td class="btn-control"><a class="btn btn-primary ">删除</a></td>
+			<td class="btn-control"><a class="btn btn-primary " >增加</a></td>
+			<td class="btn-control"><a class="btn btn-primary" >修改</a></td>
+			<td class="btn-control">
+				<shiro:hasPermission name="accountant:bookRecord:edit">
+					<button id="saveBtn" class="btn btn-primary" onclick="save()" >保存</button>
+				</shiro:hasPermission>
+			</td>
+			<td class="btn-control"><a class="btn btn-primary" >撤销</a></td>
+			<td class="btn-control"><a class="btn btn-primary" >刷新</a></td>
+			<td class="btn-control"><a class="btn btn-primary" >打印</a></td>
+			<td class="btn-control">
+				<input id="btnCancel" class="btn" type="button" value="关闭" onclick="history.go(-1)"/>
+			</td>
+		</tr>
+		</tbody></table>
 	<br>
 	<form:form  id="inputForm" modelAttribute="bookRecord" action="${ctx}/accountant/bookRecord/save" method="post"  class="form-horizontal">
 		<input type="hidden" id="id" name="id" value="${bookRecord.id }">
@@ -236,7 +261,7 @@ input{padding:0 0; border-width:0; }
 				<div style="align-self: auto;">
 				&nbsp;&nbsp;业务：
 					<form:select path="bizId" class="input-xlarge required" >
-						<form:option value="" label=""/>
+						<%--<form:option value="" label=""/>--%>
 						<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
 					</form:select>
 					<span class="help-inline"><font lor="red">*</font> </span>
@@ -246,7 +271,7 @@ input{padding:0 0; border-width:0; }
 				<!-- Replace "table-1" with any of the design numbers -->
 				<thead>
 					<tr>
-						<th style="width: 14%;" rowspan="2">类别</th>
+						<%--<th style="width: 14%;" rowspan="2">类别</th>--%>
 						<th style="width: 30%;" rowspan="2">会计账本</th>
 						<th style="width: 36%;" colspan="2">期初余额</th>
 						<th style="width: 20%;" rowspan="2">备注</th>
@@ -259,7 +284,7 @@ input{padding:0 0; border-width:0; }
 				<tbody id="bookRecordDetailList">
 				</tbody>
 					<tr>
-						<th class="post_mao" colspan="2">合　　计</th>
+						<th class="post_mao">合　　计</th>
 						<td id="sum1"></td>
 						<td id="sum2"></td>
 						<td ></td>
@@ -280,9 +305,9 @@ input{padding:0 0; border-width:0; }
 								<input id="bookRecordDetailList{{idx}}_id" name="bookRecordDetailList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
 								<input id="bookRecordDetailList{{idx}}_delFlag" name="bookRecordDetailList[{{idx}}].delFlag" type="hidden" value="0"/>
 							</td>
-							<td>
+							<%--<td>
 								<input id="bookRecordDetailList{{idx}}_remark" name="bookRecordDetailList[{{idx}}].digest" type="text" style="border-width:0px;" value="{{row.digest}}" />
-							</td>
+							</td>--%>
 							<td>
 								<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="" labelValue="{{row.bookName}}"
 							title="选择账本" url="/accountant/book/treeData"  cssClass="" allowClear="true"/>

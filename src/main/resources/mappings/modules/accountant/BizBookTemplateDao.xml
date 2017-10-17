@@ -8,6 +8,7 @@
 		a.company_id AS "companyId",
 		a.biz_id AS "biz.id",
 		a.book_id AS "book.id",
+		book.code AS "book.code",
 		book.name AS "bookName",
 		a.direction AS "direction",
 		a.fixed AS "fixed",

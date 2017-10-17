@@ -51,7 +51,6 @@ input{padding:0 0; border-width:0; }
             
 			var _index = $(this).parent().index();
 			var tempTotal = 0, rowNum = $('#form tr').size()-3;
-			debugger;
 			$('#form tr').each(function(item, index){
 				if(item !== 0 && item < rowNum ){
                     var currentNum = $(index).find('td').eq(_index).find('input').val();
@@ -119,6 +118,7 @@ input{padding:0 0; border-width:0; }
 	    $(list+idx+"_"+name).val(val);
 	}
 	function viewRow(list, idx, tpl, row){
+        debugger;
 		$(list).append(Mustache.render(tpl, {
 			idx: idx, delBtn: true, row: row, direction:(row.book.category=='left')
 		}));
@@ -366,7 +366,6 @@ input{padding:0 0; border-width:0; }
                             bookRecordDetailRowIdx = bookRecordDetailRowIdx + 1;
                         }
                         var length = $("#form tbody tr").length-3;
-                        debugger;
                         if(length<4){
                         	num=4-length;
                         	 for(var i = 0; i < num; i++){

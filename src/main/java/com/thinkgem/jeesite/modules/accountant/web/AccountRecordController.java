@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.accountant.enums.BookRecordType;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -109,6 +110,7 @@ public class AccountRecordController  extends BaseController {
 		bookRecord.setUser(UserUtils.getUser());
 		bookRecord.setCompany(UserUtils.getUser().getCompany());
 		bookRecord.setStatus("user_record");
+		bookRecord.setBookRecordType(BookRecordType.DAILY);
 		String filesPath = request.getParameter("filesPath");
 
 		if (!beanValidator(model, bookRecord)){

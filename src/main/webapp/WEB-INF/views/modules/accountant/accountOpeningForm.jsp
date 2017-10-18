@@ -3,7 +3,7 @@
 <html>
 <head>
 <title>账本记录管理</title>
-<%-- <link href="${ctxStatic }/accountant/accountant.css" rel="stylesheet" type="text/css" /> --%>
+<%-- <link href="${ctxStatic }/accountant/accountant.css" rel="stylesheet" enums="text/css" /> --%>
 <style type="text/css">
 table{width:95%; border-collapse:collapse; border:1px solid #c5c5c5; }
 table th{color:#211f1f; border:1px solid #c5c5c5; background-color:#f8f9f8; }
@@ -33,6 +33,7 @@ input{padding:0 0; border-width:0; }
 <script type="text/javascript">
 	
 	$(document).ready(function() {
+	    debugger;
 		var idStr=$("#id").val();
 		var id=parseInt(idStr);
 	    if(isNaN(id)){
@@ -79,15 +80,22 @@ input{padding:0 0; border-width:0; }
 	    $("#saveBtn").click(function(){
 	    	var sum1=parseFloat($("#sum1").text());
 	    	var sum2=parseFloat($("#sum2").text());
-	    	if(sum1==sum2){
-	    		document.getElementById("amount").value=sum1+"";
-		    	$("#inputForm").submit();
-	    	}else{
-	    		alert("左右金额总额不相等，请检查平衡");
-	    	}
+	    	if(sum1==0 && sum2==0){
+                alert("没有录入金额，请检查核对！");
+			}else {
+                if(sum1==sum2){
+                    document.getElementById("amount").value=sum1+"";
+                    $("#inputForm").submit();
+                }else{
+                    alert("左右金额总额不相等，请检查平衡！");
+                }
+            }
 	    });
 	    //alert($("#bizId").val());
-        initFirstSelectItem($("#bizId").val());
+		debugger;
+        if(isNaN(id)){
+        	initFirstSelectItem($("#bizId").val());
+        }
 	});
 	function calcu(){
 		var amount=$("#amount").val();
@@ -117,7 +125,7 @@ input{padding:0 0; border-width:0; }
 		$(list+idx).find("select").each(function(){
 			$(this).val($(this).attr("data-value"));
 		});
-		$(list+idx).find("input[type='checkbox'], input[type='radio']").each(function(){
+		$(list+idx).find("input[enums='checkbox'], input[enums='radio']").each(function(){
 			var ss = $(this).attr("data-value").split(',');
 			for (var i=0; i<ss.length; i++){
 				if($(this).val() == ss[i]){
@@ -133,7 +141,7 @@ input{padding:0 0; border-width:0; }
 		$(list+idx).find("select").each(function(){
 			$(this).val($(this).attr("data-value"));
 		});
-		$(list+idx).find("input[type='checkbox'], input[type='radio']").each(function(){
+		$(list+idx).find("input[enums='checkbox'], input[enums='radio']").each(function(){
 			var ss = $(this).attr("data-value").split(',');
 			for (var i=0; i<ss.length; i++){
 				if($(this).val() == ss[i]){
@@ -244,16 +252,16 @@ input{padding:0 0; border-width:0; }
 		</tr>
 		</tbody></table>
 	<br>
-	<form:form  id="inputForm" modelAttribute="bookRecord" action="${ctx}/accountant/bookRecord/save" method="post"  class="form-horizontal">
+	<form:form  id="inputForm" modelAttribute="bookRecord" action="${ctx}/accountant/opening/save" method="post"  class="form-horizontal">
 		<input type="hidden" id="id" name="id" value="${bookRecord.id }">
-		<input id="amount" type="hidden" value="0.00" name="amount" >
+		<input id="amount" type="hidden" value="${bookRecord.amount }" name="amount" >
 		<sys:message content="${message}"/>	
 		<div class="control-group" >
 			<div id="dNewShowTitle"
 				style="width: 100%; margin: 0px 0px 0px 0px; font-weight: bold; font-size: large; color: #666666; text-align: center;">
 				记录时间： <input name="recordDate" type="text" readonly="readonly" style="align-self: center;"
 					maxlength="20" class="input-medium Wdate required"
-					value="<fmt:formatDate value="${bookRecord.recordDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"
+					value="<fmt:formatDate value="${bookRecord.recordDate}" pattern="yyyy-MM-dd"/>"
 					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" />
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
@@ -262,7 +270,7 @@ input{padding:0 0; border-width:0; }
 				&nbsp;&nbsp;业务：
 					<form:select path="bizId" class="input-xlarge required" >
 						<%--<form:option value="" label=""/>--%>
-						<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
+						<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape=" "/>
 					</form:select>
 					<span class="help-inline"><font lor="red">*</font> </span>
 				</div>
@@ -306,7 +314,7 @@ input{padding:0 0; border-width:0; }
 								<input id="bookRecordDetailList{{idx}}_delFlag" name="bookRecordDetailList[{{idx}}].delFlag" type="hidden" value="0"/>
 							</td>
 							<%--<td>
-								<input id="bookRecordDetailList{{idx}}_remark" name="bookRecordDetailList[{{idx}}].digest" type="text" style="border-width:0px;" value="{{row.digest}}" />
+								<input id="bookRecordDetailList{{idx}}_remark" name="bookRecordDetailList[{{idx}}].digest" enums="text" style="border-width:0px;" value="{{row.digest}}" />
 							</td>--%>
 							<td>
 								<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="" labelValue="{{row.bookName}}"
@@ -333,7 +341,7 @@ input{padding:0 0; border-width:0; }
 								{{/direction}}
 							</td>
 							<td>
-								<input id="bookRecordDetailList{{idx}}_remark" name="bookRecordDetailList[{{idx}}].digest" type="text" style="border-width:0px;" value="{{row.digest}}" />
+								<input id="bookRecordDetailList{{idx}}_remarks" name="bookRecordDetailList[{{idx}}].remarks" type="text" style="border-width:0px;" value="{{row.remarks}}" />
 							</td>
 						</tr>//-->
 				</script>
@@ -341,6 +349,7 @@ input{padding:0 0; border-width:0; }
                     var bookRecordDetailRowIdx = 0, bookRecordDetailTpl = $("#bookRecordDetailTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
                     $(document).ready(function() {
                         var data = ${fns:toJson(bookRecord.bookRecordDetailList)};
+                        debugger;
                         for (var i=0; i<data.length; i++){
                             viewRow('#bookRecordDetailList', bookRecordDetailRowIdx, bookRecordDetailTpl, data[i]);
                             bookRecordDetailRowIdx = bookRecordDetailRowIdx + 1;

@@ -64,21 +64,23 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 	@Transactional(readOnly = false)
 	public BookRecord save(BookRecord bookRecord,String filesPath) {
 		super.save(bookRecord);
-		String[] filesPathArray = filesPath.split("\\|");
-		if(filesPathArray != null && filesPathArray.length > 0){
-			for (String filePath :filesPathArray){
+		if(filesPath!=null){
+			String[] filesPathArray = filesPath.split("\\|");
+			if(filesPathArray != null && filesPathArray.length > 0){
+				for (String filePath :filesPathArray){
 
-				if(StringUtils.isBlank(filePath.trim()) || "|".equals(filePath.trim())){
-					continue;
+					if(StringUtils.isBlank(filePath.trim()) || "|".equals(filePath.trim())){
+						continue;
+					}
+					Attachment attachment = new Attachment(bookRecord);
+					attachment.setCreateDate(bookRecord.getCreateDate());
+					attachment.setFilesPath(filePath);
+					attachment.setDelFlag(Attachment.DEL_FLAG_NORMAL);
+					if(filePath.contains("."))
+						attachment.setType(filePath.substring(filePath.lastIndexOf("."),filePath.length()));
+					attachment.preInsert();
+					attachmentDao.insert(attachment);
 				}
-				Attachment attachment = new Attachment(bookRecord);
-				attachment.setCreateDate(bookRecord.getCreateDate());
-				attachment.setFilesPath(filePath);
-				attachment.setDelFlag(Attachment.DEL_FLAG_NORMAL);
-				if(filePath.contains("."))
-				attachment.setType(filePath.substring(filePath.lastIndexOf("."),filePath.length()));
-				attachment.preInsert();
-				attachmentDao.insert(attachment);
 			}
 		}
 //		for (Attachment attachment : bookRecord.getAttachmentList()){

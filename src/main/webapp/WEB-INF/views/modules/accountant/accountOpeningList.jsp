@@ -124,7 +124,7 @@ input{padding:0 0; border-width:0; }
 		$(list+idx).find("select").each(function(){
 			$(this).val($(this).attr("data-value"));
 		});
-		$(list+idx).find("input[type='checkbox'], input[type='radio']").each(function(){
+		$(list+idx).find("input[enums='checkbox'], input[enums='radio']").each(function(){
 			var ss = $(this).attr("data-value").split(',');
 			for (var i=0; i<ss.length; i++){
 				if($(this).val() == ss[i]){
@@ -140,7 +140,7 @@ input{padding:0 0; border-width:0; }
 		$(list+idx).find("select").each(function(){
 			$(this).val($(this).attr("data-value"));
 		});
-		$(list+idx).find("input[type='checkbox'], input[type='radio']").each(function(){
+		$(list+idx).find("input[enums='checkbox'], input[enums='radio']").each(function(){
 			var ss = $(this).attr("data-value").split(',');
 			for (var i=0; i<ss.length; i++){
 				if($(this).val() == ss[i]){

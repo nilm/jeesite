@@ -3,7 +3,7 @@
 <html>
 <head>
 <title>账本记录管理</title>
-<%-- <link href="${ctxStatic }/accountant/accountant.css" rel="stylesheet" type="text/css" /> --%>
+<%-- <link href="${ctxStatic }/accountant/accountant.css" rel="stylesheet" enums="text/css" /> --%>
 <style type="text/css">
 table{width:95%; border-collapse:collapse; border:1px solid #c5c5c5; }
 table th{color:#211f1f; border:1px solid #c5c5c5; background-color:#f8f9f8; }
@@ -125,7 +125,7 @@ input{padding:0 0; border-width:0; }
 		$(list+idx).find("select").each(function(){
 			$(this).val($(this).attr("data-value"));
 		});
-		$(list+idx).find("input[type='checkbox'], input[type='radio']").each(function(){
+		$(list+idx).find("input[enums='checkbox'], input[enums='radio']").each(function(){
 			var ss = $(this).attr("data-value").split(',');
 			for (var i=0; i<ss.length; i++){
 				if($(this).val() == ss[i]){
@@ -141,7 +141,7 @@ input{padding:0 0; border-width:0; }
 		$(list+idx).find("select").each(function(){
 			$(this).val($(this).attr("data-value"));
 		});
-		$(list+idx).find("input[type='checkbox'], input[type='radio']").each(function(){
+		$(list+idx).find("input[enums='checkbox'], input[enums='radio']").each(function(){
 			var ss = $(this).attr("data-value").split(',');
 			for (var i=0; i<ss.length; i++){
 				if($(this).val() == ss[i]){
@@ -266,7 +266,7 @@ input{padding:0 0; border-width:0; }
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 			<div class="control-group" align="left">
-			：<%-- <form:select path="bizId" class="input-xlarge required" >
+			<%-- <form:select path="bizId" class="input-xlarge required" >
 					<form:option value="" label=""/>
 					<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
 				</form:select> --%>
@@ -277,11 +277,11 @@ input{padding:0 0; border-width:0; }
 					</c:forEach>
 				</select> --%>
 				<div style="align-self: auto;">
-				&nbsp;&nbsp;业务
+				&nbsp;&nbsp;业务：
 					<form:select path="bizId" class="input-xlarge required" >
 						<form:option value="" label=""/>
 						<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
-					</form:select>
+					</form:select>${bookRecord.bizId}
 					<span class="help-inline"><font lor="red">*</font> </span>
 				</div>
 			</div>

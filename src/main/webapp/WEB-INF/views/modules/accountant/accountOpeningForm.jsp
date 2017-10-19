@@ -299,7 +299,7 @@ input{padding:0 0; border-width:0; }
 					</tr>
 					<tr>
 						<th>备注:</th>
-						<td colspan="5" ><input name="remark" type="text"></td>
+						<td colspan="5" ><input name="remarks" value="${bookRecord.remarks}" type="text"></td>
 					</tr>
 					<tr id="TableRow1" class="fb red t_left">
 						<th id="addLine">增行&nbsp;</th>
@@ -317,7 +317,7 @@ input{padding:0 0; border-width:0; }
 								<input id="bookRecordDetailList{{idx}}_remark" name="bookRecordDetailList[{{idx}}].digest" enums="text" style="border-width:0px;" value="{{row.digest}}" />
 							</td>--%>
 							<td>
-								<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="" labelValue="{{row.bookName}}"
+								<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="" labelValue="{{row.book.code}} {{row.bookName}}"
 							title="选择账本" url="/accountant/book/treeData"  cssClass="" allowClear="true"/>
 							<shiro:hasPermission name="accountant:bookRecord:edit">
 								{{#delBtn}}<a href="javascript:;" class="close" onclick="delRow(this, '#bookRecordDetailList{{idx}}')" title="删除本行">&times;</a>{{/delBtn}}

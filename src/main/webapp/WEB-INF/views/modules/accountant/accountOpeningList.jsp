@@ -3,7 +3,7 @@
 <html>
 <head>
 <title>账本记录管理</title>
-<%-- <link href="${ctxStatic }/accountant/accountant.css" rel="stylesheet" type="text/css" /> --%>
+<%-- <link href="${ctxStatic }/accountant/accountant.css" rel="stylesheet" enums="text/css" /> --%>
 <style type="text/css">
 table{width:95%; border-collapse:collapse; border:1px solid #c5c5c5; }
 table th{color:#211f1f; border:1px solid #c5c5c5; background-color:#f8f9f8; }
@@ -38,17 +38,8 @@ input{padding:0 0; border-width:0; }
 	    if(isNaN(id)){
 		    initTable();
 	    }
-	/* 	$(document).on('input', 'input', function(){
-		     var _index = $(this).parent().index();
-             var tempTotal =  0;
-             $('#form tr').each(function(item, index){
-                 tempTotal += ~~($(index).find('td').eq(_index).find('input').val());
-             });
-             console.log(tempTotal);
-             document.getElementById("sum"+(_index-2)).innerHTML =  tempTotal;
-		}); */
 		$(document).on('keyup', 'input', function(){
-            
+            console.log($(this).val());
 			var _index = $(this).parent().index();
 			var tempTotal = 0, rowNum = $('#form tr').size()-3;
 			$('#form tr').each(function(item, index){
@@ -60,7 +51,7 @@ input{padding:0 0; border-width:0; }
 				
 			});
 			console.log(tempTotal);
-			document.getElementById("sum"+(_index-2)).innerHTML = tempTotal.toFixed(2);
+			document.getElementById("sum"+(_index-1)).innerHTML = tempTotal.toFixed(2);
 		});
 		$("#inputForm").validate({
 			submitHandler: function(form){
@@ -88,16 +79,26 @@ input{padding:0 0; border-width:0; }
 	    $("#saveBtn").click(function(){
 	    	var sum1=parseFloat($("#sum1").text());
 	    	var sum2=parseFloat($("#sum2").text());
-	    	if(sum1==sum2){
-	    		document.getElementById("amount").value=sum1+"";
-		    	$("#inputForm").submit();
-	    	}else{
-	    		alert("左右金额总额不相等，请检查平衡");
-	    	}
+	    	if(sum1==0 && sum2==0){
+                alert("没有录入金额，请检查核对！");
+			}else {
+                if(sum1==sum2){
+                    document.getElementById("amount").value=sum1+"";
+                    $("#inputForm").submit();
+                }else{
+                    alert("左右金额总额不相等，请检查平衡！");
+                }
+            }
 	    });
+	    //alert($("#bizId").val());
+        if(isNaN(id)){
+        	initFirstSelectItem($("#bizId").val());
+        }
 	});
 	function calcu(){
+	    debugger;
 		var amount=$("#amount").val();
+		if(amount=="") amount=parseFloat(0.00).toFixed(2) ;
 		document.getElementById("sum1").innerHTML = amount;
 		document.getElementById("sum2").innerHTML = amount;
 	} 
@@ -217,46 +218,36 @@ input{padding:0 0; border-width:0; }
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/accountant/opening/">期初预览</a></li>
 		<li ><a
-			href="${ctx}/accountant/opening/form?id=${bookRecord.id}">期初<shiro:hasPermission
-					name="accountant:bookRecord:edit">${not empty bookRecord.id?'修改':'添加'}</shiro:hasPermission>
-				<shiro:lacksPermission name="accountant:bookRecord:edit">查看</shiro:lacksPermission></a></li>
+				href="${ctx}/accountant/opening/form?id=${bookRecord.id}">期初<shiro:hasPermission
+				name="accountant:bookRecord:edit">${not empty bookRecord.id?'修改':'添加'}</shiro:hasPermission>
+			<shiro:lacksPermission name="accountant:bookRecord:edit">查看</shiro:lacksPermission></a></li>
 	</ul>
 	<br />
 	
 	<div id="dNewShowTitle"
 		style="width: 100%; margin: 0px 0px 0px 0px; font-weight: bold; font-size: large; color: #666666; text-align: center;">
 		科目期初</div>
-	<br>	
 	<br>
-	<form:form  id="inputForm" modelAttribute="bookRecord" action="${ctx}/accountant/bookRecord/save" method="post"  class="form-horizontal">
+	<br>
+	<form:form  id="inputForm" modelAttribute="bookRecord" action="${ctx}/accountant/opening/save" method="post"  class="form-horizontal">
 		<input type="hidden" id="id" name="id" value="${bookRecord.id }">
-		<input id="amount" type="hidden" value="0.00" name="amount" >
+		<input id="amount" type="hidden" value="${bookRecord.amount }" name="amount" >
 		<sys:message content="${message}"/>	
 		<div class="control-group" >
 			<div id="dNewShowTitle"
 				style="width: 100%; margin: 0px 0px 0px 0px; font-weight: bold; font-size: large; color: #666666; text-align: center;">
 				记录时间： <input name="recordDate" type="text" readonly="readonly" style="align-self: center;"
 					maxlength="20" class="input-medium Wdate required"
-					value="<fmt:formatDate value="${bookRecord.recordDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"
-					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" />
+					value="<fmt:formatDate value="${bookRecord.recordDate}" pattern="yyyy-MM-dd"/>"
+					 />
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 			<div class="control-group" align="left">
-			<%-- <form:select path="bizId" class="input-xlarge required" >
-					<form:option value="" label=""/>
-					<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
-				</form:select> --%>
-				<%-- <select name="bizId" id="bizId" style="width: 200px;">
-					<option value="">请选择...</option>
-					<c:forEach items="${businesses}" var="biz">
-						<option value="${biz.id}">${biz.name}</option>
-					</c:forEach>
-				</select> --%>
 				<div style="align-self: auto;">
 				&nbsp;&nbsp;业务：
-					<form:select path="bizId" class="input-xlarge required" >
-						<form:option value="" label=""/>
-						<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
+					<form:select path="bizId" class="input-xlarge required" disabled="true">
+						<%--<form:option value="" label=""/>--%>
+						<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape=" "/>
 					</form:select>
 					<span class="help-inline"><font lor="red">*</font> </span>
 				</div>
@@ -265,7 +256,6 @@ input{padding:0 0; border-width:0; }
 				<!-- Replace "table-1" with any of the design numbers -->
 				<thead>
 					<tr>
-						<th style="width: 14%;" rowspan="2">科目编码</th>
 						<th style="width: 30%;" rowspan="2">会计账本</th>
 						<th style="width: 36%;" colspan="2">期初余额</th>
 						<th style="width: 20%;" rowspan="2">备注</th>
@@ -278,16 +268,16 @@ input{padding:0 0; border-width:0; }
 				<tbody id="bookRecordDetailList">
 				</tbody>
 					<tr>
-						<th class="post_mao" colspan="2">合　　计</th>
-						<td id="sum1"></td>
-						<td id="sum2"></td>
+						<th class="post_mao">合　　计</th>
+						<td id="sum1" align="center"></td>
+						<td id="sum2" align="center"></td>
 						<td ></td>
 					</tr>
 					<tr>
 						<th>备注:</th>
-						<td colspan="5" ><input name="remark" type="text"></td>
+						<td colspan="5" >&nbsp;&nbsp;&nbsp;&nbsp;${bookRecord.remarks}</td>
 					</tr>
-					<tr id="TableRow1" class="fb red t_left">
+					<tr id="TableRow1" class="fb red t_left" hidden>
 						<th id="addLine">增行&nbsp;</th>
                         <td colspan="4"><button id="addBtn" type="button" class="btn btn-primary ml-8" onclick="addRow('#bookRecordDetailList', bookRecordDetailRowIdx, bookRecordDetailTpl);bookRecordDetailRowIdx = bookRecordDetailRowIdx + 1;">增加一行</button></td>
 					</tr>
@@ -299,34 +289,26 @@ input{padding:0 0; border-width:0; }
 								<input id="bookRecordDetailList{{idx}}_id" name="bookRecordDetailList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
 								<input id="bookRecordDetailList{{idx}}_delFlag" name="bookRecordDetailList[{{idx}}].delFlag" type="hidden" value="0"/>
 							</td>
-							<td>
-								<input id="bookRecordDetailList{{idx}}_digest" name="bookRecordDetailList[{{idx}}].digest" type="text" style="border-width:0px;" value="{{row.digest}}" />
+							<td align="center">
+								{{row.book.code}} &nbsp;{{row.bookName}}
 							</td>
-							<td>
-						<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="bookName" labelValue="{{row.bookName}}"
-					title="选择账本" url="/accountant/book/treeData" extId="bookRecordDetailList[{{idx}}]._bookId" cssClass="" allowClear="true"/>
-							<shiro:hasPermission name="accountant:bookRecord:edit">
-								{{#delBtn}}<a href="javascript:;" class="close" onclick="delRow(this, '#bookRecordDetailList{{idx}}')" title="删除本行">&times;</a>{{/delBtn}}
-							</shiro:hasPermission>
-							</td>
-							<td>
-								<input id="bookRecordDetailList{{idx}}_customer" name="bookRecordDetailList[{{idx}}].customer" type="text" value="{{row.customer}}" />
-							</td>
-							<td>
+
+							<td align="center">
 								{{#direction}}
-									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="{{row.amount}}" class="input-small "/>
+									{{row.amount}}
 								{{/direction}}
 								{{^direction}}
-									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text"  class="input-small "/>
 								{{/direction}}
 							</td>
-							<td>
+							<td align="center">
 								{{#direction}}
-									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" class="input-small "/>
 								{{/direction}}
 								{{^direction}}
-									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text"  value="{{row.amount}}"  class="input-small "/>
+									{{row.amount}}
 								{{/direction}}
+							</td>
+							<td align="center" >
+								{{row.remarks}}
 							</td>
 						</tr>//-->
 				</script>

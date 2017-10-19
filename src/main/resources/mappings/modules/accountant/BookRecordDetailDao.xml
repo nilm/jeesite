@@ -8,6 +8,7 @@
 		a.book_id AS "bookId",
 		a.book_id AS "book.id",
 		c.category AS "book.category",
+		c.code AS "book.code",
 		a.amount AS "amount",
 		a.balance AS "balance",
 		a.direction AS "direction",

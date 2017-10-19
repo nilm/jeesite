@@ -10,6 +10,7 @@ import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.money.FundAbacusUtil;
 import com.thinkgem.jeesite.modules.accountant.dao.*;
 import com.thinkgem.jeesite.modules.accountant.entity.*;
+import com.thinkgem.jeesite.modules.accountant.enums.BookRecordType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,8 +127,14 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 						continue;
 					} 
 					bookRecordDetail.setAmount(amount);
-					
 					handleBalance(bookRecordDetail);
+					switch (bookRecord.getBookRecordType()) {
+						case CREATE_OPENING:{
+							bookRecordDetail.setBalance(amount.toString());
+							break;
+						}
+					}
+					bookRecordDetail.setRecordTimestamp(DateUtils.getCurrentTimeMillis());
 //TODO: 规则检验  有左必有右 左右必相等
 					bookRecordDetailDao.insert(bookRecordDetail);
 				}else{
@@ -151,10 +158,9 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 		BizBookTemplate bizBookTemplate4search = new BizBookTemplate();
 		bizBookTemplate4search.setBiz(new Business(bizId));
 		bizBookTemplate4search.setBook(new Book(bookId));
-
 		BizBookTemplate bizBookTemplate = bizBookTemplateDao.findByBizAndBook(bizBookTemplate4search);
-		String direction = bizBookTemplate.getDirection();
 
+		String direction = bizBookTemplate.getDirection();
 		// 获取本账本最后一笔记录
 		List<BookRecordDetail> bookRecordDetails = bookRecordDetailDao.getLastDetailByBook(bookRecordDetail.getBook());
 		BookRecordDetail lastbookRecordDetail = (bookRecordDetails!= null && bookRecordDetails.size()>0) ? bookRecordDetails.get(0):null;
@@ -166,10 +172,7 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 			logger.warn("本账本未进行期初设置");
 			//TODO: 正常情况需要爆出异常， 即需要先设置期初值
 		}
-
 		doPlusOrMinus(bookRecordDetail, initAmont, bookRecordDetail.getAmount(),direction);
-
-		bookRecordDetail.setRecordTimestamp(DateUtils.getCurrentTimeMillis());
 	}
 
 	/**

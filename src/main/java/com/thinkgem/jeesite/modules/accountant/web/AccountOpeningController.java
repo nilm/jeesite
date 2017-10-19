@@ -62,8 +62,23 @@ public class AccountOpeningController extends BaseController {
 	@RequiresPermissions("accountant:bookRecord:view")
 	@RequestMapping(value = {"list", ""})
 	public String view(BookRecord bookRecord, Model model) {
-		model.addAttribute("bookRecord", bookRecord);
 
+		if(bookRecord.getId()==null || "".equals(bookRecord.getId())){
+			BookRecord search = new BookRecord();
+			search.setBookRecordType(BookRecordType.CREATE_OPENING);
+			List<BookRecord> list = bookRecordService.findList(search);
+			if(list!=null && list.size()>0){
+				bookRecord = bookRecordService.get(list.get(0).getId());
+			}
+		}
+		Business business = new Business();
+		business.setDelFlag("0");
+		business.setName("账本期初");
+		List<Business> businesses = businessService.findList(business);
+		Business biz = businesses.get(0);
+		if(bookRecord.getRecordDate()==null) bookRecord.setRecordDate(new Date());
+		model.addAttribute("businesses",businesses);
+		model.addAttribute("bookRecord", bookRecord);
 		return "modules/accountant/accountOpeningList";
 	}
 	/**

@@ -3,7 +3,7 @@ package com.thinkgem.jeesite.modules.accountant.enums;
 
 public enum BookRecordType {
 
-    CREATE_OPENING("建账期初"),OPENING("期初"), DAILY("日常"), CLOSING("期末"),REPORT("报表");
+    CREATE_OPENING("建账期初"), DAILY("日常"), CLOSING("期末"),REPORT("报表");
 
     private String text;
 

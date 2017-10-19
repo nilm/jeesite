@@ -216,7 +216,7 @@ input{padding:0 0; border-width:0; }
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/accountant/bookRecord/">账本记录列表</a></li>
+		<li><a href="${ctx}/accountant/account/">账本记录列表</a></li>
 		<li class="active"><a
 			href="${ctx}/accountant/account/accountForm?id=${bookRecord.id}">会计凭证<shiro:hasPermission
 					name="accountant:bookRecord:edit">${not empty bookRecord.id?'修改':'添加'}</shiro:hasPermission>

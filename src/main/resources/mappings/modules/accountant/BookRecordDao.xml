@@ -12,6 +12,7 @@
 		a.digest AS "digest",
 		a.amount AS "amount",
 		a.status AS "status",
+		a.bookrecord_type AS "bookRecordType",
 		a.attachment_count AS "attachmentCount",
 		a.audit_user_id AS "auditUserId",
 		a.audit_date AS "auditDate",
@@ -59,6 +60,9 @@
 			</if>
 			<if test="status != null and status != ''">
 				AND a.status = #{status}
+			</if>
+			<if test="bookRecordType != null and bookRecordType != ''">
+				AND a.bookrecord_type = #{bookRecordType}
 			</if>
 		</where>
 		<choose>

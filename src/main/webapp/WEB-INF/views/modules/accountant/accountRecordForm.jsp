@@ -120,7 +120,7 @@ input{padding:0 0; border-width:0; }
 	function viewRow(list, idx, tpl, row){
         debugger;
 		$(list).append(Mustache.render(tpl, {
-			idx: idx, delBtn: true, row: row, direction:(row.book.category=='left')
+			idx: idx, delBtn: true, row: row, leftDirection:(row.book.category=='left'),rightDirection:(row.book.category=='right')
 		}));
 		$(list+idx).find("select").each(function(){
 			$(this).val($(this).attr("data-value"));
@@ -303,7 +303,7 @@ input{padding:0 0; border-width:0; }
 						<td >
 							<div class="controls">
 								<sys:ckfinder input="bookRecordAttachmentList_filesPath" type="images" uploadPath="/accountant" selectMultiple="true" maxWidth="100" maxHeight="100"/>
-								<input id="bookRecordAttachmentList_filesPath" name="filesPath" type="hidden" value="" maxlength="200" class="input-small required"/>
+								<input id="bookRecordAttachmentList_filesPath" name="filesPath" type="hidden" value=""  maxlength="200" class="input-small required"/>
 							</div>
 						</td>
 						<th class="post_mao">合　　计</th>
@@ -340,20 +340,20 @@ input{padding:0 0; border-width:0; }
 								<input id="bookRecordDetailList{{idx}}_customer" name="bookRecordDetailList[{{idx}}].customer" type="text" value="{{row.customer}}" />
 							</td>
 							<td>
-								{{#direction}}
+								{{#leftDirection}}
 									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="{{row.amount}}" class="input-small "/>
-								{{/direction}}
-								{{^direction}}
-									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text"  class="input-small "/>
-								{{/direction}}
+								{{/leftDirection}}
+								{{^leftDirection}}
+									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="0"  class="input-small " />
+								{{/leftDirection}}
 							</td>
 							<td>
-								{{#direction}}
-									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" class="input-small "/>
-								{{/direction}}
-								{{^direction}}
+								{{#rightDirection}}
 									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text"  value="{{row.amount}}"  class="input-small "/>
-								{{/direction}}
+								{{/rightDirection}}
+								{{^rightDirection}}
+									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="0"  class="input-small "/>
+								{{/rightDirection}}
 							</td>
 						</tr>//-->
 				</script>

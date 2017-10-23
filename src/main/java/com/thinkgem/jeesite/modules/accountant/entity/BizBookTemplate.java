@@ -23,7 +23,7 @@ public class BizBookTemplate extends DataEntity<BizBookTemplate> {
 	private Office companyId;		// 公司
 	private Business biz;		// 业务 父类
 	private Book book;		// 账本
-	private String direction;		// 方向
+	private String direction;		// 金额方向
 	private String fixed;		// 定选否
 	private String category;		// 账本类型
 	private String selectType;		// 单选 多选

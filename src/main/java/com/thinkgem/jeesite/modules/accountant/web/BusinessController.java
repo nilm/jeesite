@@ -6,8 +6,10 @@ package com.thinkgem.jeesite.modules.accountant.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.accountant.entity.BizBookTemplate;
 import com.thinkgem.jeesite.modules.accountant.entity.Book;
 import com.thinkgem.jeesite.modules.accountant.service.BookService;
+import groovy.text.markup.TemplateConfiguration;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,7 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.accountant.entity.Business;
 import com.thinkgem.jeesite.modules.accountant.service.BusinessService;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -64,6 +67,16 @@ public class BusinessController extends BaseController {
 	@RequiresPermissions("accountant:business:view")
 	@RequestMapping(value = "form")
 	public String form(Business business,Book book, Model model) {
+		List<BizBookTemplate> bizBookTemplateList = business.getBizBookTemplateList();
+		for (BizBookTemplate bizBookTemplate : bizBookTemplateList) {
+			String category = bizBookTemplate.getCategory();
+			if(category.equals(bizBookTemplate.getDirection())){
+				bizBookTemplate.setDirection("1");
+			}else {
+				bizBookTemplate.setDirection("-1");
+			}
+		}
+		business.setBizBookTemplateList(bizBookTemplateList);
 		model.addAttribute("business", business);
 
 

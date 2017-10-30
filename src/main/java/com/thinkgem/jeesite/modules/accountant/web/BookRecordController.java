@@ -170,6 +170,7 @@ public class BookRecordController extends BaseController {
 			BizBookTemplateDto dto = new BizBookTemplateDto();
 			dto.setBizId(template.getBiz().getId());
 			dto.setBookId(template.getBook().getId());
+//			String  lr = template.getBook().getCategory().equals("left")?"左":"右";
 			dto.setBookName(template.getBookName());
 			dto.setDirection(template.getDirection());
 			dto.setLrDirection(template.getLrDirection());

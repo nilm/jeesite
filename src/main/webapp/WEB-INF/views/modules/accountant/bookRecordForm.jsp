@@ -122,7 +122,21 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">业务(摘要)：</label>
+			<label class="control-label">描述摘要：</label>
+			<div class="controls">
+				<form:input path="digest" htmlEscape="false" maxlength="255" class="input-xlarge "/>
+			</div>
+		</div>
+
+
+		<div class="control-group">
+			<label class="control-label">备注：</label>
+			<div class="controls">
+				<form:textarea path="remarks" htmlEscape="false" rows="4" maxlength="255" class="input-xxlarge "/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">标准摘要：</label>
 			<div class="controls">
 				<form:select path="bizId" class="input-xlarge required" >
 					<form:option value="" label=""/>
@@ -144,20 +158,7 @@
 				<form:input path="attachmentCount" htmlEscape="false" maxlength="128" class="input-xlarge "/>
 			</div>
 		</div>
-		<div class="control-group">
-			<label class="control-label">摘要：</label>
-			<div class="controls">
-				<form:input path="digest" htmlEscape="false" maxlength="255" class="input-xlarge "/>
-			</div>
-		</div>
 
-
-		<div class="control-group">
-			<label class="control-label">备注：</label>
-			<div class="controls">
-				<form:textarea path="remarks" htmlEscape="false" rows="4" maxlength="255" class="input-xxlarge "/>
-			</div>
-		</div>
 
 
 		<div class="control-group" id="select_suject">
@@ -173,7 +174,7 @@
 					<thead>
 					<tr>
 						<th class="hide"></th>
-						<th>账本</th>
+						<th>账本名称（科目）</th>
 						<th>金额</th>
 						<shiro:hasPermission name="accountant:bookRecord:edit"><th width="10">&nbsp;</th></shiro:hasPermission>
 					</tr>

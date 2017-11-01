@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.thinkgem.jeesite.common.utils.DateUtils;
+import com.thinkgem.jeesite.common.utils.money.Bead;
 import com.thinkgem.jeesite.common.utils.money.FundAbacusUtil;
 import com.thinkgem.jeesite.modules.accountant.dao.*;
 import com.thinkgem.jeesite.modules.accountant.entity.*;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.StringUtils;
+
+import static com.thinkgem.jeesite.common.utils.money.FundAbacusUtil.*;
 
 /**
  * 账本记录Service
@@ -49,7 +52,8 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 		BookRecord bookRecord = super.get(id);
 		if(bookRecord!=null) {
 			bookRecord.setAttachmentList(attachmentDao.findList(new Attachment(bookRecord)));
-			bookRecord.setBookRecordDetailList(bookRecordDetailDao.findList(new BookRecordDetail(bookRecord)));
+			List<BookRecordDetail> list = bookRecordDetailDao.findList(new BookRecordDetail(bookRecord));
+			bookRecord.setBookRecordDetailList(list);
 		}
 		return bookRecord;
 	}
@@ -110,7 +114,13 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 					bookRecordDetail.preInsert();
 					bookRecordDetail.setCreateDate(bookRecord.getCreateDate());
 					bookRecordDetail.setRecord(bookRecord);
+					bookRecordDetail.setBookRecordType(bookRecord.getBookRecordType());
+
+					String bookId = bookRecordDetail.getBookId();
+					bookRecordDetail.setBook(bookDao.get(bookId));
+
 					String amount = bookRecordDetail.getAmount();
+					String direc="";//此为凭证的左右方向
 					try {
 						if(amount.contains(",")){
 							String[] amounts = amount.split(",");
@@ -118,22 +128,48 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 								continue;
 							}else if(amounts.length==1) {
 								amount=amounts[0];
+								direc="left";
 							}else {
-								BigDecimal rightAmount=new BigDecimal(amounts[1]);
-								amount=rightAmount+"";
+								BigDecimal leftAmount= "".equals(amounts[0]) ? new BigDecimal(0) : new BigDecimal(amounts[0]);
+								BigDecimal rightAmount= "".equals(amounts[1]) ? new BigDecimal(0) : new BigDecimal(amounts[1]);
+								if(leftAmount.compareTo(BigDecimal.ZERO)==0 && rightAmount.compareTo(BigDecimal.ZERO)==0){
+									//左右金额都为0
+								}else if (leftAmount.compareTo(BigDecimal.ZERO)!=0 && rightAmount.compareTo(BigDecimal.ZERO)==0){
+									//左金额不为0
+									amount=leftAmount+"";
+									direc="left";
+								}else if (leftAmount.compareTo(BigDecimal.ZERO)==0 && rightAmount.compareTo(BigDecimal.ZERO)!=0){
+									//右金额不为0
+									amount=rightAmount+"";
+									direc="right";
+								}
 							}
+						}else {
+							// 获取业务模板
+							String bizId = bookRecordDetail.getRecord().getBizId();
+							// 根据业务 与 账本 查询 业务模板
+							BizBookTemplate bizBookTemplate4search = new BizBookTemplate();
+							bizBookTemplate4search.setBiz(new Business(bizId));
+							bizBookTemplate4search.setBook(new Book(bookId));
+							BizBookTemplate bizBookTemplate = bizBookTemplateDao.findByBizAndBook(bizBookTemplate4search);
+							if(bizBookTemplate!=null){
+								direc=bizBookTemplate.getDirection();
+							}
+
 						}
+						bookRecordDetail.setDirection(direc);
+						bookRecordDetail.setAmount(amount);
 					} catch (NullPointerException e) {
 						continue;
 					} 
-					bookRecordDetail.setAmount(amount);
+
 					handleBalance(bookRecordDetail);
-					switch (bookRecord.getBookRecordType()) {
-						case CREATE_OPENING:{
-							bookRecordDetail.setBalance(amount.toString());
-							break;
-						}
-					}
+//					switch (bookRecord.getBookRecordType()) {
+//						case CREATE_OPENING:{
+//							bookRecordDetail.setBalance(amount.toString());
+//							break;
+//						}
+//					}
 					bookRecordDetail.setRecordTimestamp(DateUtils.getCurrentTimeMillis());
 //TODO: 规则检验  有左必有右 左右必相等
 					bookRecordDetailDao.insert(bookRecordDetail);
@@ -150,19 +186,10 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 	}
 
 	private void handleBalance(BookRecordDetail bookRecordDetail) {
-		// 获取业务模板
-		String bizId = bookRecordDetail.getRecord().getBizId();
-		String bookId = bookRecordDetail.getBookId();
-		bookRecordDetail.setBook(bookDao.get(bookId));
-		// 根据业务 与 账本 查询 业务模板
-		BizBookTemplate bizBookTemplate4search = new BizBookTemplate();
-		bizBookTemplate4search.setBiz(new Business(bizId));
-		bizBookTemplate4search.setBook(new Book(bookId));
-		BizBookTemplate bizBookTemplate = bizBookTemplateDao.findByBizAndBook(bizBookTemplate4search);
 
-		String direction = bizBookTemplate.getDirection();
+
 		// 获取本账本最后一笔记录
-		List<BookRecordDetail> bookRecordDetails = bookRecordDetailDao.getLastDetailByBook(bookRecordDetail.getBook());
+		List<BookRecordDetail> bookRecordDetails = bookRecordDetailDao.getLastDetailByBook(bookRecordDetail);
 		BookRecordDetail lastbookRecordDetail = (bookRecordDetails!= null && bookRecordDetails.size()>0) ? bookRecordDetails.get(0):null;
 		BigDecimal initAmont = BigDecimal.ZERO;
 		if (lastbookRecordDetail != null ){
@@ -172,7 +199,7 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 			logger.warn("本账本未进行期初设置");
 			//TODO: 正常情况需要爆出异常， 即需要先设置期初值
 		}
-		doPlusOrMinus(bookRecordDetail, initAmont, bookRecordDetail.getAmount(),direction);
+		doPlusOrMinus_v2(bookRecordDetail, initAmont);
 	}
 
 	/**
@@ -186,13 +213,29 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 		BigDecimal finalBalance = BigDecimal.ZERO;
 		//本账本在本业务的增减方向 1 增 -1减  对应字典 accountant_biz_plus_minus
 		if("1".equals(direction)){
-			finalBalance = FundAbacusUtil.add(initAmont,bookRecordDetail.getAmount());
+			finalBalance = add(initAmont,bookRecordDetail.getAmount());
 			bookRecordDetail.setDirection("1");
 		}else {
-			finalBalance = FundAbacusUtil.subtract(initAmont,bookRecordDetail.getAmount());
+			finalBalance = subtract(initAmont,bookRecordDetail.getAmount());
 			bookRecordDetail.setDirection("-1");
 		}
 		bookRecordDetail.setBalance(finalBalance.toString());
+	}
+
+	/**
+	 *
+	 * @param bookRecordDetail
+	 * @param initAmont
+	 */
+	private void doPlusOrMinus_v2(BookRecordDetail bookRecordDetail,BigDecimal initAmont){
+		BigDecimal finalBalance = BigDecimal.ZERO;
+		//栏位方向与账本方向一致为增，不一致为减
+		if(bookRecordDetail.getDirection().equalsIgnoreCase(bookRecordDetail.getBook().getCategory())){
+			finalBalance = add(initAmont,bookRecordDetail.getAmount());
+		}else {
+			finalBalance = subtract(initAmont,bookRecordDetail.getAmount());
+		}
+		bookRecordDetail.setBalance(finalBalance.toString())
 	}
 
 	@Transactional(readOnly = false)

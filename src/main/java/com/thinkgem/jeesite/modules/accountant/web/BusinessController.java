@@ -78,8 +78,6 @@ public class BusinessController extends BaseController {
 		}
 		business.setBizBookTemplateList(bizBookTemplateList);
 		model.addAttribute("business", business);
-
-
 		if (book.getParent()!=null && StringUtils.isNotBlank(book.getParent().getId())){
 			book.setParent(bookService.get(book.getParent().getId()));
 			// 获取排序号，最末节点排序号+30
@@ -108,6 +106,16 @@ public class BusinessController extends BaseController {
 	public String save(Business business, Model model, RedirectAttributes redirectAttributes) {
 		if (!beanValidator(model, business)){
 			return form(business,null, model);
+		}
+		List<BizBookTemplate> bizBookTemplateList = business.getBizBookTemplateList();
+		for (BizBookTemplate bizBookTemplate : bizBookTemplateList) {
+			String category = bizBookTemplate.getCategory();
+			if("1".equals(bizBookTemplate.getDirection())){
+				bizBookTemplate.setDirection(category);
+			}else if("-1".equals(bizBookTemplate.getDirection())){
+				if("right".equals(category)) bizBookTemplate.setDirection("left");
+				else if ("left".equals(category)) bizBookTemplate.setDirection("right");
+			}
 		}
 		businessService.save(business);
 		addMessage(redirectAttributes, "保存会计业务成功");

@@ -96,6 +96,7 @@ input{padding:0 0; border-width:0; }
 	    	}
 	    });
 	});
+
 	function calcu(){
 		var amount=$("#amount").val();
 		document.getElementById("sum1").innerHTML = amount;
@@ -120,7 +121,7 @@ input{padding:0 0; border-width:0; }
 	function viewRow(list, idx, tpl, row){
         debugger;
 		$(list).append(Mustache.render(tpl, {
-			idx: idx, delBtn: true, row: row, leftDirection:(row.book.category=='left'),rightDirection:(row.book.category=='right')
+			idx: idx, delBtn: true, row: row, leftDirection:(row.direction=='left'),rightDirection:(row.direction=='right')
 		}));
 		$(list+idx).find("select").each(function(){
 			$(this).val($(this).attr("data-value"));
@@ -252,7 +253,7 @@ input{padding:0 0; border-width:0; }
 		</tr>
 	</tbody></table>
 	<br>
-	<form:form  id="inputForm" modelAttribute="bookRecord" action="${ctx}/accountant/bookRecord/save" method="post"  class="form-horizontal">
+	<form:form  id="inputForm" modelAttribute="bookRecord" action="${ctx}/accountant/account/save" method="post"  class="form-horizontal">
 		<input type="hidden" id="id" name="id" value="${bookRecord.id }">
 		<input id="amount" type="hidden" value="${bookRecord.amount }" name="amount" >
 		<sys:message content="${message}"/>	
@@ -261,7 +262,7 @@ input{padding:0 0; border-width:0; }
 				style="width: 100%; margin: 0px 0px 0px 0px; font-weight: bold; font-size: large; color: #666666; text-align: center;">
 				记账时间： <input name="recordDate" type="text" readonly="readonly" style="align-self: center;"
 					maxlength="20" class="input-medium Wdate required"
-					value="<fmt:formatDate value="${bookRecord.recordDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"
+					value="<fmt:formatDate value="${bookRecord.recordDate}" pattern="yyyy-MM-dd"/>"
 					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" />
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
@@ -281,7 +282,7 @@ input{padding:0 0; border-width:0; }
 					<form:select path="bizId" class="input-xlarge required" >
 						<form:option value="" label=""/>
 						<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
-					</form:select>${bookRecord.bizId}
+					</form:select>
 					<span class="help-inline"><font lor="red">*</font> </span>
 				</div>
 			</div>
@@ -312,7 +313,7 @@ input{padding:0 0; border-width:0; }
 					</tr>
 					<tr>
 						<th>备注:</th>
-						<td colspan="5" ><input name="remark" type="text"></td>
+						<td colspan="5" ><input name="remarks" value="${bookRecord.remarks}" type="text"></td>
 					</tr>
 					<tr id="TableRow1" class="fb red t_left">
 						<th id="addLine">增行&nbsp;</th>
@@ -327,7 +328,7 @@ input{padding:0 0; border-width:0; }
 								<input id="bookRecordDetailList{{idx}}_delFlag" name="bookRecordDetailList[{{idx}}].delFlag" type="hidden" value="0"/>
 							</td>
 							<td>
-								<input id="bookRecordDetailList{{idx}}_digest" name="bookRecordDetailList[{{idx}}].digest" type="text" style="border-width:0px;" value="{{row.digest}}" />
+								<input id="bookRecordDetailList{{idx}}_remarks" name="bookRecordDetailList[{{idx}}].remarks" type="text" style="border-width:0px;" value="{{row.remarks}}" />
 							</td>
 							<td>
 						<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="bookName" labelValue="{{row.bookName}}"
@@ -344,7 +345,7 @@ input{padding:0 0; border-width:0; }
 									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="{{row.amount}}" class="input-small "/>
 								{{/leftDirection}}
 								{{^leftDirection}}
-									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="0"  class="input-small " />
+									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value=""  class="input-small " />
 								{{/leftDirection}}
 							</td>
 							<td>
@@ -352,7 +353,7 @@ input{padding:0 0; border-width:0; }
 									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text"  value="{{row.amount}}"  class="input-small "/>
 								{{/rightDirection}}
 								{{^rightDirection}}
-									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="0"  class="input-small "/>
+									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value=""   class="input-small "/>
 								{{/rightDirection}}
 							</td>
 						</tr>//-->
@@ -367,10 +368,10 @@ input{padding:0 0; border-width:0; }
                         }
                         var length = $("#form tbody tr").length-3;
                         if(length<4){
-                        	num=4-length;
-                        	 for(var i = 0; i < num; i++){
-                        		 $("#addBtn").click();
-                        	 }
+                            num=4-length;
+                            for(var i = 0; i < num; i++){
+                                $("#addBtn").click();
+                            }
                         }
                         calcu();
                     });

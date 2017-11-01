@@ -40,6 +40,8 @@ public class AccountOpeningController extends BaseController {
 	@Autowired
 	private BookService bookervice;
 
+
+
 	@ModelAttribute
 	public BookRecord get(@RequestParam(required=false) String id) {
 		BookRecord entity = null;

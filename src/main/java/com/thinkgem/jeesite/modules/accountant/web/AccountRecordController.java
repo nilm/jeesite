@@ -1,5 +1,6 @@
 package com.thinkgem.jeesite.modules.accountant.web;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -83,6 +84,7 @@ public class AccountRecordController  extends BaseController {
 	@RequiresPermissions("accountant:bookRecord:view")
 	@RequestMapping(value = "accountForm")
 	public String accountForm(BookRecord bookRecord, Model model) {
+		bookRecord.setRecordDate(new Date());
 		model.addAttribute("bookRecord", bookRecord);
 		Business business = new Business();
 		business.setDelFlag("0");
@@ -118,7 +120,7 @@ public class AccountRecordController  extends BaseController {
 		}
 		bookRecordService.save(bookRecord,filesPath);
 		addMessage(redirectAttributes, "保存账本记录成功");
-		return "redirect:"+Global.getAdminPath()+"/accountant/bookRecord/?repage";
+		return "redirect:"+Global.getAdminPath()+"/accountant/account/?repage";
 	}
 	
 	

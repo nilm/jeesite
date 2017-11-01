@@ -120,7 +120,7 @@ input{padding:0 0; border-width:0; }
 	}
 	function viewRow(list, idx, tpl, row){
 		$(list).append(Mustache.render(tpl, {
-			idx: idx, delBtn: true, row: row, direction:(row.book.category=='left')
+			idx: idx, delBtn: true, row: row, leftDirection:(row.direction=='left'),rightDirection:(row.direction=='right')
 		}));
 		$(list+idx).find("select").each(function(){
 			$(this).val($(this).attr("data-value"));
@@ -325,20 +325,20 @@ input{padding:0 0; border-width:0; }
 							</td>
 
 							<td>
-								{{#direction}}
+								{{#leftDirection}}
 									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="{{row.amount}}" class="input-small "/>
-								{{/direction}}
-								{{^direction}}
-									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text"  class="input-small "/>
-								{{/direction}}
+								{{/leftDirection}}
+								{{^leftDirection}}
+									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value=""  class="input-small " />
+								{{/leftDirection}}
 							</td>
 							<td>
-								{{#direction}}
-									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" class="input-small "/>
-								{{/direction}}
-								{{^direction}}
+								{{#rightDirection}}
 									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text"  value="{{row.amount}}"  class="input-small "/>
-								{{/direction}}
+								{{/rightDirection}}
+								{{^rightDirection}}
+									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value=""   class="input-small "/>
+								{{/rightDirection}}
 							</td>
 							<td>
 								<input id="bookRecordDetailList{{idx}}_remarks" name="bookRecordDetailList[{{idx}}].remarks" type="text" style="border-width:0px;" value="{{row.remarks}}" />

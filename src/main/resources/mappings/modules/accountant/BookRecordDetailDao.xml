@@ -12,6 +12,7 @@
 		a.amount AS "amount",
 		a.balance AS "balance",
 		a.direction AS "direction",
+		a.bookrecord_type AS "bookRecordType",
 		a.remarks AS "remarks",
 		a.create_date AS "createDate",
 		a.del_flag AS "delFlag",
@@ -80,6 +81,9 @@
 		<include refid="bookRecordDetailJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="book !=null and book.id != null and book.id != ''">
+				AND a.book_id = #{bookId}
+			</if>
 		</where>
 			  ORDER BY record_timestamp DESC limit 0,1
 	</select>
@@ -89,6 +93,7 @@
 			record_id,
 			book_id,
 			amount,
+			bookrecord_type,
 			balance,
 			direction,
 			record_timestamp,
@@ -99,6 +104,7 @@
 			#{record.id},
 			#{book.id},
 			#{amount},
+			#{bookRecordType},
 			#{balance},
 			#{direction},
 			#{recordTimestamp},

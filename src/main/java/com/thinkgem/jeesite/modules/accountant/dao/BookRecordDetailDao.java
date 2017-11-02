@@ -23,6 +23,6 @@ public interface BookRecordDetailDao extends CrudDao<BookRecordDetail> {
      * @param book
      * @return
      */
-    public List<BookRecordDetail> getLastDetailByBook(Book book);
+    public List<BookRecordDetail> getLastDetailByBook(BookRecordDetail book);
 
 }

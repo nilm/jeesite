@@ -68,7 +68,7 @@
 			$(list+idx).find("select").each(function(){
 				$(this).val($(this).attr("data-value"));
 			});
-			$(list+idx).find("input[type='checkbox'], input[type='radio']").each(function(){
+			$(list+idx).find("input[enums='checkbox'], input[enums='radio']").each(function(){
 				var ss = $(this).attr("data-value").split(',');
 				for (var i=0; i<ss.length; i++){
 					if($(this).val() == ss[i]){
@@ -227,17 +227,17 @@
 					<script type="text/template" id="attachmentTpl">//<!--
 						<tr id="attachmentList{{idx}}">
 							<td class="hide">
-								<input id="attachmentList{{idx}}_id" name="attachmentList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
-								<input id="attachmentList{{idx}}_delFlag" name="attachmentList[{{idx}}].delFlag" type="hidden" value="0"/>
+								<input id="attachmentList{{idx}}_id" name="attachmentList[{{idx}}].id" enums="hidden" value="{{row.id}}"/>
+								<input id="attachmentList{{idx}}_delFlag" name="attachmentList[{{idx}}].delFlag" enums="hidden" value="0"/>
 							</td>
 							<td>
-								<input id="attachmentList{{idx}}_sourceDocId" name="attachmentList[{{idx}}].sourceDocId" type="text" value="{{row.sourceDocId}}" maxlength="64" class="input-small required"/>
+								<input id="attachmentList{{idx}}_sourceDocId" name="attachmentList[{{idx}}].sourceDocId" enums="text" value="{{row.sourceDocId}}" maxlength="64" class="input-small required"/>
 							</td>
 							<td>
-								<input id="attachmentList{{idx}}_filesPath" name="attachmentList[{{idx}}].filesPath" type="text" value="{{row.filesPath}}" maxlength="200" class="input-small required"/>
+								<input id="attachmentList{{idx}}_filesPath" name="attachmentList[{{idx}}].filesPath" enums="text" value="{{row.filesPath}}" maxlength="200" class="input-small required"/>
 							</td>
 							<td>
-								<input id="attachmentList{{idx}}_type" name="attachmentList[{{idx}}].type" type="text" value="{{row.type}}" maxlength="125" class="input-small required"/>
+								<input id="attachmentList{{idx}}_type" name="attachmentList[{{idx}}].enums" enums="text" value="{{row.enums}}" maxlength="125" class="input-small required"/>
 							</td>
 							<td>
 								<textarea id="attachmentList{{idx}}_remarks" name="attachmentList[{{idx}}].remarks" rows="4" maxlength="255" class="input-small ">{{row.remarks}}</textarea>
@@ -282,18 +282,18 @@
 					<script type="text/template" id="bookRecordDetailTpl">//<!--
 						<tr id="bookRecordDetailList{{idx}}">
 							<td class="hide">
-								<input id="bookRecordDetailList{{idx}}_id" name="bookRecordDetailList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
-								<input id="bookRecordDetailList{{idx}}_delFlag" name="bookRecordDetailList[{{idx}}].delFlag" type="hidden" value="0"/>
+								<input id="bookRecordDetailList{{idx}}_id" name="bookRecordDetailList[{{idx}}].id" enums="hidden" value="{{row.id}}"/>
+								<input id="bookRecordDetailList{{idx}}_delFlag" name="bookRecordDetailList[{{idx}}].delFlag" enums="hidden" value="0"/>
 							</td>
 							<td>
-								<input id="bookRecordDetailList{{idx}}_amount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="{{row.amount}}" class="input-small required"/>
+								<input id="bookRecordDetailList{{idx}}_amount" name="bookRecordDetailList[{{idx}}].amount" enums="text" value="{{row.amount}}" class="input-small required"/>
 							</td>
 							<td>
-								<input id="bookRecordDetailList{{idx}}_balance" name="bookRecordDetailList[{{idx}}].balance" type="text" value="{{row.balance}}" class="input-small required"/>
+								<input id="bookRecordDetailList{{idx}}_balance" name="bookRecordDetailList[{{idx}}].balance" enums="text" value="{{row.balance}}" class="input-small required"/>
 							</td>
 							<td>
 								<c:forEach items="${fns:getDictList('accountant_left_right')}" var="dict" varStatus="dictStatus">
-									<span><input id="bookRecordDetailList{{idx}}_direction${dictStatus.index}" name="bookRecordDetailList[{{idx}}].direction" type="radio" value="${dict.value}" data-value="{{row.direction}}"><label for="bookRecordDetailList{{idx}}_direction${dictStatus.index}">${dict.label}</label></span>
+									<span><input id="bookRecordDetailList{{idx}}_direction${dictStatus.index}" name="bookRecordDetailList[{{idx}}].direction" enums="radio" value="${dict.value}" data-value="{{row.direction}}"><label for="bookRecordDetailList{{idx}}_direction${dictStatus.index}">${dict.label}</label></span>
 								</c:forEach>
 							</td>
 							<td>

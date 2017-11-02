@@ -8,7 +8,9 @@
 		a.company_id AS "companyId",
 		a.biz_id AS "biz.id",
 		a.book_id AS "book.id",
+		book.code AS "book.code",
 		book.name AS "bookName",
+		book.category AS "book.category",
 		a.direction AS "direction",
 		a.fixed AS "fixed",
 		a.category AS "category",
@@ -77,8 +79,9 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.create_date ASC
+				ORDER BY field(a.category,'left','right',''), a.create_date ASC
 			</otherwise>
+
 		</choose>
 	</select>
 	

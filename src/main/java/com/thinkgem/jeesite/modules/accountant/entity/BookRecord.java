@@ -6,6 +6,8 @@ package com.thinkgem.jeesite.modules.accountant.entity;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.validation.constraints.NotNull;
+
+import com.thinkgem.jeesite.modules.accountant.enums.BookRecordType;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
 import org.hibernate.validator.constraints.Length;
@@ -37,13 +39,21 @@ public class BookRecord extends DataEntity<BookRecord> {
 	private Date assignDate;		// 分配时间
 	private List<Attachment> attachmentList = Lists.newArrayList();		// 子表列表
 	private List<BookRecordDetail> bookRecordDetailList = Lists.newArrayList();		// 子表列表
-	
+	private BookRecordType bookRecordType=BookRecordType.DAILY; //账本记录类型
 	public BookRecord() {
 		super();
 	}
 
 	public BookRecord(String id){
 		super(id);
+	}
+
+	public BookRecordType getBookRecordType() {
+		return bookRecordType;
+	}
+
+	public void setBookRecordType(BookRecordType bookRecordType) {
+		this.bookRecordType = bookRecordType;
 	}
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

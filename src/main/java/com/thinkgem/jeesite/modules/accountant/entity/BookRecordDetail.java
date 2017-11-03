@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.accountant.entity;
 
+import com.thinkgem.jeesite.modules.accountant.enums.BookRecordType;
 import org.hibernate.validator.constraints.Length;
 
 import com.thinkgem.jeesite.common.persistence.DataEntity;
@@ -24,6 +25,7 @@ public class BookRecordDetail extends DataEntity<BookRecordDetail> {
 	private String direction;		// 栏类型 left right
 	private Date createDate;
 	private long recordTimestamp;
+	private BookRecordType bookRecordType=BookRecordType.DAILY;
 
 	private String bookId;
 	private String bookName;
@@ -38,6 +40,14 @@ public class BookRecordDetail extends DataEntity<BookRecordDetail> {
 
 	public BookRecordDetail(BookRecord record){
 		this.record = record;
+	}
+
+	public BookRecordType getBookRecordType() {
+		return bookRecordType;
+	}
+
+	public void setBookRecordType(BookRecordType bookRecordType) {
+		this.bookRecordType = bookRecordType;
 	}
 
 	public BookRecord getRecord() {

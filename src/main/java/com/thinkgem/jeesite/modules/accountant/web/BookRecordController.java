@@ -50,8 +50,6 @@ public class BookRecordController extends BaseController {
 	private BusinessService businessService;
 	@Autowired
 	private BizBookTemplateService bizBookTemplateService;
-	@Autowired
-	private BookService bookService;
 	
 	@ModelAttribute
 	public BookRecord get(@RequestParam(required=false) String id) {
@@ -170,7 +168,7 @@ public class BookRecordController extends BaseController {
 			BizBookTemplateDto dto = new BizBookTemplateDto();
 			dto.setBizId(template.getBiz().getId());
 			dto.setBookId(template.getBook().getId());
-			dto.setBookName(template.getBookName());
+			dto.setBookName(template.getBook().getCode()+" "+template.getBookName());
 			dto.setDirection(template.getDirection());
 			dto.setLrDirection(template.getLrDirection());
 			dto.setFixed(template.getFixed());

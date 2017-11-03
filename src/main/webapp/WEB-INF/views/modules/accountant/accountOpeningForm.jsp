@@ -33,26 +33,18 @@ input{padding:0 0; border-width:0; }
 <script type="text/javascript">
 	
 	$(document).ready(function() {
+	    debugger;
 		var idStr=$("#id").val();
 		var id=parseInt(idStr);
 	    if(isNaN(id)){
 		    initTable();
 	    }
-		/* $(document).on('input', 'input', function(){
-		     var _index = $(this).parent().index();
-             var tempTotal = 0;
-             $('#form tr').each(function(item, index){
-                 tempTotal += ~~($(index).find('td').eq(_index).find('input').val());
-             });
-             console.log(tempTotal);
-             document.getElementById("sum"+(_index-3)).innerHTML = tempTotal;
-		}); */
 		$(document).on('keyup', 'input', function(){
-            
+            console.log($(this).val());
 			var _index = $(this).parent().index();
 			var tempTotal = 0, rowNum = $('#form tr').size()-3;
 			$('#form tr').each(function(item, index){
-				if(item !== 0 && item < rowNum ){
+				if(item !== 0 && item < rowNum && item > 1){
                     var currentNum = $(index).find('td').eq(_index).find('input').val();
                     currentNum = currentNum === ''?0:currentNum;
 					tempTotal += parseFloat(currentNum);
@@ -60,7 +52,7 @@ input{padding:0 0; border-width:0; }
 				
 			});
 			console.log(tempTotal);
-			document.getElementById("sum"+(_index-3)).innerHTML = tempTotal.toFixed(2);
+			document.getElementById("sum"+(_index-1)).innerHTML = tempTotal.toFixed(2);
 		});
 		$("#inputForm").validate({
 			submitHandler: function(form){
@@ -88,15 +80,23 @@ input{padding:0 0; border-width:0; }
 	    $("#saveBtn").click(function(){
 	    	var sum1=parseFloat($("#sum1").text());
 	    	var sum2=parseFloat($("#sum2").text());
-	    	if(sum1==sum2){
-	    		document.getElementById("amount").value=sum1+"";
-		    	$("#inputForm").submit();
-	    	}else{
-	    		alert("左右金额总额不相等，请检查平衡");
-	    	}
+	    	if(sum1==0 && sum2==0){
+                alert("没有录入金额，请检查核对！");
+			}else {
+                if(sum1==sum2){
+                    document.getElementById("amount").value=sum1+"";
+                    $("#inputForm").submit();
+                }else{
+                    alert("左右金额总额不相等，请检查平衡！");
+                }
+            }
 	    });
+	    //alert($("#bizId").val());
+		debugger;
+        if(isNaN(id)){
+        	initFirstSelectItem($("#bizId").val());
+        }
 	});
-
 	function calcu(){
 		var amount=$("#amount").val();
 		document.getElementById("sum1").innerHTML = amount;
@@ -119,7 +119,6 @@ input{padding:0 0; border-width:0; }
 	    $(list+idx+"_"+name).val(val);
 	}
 	function viewRow(list, idx, tpl, row){
-        debugger;
 		$(list).append(Mustache.render(tpl, {
 			idx: idx, delBtn: true, row: row, leftDirection:(row.direction=='left'),rightDirection:(row.direction=='right')
 		}));
@@ -217,18 +216,18 @@ input{padding:0 0; border-width:0; }
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/accountant/account/">账本记录列表</a></li>
+		<li ><a href="${ctx}/accountant/opening/">期初预览</a></li>
 		<li class="active"><a
-			href="${ctx}/accountant/account/accountForm?id=${bookRecord.id}">会计凭证<shiro:hasPermission
-					name="accountant:bookRecord:edit">${not empty bookRecord.id?'修改':'添加'}</shiro:hasPermission>
-				<shiro:lacksPermission name="accountant:bookRecord:edit">查看</shiro:lacksPermission></a></li>
+				href="${ctx}/accountant/opening/form?id=${bookRecord.id}">期初<shiro:hasPermission
+				name="accountant:bookRecord:edit">${not empty bookRecord.id?'修改':'添加'}</shiro:hasPermission>
+			<shiro:lacksPermission name="accountant:bookRecord:edit">查看</shiro:lacksPermission></a></li>
 	</ul>
 	<br />
 	
 	<div id="dNewShowTitle"
 		style="width: 100%; margin: 0px 0px 0px 0px; font-weight: bold; font-size: large; color: #666666; text-align: center;">
-		会计凭证</div>
-	<br>	
+		科目期初</div>
+	<br>
 	<table  style="width:525px;;margin-top: 1px;;" >
 		<tbody><tr>
 			<td style="display:none;"><a class="btn btn-primary" >首页</a></td>
@@ -251,37 +250,27 @@ input{padding:0 0; border-width:0; }
 				<input id="btnCancel" class="btn" type="button" value="关闭" onclick="history.go(-1)"/>
 			</td>
 		</tr>
-	</tbody></table>
+		</tbody></table>
 	<br>
-	<form:form  id="inputForm" modelAttribute="bookRecord" action="${ctx}/accountant/account/save" method="post"  class="form-horizontal">
+	<form:form  id="inputForm" modelAttribute="bookRecord" action="${ctx}/accountant/opening/save" method="post"  class="form-horizontal">
 		<input type="hidden" id="id" name="id" value="${bookRecord.id }">
 		<input id="amount" type="hidden" value="${bookRecord.amount }" name="amount" >
 		<sys:message content="${message}"/>	
 		<div class="control-group" >
 			<div id="dNewShowTitle"
 				style="width: 100%; margin: 0px 0px 0px 0px; font-weight: bold; font-size: large; color: #666666; text-align: center;">
-				记账时间： <input name="recordDate" type="text" readonly="readonly" style="align-self: center;"
+				记录时间： <input name="recordDate" type="text" readonly="readonly" style="align-self: center;"
 					maxlength="20" class="input-medium Wdate required"
 					value="<fmt:formatDate value="${bookRecord.recordDate}" pattern="yyyy-MM-dd"/>"
 					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" />
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 			<div class="control-group" align="left">
-			<%-- <form:select path="bizId" class="input-xlarge required" >
-					<form:option value="" label=""/>
-					<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
-				</form:select> --%>
-				<%-- <select name="bizId" id="bizId" style="width: 200px;">
-					<option value="">请选择...</option>
-					<c:forEach items="${businesses}" var="biz">
-						<option value="${biz.id}">${biz.name}</option>
-					</c:forEach>
-				</select> --%>
 				<div style="align-self: auto;">
 				&nbsp;&nbsp;业务：
 					<form:select path="bizId" class="input-xlarge required" >
-						<form:option value="" label=""/>
-						<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape="false"/>
+						<%--<form:option value="" label=""/>--%>
+						<form:options items="${businesses}" itemLabel="name" itemValue="id" htmlEscape=" "/>
 					</form:select>
 					<span class="help-inline"><font lor="red">*</font> </span>
 				</div>
@@ -290,9 +279,12 @@ input{padding:0 0; border-width:0; }
 				<!-- Replace "table-1" with any of the design numbers -->
 				<thead>
 					<tr>
-						<th style="width: 14%;">摘要</th>
-						<th style="width: 30%;">会计账本</th>
-						<th style="width: 20%;">往来单位</th>
+						<%--<th style="width: 14%;" rowspan="2">类别</th>--%>
+						<th style="width: 30%;" rowspan="2">会计账本</th>
+						<th style="width: 36%;" colspan="2">期初余额</th>
+						<th style="width: 20%;" rowspan="2">备注</th>
+					</tr>
+					<tr>
 						<th style="width: 18%;">左方金额</th>
 						<th style="width: 18%;">右方金额</th>
 					</tr>
@@ -300,16 +292,10 @@ input{padding:0 0; border-width:0; }
 				<tbody id="bookRecordDetailList">
 				</tbody>
 					<tr>
-						<th>附件:</th>
-						<td >
-							<div class="controls">
-								<sys:ckfinder input="bookRecordAttachmentList_filesPath" type="images" uploadPath="/accountant" selectMultiple="true" maxWidth="100" maxHeight="100"/>
-								<input id="bookRecordAttachmentList_filesPath" name="filesPath" type="hidden" value=""  maxlength="200" class="input-small required"/>
-							</div>
-						</td>
 						<th class="post_mao">合　　计</th>
-						<td id="sum1" ></td>
+						<td id="sum1"></td>
 						<td id="sum2"></td>
+						<td ></td>
 					</tr>
 					<tr>
 						<th>备注:</th>
@@ -327,19 +313,17 @@ input{padding:0 0; border-width:0; }
 								<input id="bookRecordDetailList{{idx}}_id" name="bookRecordDetailList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
 								<input id="bookRecordDetailList{{idx}}_delFlag" name="bookRecordDetailList[{{idx}}].delFlag" type="hidden" value="0"/>
 							</td>
+							<%--<td>
+								<input id="bookRecordDetailList{{idx}}_remark" name="bookRecordDetailList[{{idx}}].digest" enums="text" style="border-width:0px;" value="{{row.digest}}" />
+							</td>--%>
 							<td>
-								<input id="bookRecordDetailList{{idx}}_remarks" name="bookRecordDetailList[{{idx}}].remarks" type="text" style="border-width:0px;" value="{{row.remarks}}" />
-							</td>
-							<td>
-						<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="bookName" labelValue="{{row.bookName}}"
-					title="选择账本" url="/accountant/book/treeData" extId="bookRecordDetailList[{{idx}}]._bookId" cssClass="" allowClear="true"/>
+								<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="" labelValue="{{row.book.code}} {{row.bookName}}"
+							title="选择账本" url="/accountant/book/treeData"  cssClass="" allowClear="true"/>
 							<shiro:hasPermission name="accountant:bookRecord:edit">
 								{{#delBtn}}<a href="javascript:;" class="close" onclick="delRow(this, '#bookRecordDetailList{{idx}}')" title="删除本行">&times;</a>{{/delBtn}}
 							</shiro:hasPermission>
 							</td>
-							<td>
-								<input id="bookRecordDetailList{{idx}}_customer" name="bookRecordDetailList[{{idx}}].customer" type="text" value="{{row.customer}}" />
-							</td>
+
 							<td>
 								{{#leftDirection}}
 									<input id="bookRecordDetailList{{idx}}_leftAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="{{row.amount}}" class="input-small "/>
@@ -356,22 +340,27 @@ input{padding:0 0; border-width:0; }
 									<input id="bookRecordDetailList{{idx}}_rightAmount" name="bookRecordDetailList[{{idx}}].amount" type="text" value=""   class="input-small "/>
 								{{/rightDirection}}
 							</td>
+							<td>
+								<input id="bookRecordDetailList{{idx}}_remarks" name="bookRecordDetailList[{{idx}}].remarks" type="text" style="border-width:0px;" value="{{row.remarks}}" />
+							</td>
 						</tr>//-->
 				</script>
 				<script type="text/javascript">
                     var bookRecordDetailRowIdx = 0, bookRecordDetailTpl = $("#bookRecordDetailTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
                     $(document).ready(function() {
                         var data = ${fns:toJson(bookRecord.bookRecordDetailList)};
+                        debugger;
                         for (var i=0; i<data.length; i++){
                             viewRow('#bookRecordDetailList', bookRecordDetailRowIdx, bookRecordDetailTpl, data[i]);
                             bookRecordDetailRowIdx = bookRecordDetailRowIdx + 1;
                         }
                         var length = $("#form tbody tr").length-3;
+
                         if(length<4){
-                            num=4-length;
-                            for(var i = 0; i < num; i++){
-                                $("#addBtn").click();
-                            }
+                        	num=4-length;
+                        	 for(var i = 0; i < num; i++){
+                        		 $("#addBtn").click();
+                        	 }
                         }
                         calcu();
                     });

@@ -20,7 +20,6 @@
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/accountant/bookRecord/">账本记录列表</a></li>
 		<shiro:hasPermission name="accountant:bookRecord:edit"><li><a href="${ctx}/accountant/bookRecord/form">账本记录添加</a></li></shiro:hasPermission>
-		<shiro:hasPermission name="accountant:bookRecord:edit"><li><a href="${ctx}/accountant/bookRecord/accountForm">会计凭证录入</a></li></shiro:hasPermission>
 	</ul>
 	<form:form id="searchForm" modelAttribute="bookRecord" action="${ctx}/accountant/bookRecord/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>

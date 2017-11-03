@@ -117,10 +117,7 @@
 						<tbody id="bizBookTemplateList">
 						</tbody>
 						<shiro:hasPermission name="accountant:business:edit"><tfoot>
-							<tr><td colspan="8"><a href="javascript:" onclick="addRow('#bizBookTemplateList', bizBookTemplateRowIdx, bizBookTemplateTpl);bizBookTemplateRowIdx = bizBookTemplateRowIdx + 1;" class="btn">新增</a></td></tr>
-						</tfoot></shiro:hasPermission>
-					</table>
-					<script type="text/template" id="bizBookTemplateTpl">//<!--
+						<script type="text/template" id="bizBookTemplateTpl">//<!--
 						<tr id="bizBookTemplateList{{idx}}">
 							<td class="hide">
 								<input id="bizBookTemplateList{{idx}}_id" name="bizBookTemplateList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
@@ -128,9 +125,12 @@
 
 							</td>
 							<td>
-							<sys:treeselect id="bizBookTemplateList{{idx}}_bookId" name="bizBookTemplateList[{{idx}}].book.id" value="{{row.book.id}}" labelName="bookName" labelValue="{{row.bookName}}"
-					title="选择账本" url="/accountant/book/treeData" extId="bizBookTemplateList[{{idx}}].book.id}" cssClass="" allowClear="true"/>
+							<%--<sys:treeselect id="bizBookTemplateList{{idx}}_bookId" name="bizBookTemplateList[{{idx}}].book.id" value="{{row.book.id}}" labelName="bookName" labelValue="{{row.bookName}}"--%>
+					<%--title="选择账本" url="/accountant/book/treeData" extId="bizBookTemplateList[{{idx}}].book.id}" cssClass="" allowClear="true"/>--%>
+							<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="bookName" labelValue="{{row.bookName}}"
+								title="选择账本" url="/accountant/book/treeData" extId="bookRecordDetailList[{{idx}}]._bookId" cssClass="" allowClear="true"/>
 							</td>
+
 							<td>
 							<c:forEach items="${fns:getDictList('accountant_biz_plus_minus')}" var="dict" varStatus="dictStatus">
 									<span><input id="bizBookTemplateList{{idx}}_lrDirection${dictStatus.index}" name="bizBookTemplateList[{{idx}}].lrDirection" type="radio" value="left_${dict.value}" data-value="{{row.lrDirection}}"><label for="bizBookTemplateList{{idx}}_lrDirection${dictStatus.index}">${dict.label}</label></span>
@@ -156,7 +156,10 @@
 								{{#delBtn}}<span class="close" onclick="delRow(this, '#bizBookTemplateList{{idx}}')" title="删除">&times;</span>{{/delBtn}}
 							</td></shiro:hasPermission>
 						</tr>//-->
-					</script>
+						</script>
+						<tr><td colspan="8"><a href="javascript:" onclick="addRow('#bizBookTemplateList', bizBookTemplateRowIdx, bizBookTemplateTpl);bizBookTemplateRowIdx = bizBookTemplateRowIdx + 1;" class="btn">新增</a></td></tr>
+						</tfoot></shiro:hasPermission>
+					</table>
 					<script type="text/javascript">
 						var bizBookTemplateRowIdx = 0, bizBookTemplateTpl = $("#bizBookTemplateTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
 						$(document).ready(function() {

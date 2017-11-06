@@ -101,20 +101,53 @@
 		ORDER BY a.sort ASC
 	</select>
 	
-	<select id="findByParentIdsLike" resultType="Book">
+	<select id="findByCategoryList" resultType="Book">
 		SELECT
 			a.id,
+			a.name,
+			a.assist_code AS "assistCode",
+			a.category AS "category",
+			a.accountant_category AS "accountantCategory",
 			a.parent_id AS "parent.id",
 			a.parent_ids
 		FROM accountant_book a
 		<include refid="bookJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
-			AND a.parent_ids LIKE #{parentIds}
+
+			<if test="category != null and category != ''">
+				AND a.category = #{category}
+			</if>
+
+			<if test="accountantCategory != null and accountantCategory != ''">
+				AND a.accountant_category = #{accountantCategory}
+			</if>
+
+			<if test="finalStage != null and finalStage != ''">
+				AND a.final_stage = #{finalStage}
+			</if>
+
+			<if test="companyId != null and companyId != ''">
+				AND a.company_id = #{companyId}
+			</if>
+
 		</where>
 		ORDER BY a.sort ASC
 	</select>
-	
+
+	<select id="getParentNames" resultType="Book">
+		SELECT
+			a.id,
+		GROUP_CONCAT(a.name Separator " / ") as name
+		FROM accountant_book a
+		<include refid="bookJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND a.id IN (${parentIds})
+		</where>
+		ORDER BY  FIELD(id,${parentIds})
+	</select>
+
 	<insert id="insert">
 		INSERT INTO accountant_book(
 			parent_id,

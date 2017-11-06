@@ -7,6 +7,8 @@ import com.thinkgem.jeesite.common.persistence.TreeDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.accountant.entity.Book;
 
+import java.util.List;
+
 /**
  * 会计国标账本(科目)DAO接口
  * @author nideyuan
@@ -14,5 +16,8 @@ import com.thinkgem.jeesite.modules.accountant.entity.Book;
  */
 @MyBatisDao
 public interface BookDao extends TreeDao<Book> {
-	
+
+	public List<Book> findByCategoryList(Book book);
+
+	public Book getParentNames(Book book);
 }

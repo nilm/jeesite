@@ -33,6 +33,8 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 	@Autowired
 	private BookDao bookDao;
 	@Autowired
+	private BusinessDao businessDao;
+	@Autowired
 	private AttachmentDao attachmentDao;
 	@Autowired
 	private BookRecordDetailDao bookRecordDetailDao;
@@ -68,6 +70,15 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 	
 	@Transactional(readOnly = false)
 	public BookRecord save(BookRecord bookRecord,String filesPath) {
+//		处理摘要 没填在使用业务名称 digest
+		String bizId = bookRecord.getBizId();
+		Business biz = null;
+		if(StringUtils.isBlank(bizId) == false){
+			biz = businessDao.get(bizId);
+		}
+		String digest = "".equals(bookRecord.getDigest())?biz.getName():bookRecord.getDigest();
+		bookRecord.setDigest(digest);
+
 		super.save(bookRecord);
 		if(filesPath!=null){
 			String[] filesPathArray = filesPath.split("\\|");
@@ -146,14 +157,19 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 							}
 						}else {
 							// 获取业务模板
-							String bizId = bookRecordDetail.getRecord().getBizId();
+//							 bizId = bookRecordDetail.getRecord().getBizId();
 							// 根据业务 与 账本 查询 业务模板
 							BizBookTemplate bizBookTemplate4search = new BizBookTemplate();
 							bizBookTemplate4search.setBiz(new Business(bizId));
 							bizBookTemplate4search.setBook(new Book(bookId));
 							BizBookTemplate bizBookTemplate = bizBookTemplateDao.findByBizAndBook(bizBookTemplate4search);
 							if(bizBookTemplate!=null){
-								direc=bizBookTemplate.getDirection();
+								String lrDirection = bizBookTemplate.getLrDirection();
+								if("left_1".equals(lrDirection) || "right_0".equals(lrDirection)){
+									direc="left";
+								}else{
+									direc="right";
+								}
 							}
 
 						}
@@ -235,7 +251,7 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 		}else {
 			finalBalance = subtract(initAmont,bookRecordDetail.getAmount());
 		}
-		bookRecordDetail.setBalance(finalBalance.toString())
+		bookRecordDetail.setBalance(finalBalance.toString());
 	}
 
 	@Transactional(readOnly = false)

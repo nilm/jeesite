@@ -33,7 +33,7 @@ public class BookRecord extends DataEntity<BookRecord> {
 	private String digest;		// 摘要
 	private String amount;		// 金额
 	private String status;		// 当前状态
-	private String attachmentCount=0+"";		// 附件数
+	private String attachmentCount= 0+"";		// 附件数
 	private String auditUserId;		// 审核用户id
 	private Date auditDate;		// 审核日期
 	private Date assignDate;		// 分配时间

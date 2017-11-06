@@ -6,6 +6,8 @@ public class BookDto {
 	
 	private String name;
 
+	private String sumAmount;
+
 	public String getId() {
 		return id;
 	}
@@ -21,6 +23,12 @@ public class BookDto {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
+
+	public String getSumAmount() {
+		return sumAmount;
+	}
+
+	public void setSumAmount(String sumAmount) {
+		this.sumAmount = sumAmount;
+	}
 }

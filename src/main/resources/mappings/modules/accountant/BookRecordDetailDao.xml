@@ -24,14 +24,43 @@
 		LEFT JOIN accountant_book c ON c.id = a.book_id
 	</sql>
     
+	<select id="getCategorySumAmount" resultType="BookRecordDetail">
+		SELECT
+			sum(IF(a.direction = 'left',a.amount,0)) leftSumAmount , sum(IF(a.direction = 'right',a.amount,0)) rightSumAmount
+		FROM accountant_book_record_detail a
+		<include refid="bookRecordDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="book !=null and book.category != null and book.category != ''">
+				AND c.category = #{book.category}
+			</if>
+
+		</where>
+
+	</select>
+
+	<select id="getSumAmount" resultType="BookRecordDetail">
+		SELECT
+			sum(IF(a.direction = 'left',a.amount,0)) leftSumAmount , sum(IF(a.direction = 'right',a.amount,0)) rightSumAmount
+		FROM accountant_book_record_detail a
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="bookId !=null and bookId != ''">
+				AND a.book_id = #{bookId}
+			</if>
+
+		</where>
+
+	</select>
+
 	<select id="get" resultType="BookRecordDetail">
-		SELECT 
+		SELECT
 			<include refid="bookRecordDetailColumns"/>
 		FROM accountant_book_record_detail a
 		<include refid="bookRecordDetailJoins"/>
 		WHERE a.id = #{id}
 	</select>
-	
+
 	<select id="findList" resultType="BookRecordDetail">
 		SELECT 
 			<include refid="bookRecordDetailColumns"/>
@@ -74,6 +103,46 @@
 		</choose>
 	</select>
 
+	<select id="findBookRecordDetailPage" resultType="BookRecordDetail">
+
+		SELECT
+		a.id AS "id",
+		c.category AS "book.category",
+		a.create_date AS "createDate",
+		b.digest AS  "record.digest",
+		a.amount AS  "amount",
+		a.direction ,
+		CASE c.category
+			WHEN  'left' THEN
+			(select sum(IF(br.direction = 'left',br.amount,0)) - sum(IF(br.direction = 'right',br.amount,0))
+			from accountant_book_record_detail br WHERE br.record_timestamp &lt;= a.record_timestamp  AND br.book_id=a.book_id)
+			WHEN  'right' THEN
+			(select sum(IF(br.direction = 'right',br.amount,0)) - sum(IF(br.direction = 'left',br.amount,0))
+			from accountant_book_record_detail br WHERE br.record_timestamp  &lt;= a.record_timestamp  AND br.book_id=a.book_id)
+		END
+		AS balance,
+		a.record_id AS "record.id",
+		a.book_id AS "bookId"
+
+		FROM accountant_book_record_detail a
+		<include refid="bookRecordDetailJoins"/>
+
+		<where>
+			a.del_flag = 0
+			<if test="bookId !=null and bookId != ''">
+				AND a.book_id = #{bookId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY record_timestamp DESC
+			</otherwise>
+		</choose>
+	</select>
+
 	<select id="getLastDetailByBook" resultType="BookRecordDetail">
 		SELECT
 			<include refid="bookRecordDetailColumns"/>
@@ -81,7 +150,7 @@
 		<include refid="bookRecordDetailJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
-			<if test="book !=null and book.id != null and book.id != ''">
+			<if test="bookId !=null and bookId != ''">
 				AND a.book_id = #{bookId}
 			</if>
 		</where>

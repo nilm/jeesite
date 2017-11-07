@@ -125,11 +125,11 @@
 
 							</td>
 							<td>
-							<%--<sys:treeselect id="bizBookTemplateList{{idx}}_bookId" name="bizBookTemplateList[{{idx}}].book.id" value="{{row.book.id}}" labelName="bookName" labelValue="{{row.bookName}}"--%>
-					<%--title="选择账本" url="/accountant/book/treeData" extId="bizBookTemplateList[{{idx}}].book.id}" cssClass="" allowClear="true"/>--%>
-							<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="bookName" labelValue="{{row.bookName}}"
-								title="选择账本" url="/accountant/book/treeData" extId="bookRecordDetailList[{{idx}}]._bookId" cssClass="" allowClear="true"/>
-							</td>
+							<sys:treeselect id="bizBookTemplateList{{idx}}_bookId" name="bizBookTemplateList[{{idx}}].book.id" value="{{row.book.id}}" labelName="bookName" labelValue="{{row.bookName}}"
+					title="选择账本" url="/accountant/book/treeData" extId="bizBookTemplateList[{{idx}}].book.id}" cssClass="" allowClear="true"/>
+							<%--<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="bookName" labelValue="{{row.bookName}}"--%>
+								<%--title="选择账本" url="/accountant/book/treeData" extId="bookRecordDetailList[{{idx}}]._bookId" cssClass="" allowClear="true"/>--%>
+							<%--</td>--%>
 
 							<td>
 							<c:forEach items="${fns:getDictList('accountant_biz_plus_minus')}" var="dict" varStatus="dictStatus">

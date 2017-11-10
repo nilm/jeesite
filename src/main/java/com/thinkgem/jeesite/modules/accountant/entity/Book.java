@@ -6,8 +6,7 @@ package com.thinkgem.jeesite.modules.accountant.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotNull;
-import com.thinkgem.jeesite.modules.base.entity.WebUser;
-
+import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.common.persistence.TreeEntity;
 
 /**
@@ -22,7 +21,7 @@ public class Book extends TreeEntity<Book> {
 	private String parentIds;		// 所有父级主键
 	private String code;		// 科目编码
 	private Integer sort;		// 排序
-	private WebUser user;		// 用户id
+	private User user;		// 用户id
 	private String companyId;		// 商户id
 	private String name;		// 账本名称
 	private String assistCode;		// 辅助码
@@ -80,11 +79,11 @@ public class Book extends TreeEntity<Book> {
 		this.sort = sort;
 	}
 	
-	public WebUser getUser() {
+	public User getUser() {
 		return user;
 	}
 
-	public void setUser(WebUser user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 	
@@ -197,5 +196,9 @@ public class Book extends TreeEntity<Book> {
 
 	public void setFinalStage(String finalStage) {
 		this.finalStage = finalStage;
+	}
+	@Override
+	public String toString() {
+		return name;
 	}
 }

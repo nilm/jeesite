@@ -16,9 +16,11 @@
     <div class="zTreeDemoBackground left">
         <ul id="treeDemo" class="ztree"></ul>
     </div>
+    <shiro:hasPermission name="accountant:book:import:edit">
         <button id="toRight">添加</button>
         <button id="toLeft">删除</button>
         <button id="show">保存</button>
+        </shiro:hasPermission>
     <div class="right">
         <ul id="treeDemo2" class="ztree"></ul>
     </div>

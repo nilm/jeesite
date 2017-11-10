@@ -20,7 +20,7 @@
 		a.version AS "version",
 		a.type AS "type",
 		a.status AS "status",
--- 		a.final_stage AS "finalStage",
+ 		a.final_stage AS "finalStage",
 		a.create_date AS "createDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag"
@@ -225,7 +225,7 @@
 	<update id="delete">
 		UPDATE accountant_book SET 
 			del_flag = #{DEL_FLAG_DELETE}
-		WHERE id = #{id} OR parent_ids LIKE '%,'||#{id}||',%'
+		WHERE id = #{id} OR parent_ids LIKE concat('%',#{id},'%')
 	</update>
 	
 </mapper>

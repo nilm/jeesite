@@ -11,12 +11,15 @@ import com.thinkgem.jeesite.modules.accountant.dao.BookRecordDetailDao;
 import com.thinkgem.jeesite.modules.accountant.dto.BookDto;
 import com.thinkgem.jeesite.modules.accountant.entity.Book;
 import com.thinkgem.jeesite.modules.accountant.entity.BookRecordDetail;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,7 +55,8 @@ public class BookService extends TreeService<BookDao, Book> {
 	
 	@Transactional(readOnly = false)
 	public void delete(Book book) {
-		super.delete(book);
+//		super.delete(book);
+		bookDao.delete(book);
 	}
 
 	/**
@@ -144,5 +148,38 @@ public class BookService extends TreeService<BookDao, Book> {
 		}
 
 		return sumAmountf != 0 ? sumAmountf+"":"0.00";
+	}
+	
+	@Transactional(readOnly = false)
+	public int saveChild(Book book) {
+		if (!StringUtils.isBlank(book.getId())){
+			return bookDao.update(book);
+		}
+		
+		Book parentBook = book.getParent();
+		parentBook = bookDao.get(parentBook.getId());
+		book.setCode(parentBook.getCode()+(int)(Math.random()*1000));
+		book.setAccountantCategory(parentBook.getAccountantCategory());
+		book.setAssetsCategory(parentBook.getAssetsCategory());
+		book.setCategory(parentBook.getCategory());
+		book.setCompanyId(parentBook.getCompanyId());
+		book.setCreateBy(UserUtils.getUser());
+		book.setCreateDate(new Date());
+		book.setCurrentUser(UserUtils.getUser());
+		book.setDelFlag(parentBook.getDelFlag());
+		book.setParent(parentBook);
+		book.setParentIds(parentBook.getParentIds()+parentBook.getId()+",");
+		book.setProfitsCategory(parentBook.getProfitsCategory());
+		book.setProperty(parentBook.getProperty());
+		book.setRemarks(parentBook.getRemarks());
+		book.setSort(parentBook.getSort());
+		book.setStatus(parentBook.getStatus());
+		book.setType(parentBook.getType());
+		book.setVersion(parentBook.getVersion());
+		if(book.getParent().getFinalStage().equals("1")){
+			parentBook.setFinalStage("0");
+			bookDao.update(parentBook);
+		}
+		return bookDao.insert(book);
 	}
 }

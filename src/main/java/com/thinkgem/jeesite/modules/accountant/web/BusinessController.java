@@ -73,7 +73,7 @@ public class BusinessController extends BaseController {
 			if(category.equals(bizBookTemplate.getDirection())){
 				bizBookTemplate.setDirection("1");
 			}else {
-				bizBookTemplate.setDirection("-1");
+				bizBookTemplate.setDirection("0");
 			}
 		}
 		business.setBizBookTemplateList(bizBookTemplateList);
@@ -107,16 +107,16 @@ public class BusinessController extends BaseController {
 		if (!beanValidator(model, business)){
 			return form(business,null, model);
 		}
-		List<BizBookTemplate> bizBookTemplateList = business.getBizBookTemplateList();
-		for (BizBookTemplate bizBookTemplate : bizBookTemplateList) {
-			String category = bizBookTemplate.getCategory();
-			if("1".equals(bizBookTemplate.getDirection())){
-				bizBookTemplate.setDirection(category);
-			}else if("-1".equals(bizBookTemplate.getDirection())){
-				if("right".equals(category)) bizBookTemplate.setDirection("left");
-				else if ("left".equals(category)) bizBookTemplate.setDirection("right");
-			}
-		}
+//		List<BizBookTemplate> bizBookTemplateList = business.getBizBookTemplateList();
+//		for (BizBookTemplate bizBookTemplate : bizBookTemplateList) {
+//			String category = bizBookTemplate.getCategory();
+//			if("1".equals(bizBookTemplate.getDirection())){
+//				bizBookTemplate.setDirection(category);
+//			}else if("-1".equals(bizBookTemplate.getDirection())){
+//				if("right".equals(category)) bizBookTemplate.setDirection("left");
+//				else if ("left".equals(category)) bizBookTemplate.setDirection("right");
+//			}
+//		}
 		businessService.save(business);
 		addMessage(redirectAttributes, "保存会计业务成功");
 		return "redirect:"+Global.getAdminPath()+"/accountant/business/?repage";

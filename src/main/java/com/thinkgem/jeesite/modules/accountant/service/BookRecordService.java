@@ -163,14 +163,7 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 							bizBookTemplate4search.setBiz(new Business(bizId));
 							bizBookTemplate4search.setBook(new Book(bookId));
 							BizBookTemplate bizBookTemplate = bizBookTemplateDao.findByBizAndBook(bizBookTemplate4search);
-							if(bizBookTemplate!=null){
-								String lrDirection = bizBookTemplate.getLrDirection();
-								if("left_1".equals(lrDirection) || "right_0".equals(lrDirection)){
-									direc="left";
-								}else{
-									direc="right";
-								}
-							}
+							direc=bizBookTemplate.getDirection();
 
 						}
 						bookRecordDetail.setDirection(direc);

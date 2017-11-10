@@ -66,31 +66,31 @@ public class BookUseTotalController extends BaseController {
 		book.setCategory("left");
 		book.setAccountantCategory("assets");
 
-		List<BookDto> assets_category = bookService.findByCategoryList(book);
+		List<BookDto> assets_category = bookService.findBookDtoByCategoryList(book);
 		model.addAttribute("assets_category", assets_category);
 
 		book.setCategory("left");
 		book.setAccountantCategory("expenses");
 
-		List<BookDto> expenses_category = bookService.findByCategoryList(book);
+		List<BookDto> expenses_category = bookService.findBookDtoByCategoryList(book);
 		model.addAttribute("expenses_category", expenses_category);
 
 		book.setCategory("right");
 		book.setAccountantCategory("owners_equity");
 
-		List<BookDto> owners_equity_category = bookService.findByCategoryList(book);
+		List<BookDto> owners_equity_category = bookService.findBookDtoByCategoryList(book);
 		model.addAttribute("owners_equity_category", owners_equity_category);
 
 		book.setCategory("right");
 		book.setAccountantCategory("liabilities");
 
-		List<BookDto> liabilities_category = bookService.findByCategoryList(book);
+		List<BookDto> liabilities_category = bookService.findBookDtoByCategoryList(book);
 		model.addAttribute("liabilities_category", liabilities_category);
 
 		book.setCategory("right");
 		book.setAccountantCategory("income");
 
-		List<BookDto> income_category = bookService.findByCategoryList(book);
+		List<BookDto> income_category = bookService.findBookDtoByCategoryList(book);
 		model.addAttribute("income_category", income_category);
 
 		BookRecordDetail left_sum_bookRecordDetail= bookService.getCategorySumAmount("left");

@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -95,8 +96,13 @@ public class BookController extends BaseController {
 		if (!beanValidator(model, book)){
 			return form(book, model);
 		}
+		String parentId = book.getParentId();
+		if (!StringUtils.isBlank(parentId) && !"0".equals(parentId)){
+			Book pbook = bookService.get(parentId);
+			book.setLevel((Integer.parseInt(pbook.getLevel()!=null&&!"".equals(pbook.getLevel())?pbook.getLevel():"0")+1)+"");
+		}
 		bookService.save(book);
-		addMessage(redirectAttributes, "保存会计国标账本(科目)成功");
+		addMessage(redirectAttributes, "保存会计账本(科目)成功");
 		return "redirect:"+Global.getAdminPath()+"/accountant/book/?repage";
 	}
 	
@@ -104,7 +110,7 @@ public class BookController extends BaseController {
 	@RequestMapping(value = "delete")
 	public String delete(Book book, RedirectAttributes redirectAttributes) {
 		bookService.delete(book);
-		addMessage(redirectAttributes, "删除会计国标账本(科目)成功");
+		addMessage(redirectAttributes, "删除会计账本(科目)成功");
 		return "redirect:"+Global.getAdminPath()+"/accountant/book/?repage";
 	}
 
@@ -185,7 +191,6 @@ public class BookController extends BaseController {
 	@ResponseBody
 	public String add(HttpServletRequest request, Model model) {
 		String ids = request.getParameter("ids");
-		System.out.println(ids);
 		String[] idsArray = ids.split(",");
 		for (String id : idsArray) {
 			Book book = bookService.get(id);
@@ -194,5 +199,48 @@ public class BookController extends BaseController {
 		}
 		return "success";
 	}
-	
+
+	/**
+	 * 树结构选择标签（treeselect.tag）
+	 */
+	@RequiresPermissions("user")
+	@RequestMapping(value = "bookselect")
+	public String bookselect(HttpServletRequest request, Model model) {
+
+		String companyId = UserUtils.getUser().getCompany().getId();
+		Book book = new Book();
+//		book.setCompanyId(companyId);
+		book.setLevel("2");
+		book.setCategory("left");
+		book.setAccountantCategory("assets");
+
+		List<Book> assets_category = bookService.findByCategoryList(book);
+		model.addAttribute("assets_category", assets_category);
+
+		book.setCategory("left");
+		book.setAccountantCategory("expenses");
+
+		List<Book> expenses_category = bookService.findByCategoryList(book);
+		model.addAttribute("expenses_category", expenses_category);
+
+		book.setCategory("right");
+		book.setAccountantCategory("owners_equity");
+
+		List<Book> owners_equity_category = bookService.findByCategoryList(book);
+		model.addAttribute("owners_equity_category", owners_equity_category);
+
+		book.setCategory("right");
+		book.setAccountantCategory("liabilities");
+
+		List<Book> liabilities_category = bookService.findByCategoryList(book);
+		model.addAttribute("liabilities_category", liabilities_category);
+
+		book.setCategory("right");
+		book.setAccountantCategory("income");
+
+		List<Book> income_category = bookService.findByCategoryList(book);
+		model.addAttribute("income_category", income_category);
+
+		return "modules/accountant/tagbookselect";
+	}
 }

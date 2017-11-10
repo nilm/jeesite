@@ -192,8 +192,8 @@
 								<input id="bookRecordDetailList{{idx}}_delFlag" name="bookRecordDetailList[{{idx}}].delFlag" type="hidden" value="0"/>
 							</td>
 							<td>
-						<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="bookName" labelValue="{{row.bookName}}"
-					title="选择账本" url="/accountant/book/treeData" extId="bookRecordDetailList[{{idx}}]._bookId" cssClass="" allowClear="true"/>
+								<sys:accountbookselect  id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="bookName" labelValue="{{row.bookName}}"
+								title="选择账本"  cssClass="" allowClear="true"/>
 							</td>
 							<td>
 								<input id="bookRecordDetailList{{idx}}_amount" name="bookRecordDetailList[{{idx}}].amount" type="text" value="{{row.amount}}" class="input-small required"/>

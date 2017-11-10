@@ -86,7 +86,22 @@ public class BookService extends TreeService<BookDao, Book> {
 	 * @param book
 	 * @return
 	 */
-	public List<BookDto> findByCategoryList(Book  book) {
+	public List<Book> findByCategoryList(Book  book) {
+//		select b.* from  accountant_book b  where
+//		b.company_id is null and category='left' and
+//		b.level=2 ORDER BY sort;
+		book.setLevel("2");
+		List<Book> books =  bookDao.findByCategoryList(book); // sql
+		return books;
+
+	}
+
+	/**
+	 * 根据账本 账本性质  accountantCategory  账本 String category 查询 === BookDto 全名称 余额
+	 * @param book
+	 * @return
+	 */
+	public List<BookDto> findBookDtoByCategoryList(Book  book) {
 //		select b.* from  accountant_book b  where
 //		b.company_id is null and category='left' and
 //		b.final_stage=1 ORDER BY sort;
@@ -107,7 +122,8 @@ public class BookService extends TreeService<BookDao, Book> {
 		for (Book book:books) {
 			BookDto bookDto = new BookDto();
 			bookDto.setId(book.getId());
-			bookDto.setName(getParentNames(book));
+			bookDto.setName(book.getName());
+//			bookDto.setName(getParentNames(book));
 			bookDto.setSumAmount(getSumAmount(book));
 			bookDtos.add(bookDto);
 		}

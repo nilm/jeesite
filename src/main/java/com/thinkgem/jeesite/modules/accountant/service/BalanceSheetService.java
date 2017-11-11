@@ -40,7 +40,7 @@ public class BalanceSheetService {
                 BalanceSheetDto dto=new BalanceSheetDto();
                 Book find = new Book();
                 find.setAssetsCategory(assetsCategory.name());
-                List<BookDto> bookDtos = bookService.findByCategoryList(find);
+                List<BookDto> bookDtos = bookService.findBookDtoByCategoryList(find);
                 BigDecimal beginningBalance=new BigDecimal(0);
                 BigDecimal endingBalance=new BigDecimal(0);
                 if(bookDtos!=null && bookDtos.size()>0){

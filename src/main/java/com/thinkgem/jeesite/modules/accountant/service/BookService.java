@@ -5,12 +5,15 @@ package com.thinkgem.jeesite.modules.accountant.service;
 
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.TreeService;
+import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.accountant.dao.BookDao;
 import com.thinkgem.jeesite.modules.accountant.dao.BookRecordDetailDao;
 import com.thinkgem.jeesite.modules.accountant.dto.BookDto;
 import com.thinkgem.jeesite.modules.accountant.entity.Book;
 import com.thinkgem.jeesite.modules.accountant.entity.BookRecordDetail;
+import com.thinkgem.jeesite.modules.accountant.enums.AssetsCategory;
+import com.thinkgem.jeesite.modules.accountant.enums.BookRecordType;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -119,17 +122,21 @@ public class BookService extends TreeService<BookDao, Book> {
 			return  null;
 		}
 		List<BookDto> bookDtos = new ArrayList<BookDto>();
+		BookRecordDetail find=new BookRecordDetail();
 		for (Book book:books) {
 			BookDto bookDto = new BookDto();
 			bookDto.setId(book.getId());
 			bookDto.setName(book.getName());
 //			bookDto.setName(getParentNames(book));
 			bookDto.setSumAmount(getSumAmount(book));
+			find.setBookId(book.getId());
+			bookDto.setBeginningAmount(getBeginningAmount(find));
 			bookDtos.add(bookDto);
 		}
 
 		return bookDtos;
 	}
+
 	private String getParentNames(Book book){
 // select name,GROUP_CONCAT(name Separator " / ") from  accountant_book b1  where  id in (0,66,48) order by FIELD(id,0,66,48)
 		if (StringUtils.isNotBlank(book.getParentIds())){
@@ -138,6 +145,24 @@ public class BookService extends TreeService<BookDao, Book> {
 		}
 		Book book4pName = bookDao.getParentNames(book);
 		return book4pName != null ?book4pName.getName():"";
+	}
+
+	private String getBeginningAmount(BookRecordDetail detail) {
+		String amount="0";
+		BookRecordDetail bookRecordDetail =  new BookRecordDetail();
+		bookRecordDetail.setBookId(detail.getBookId());
+		bookRecordDetail.setBookRecordType(BookRecordType.OPENING);
+//		bookRecordDetail.setRecDate(DateUtils.formatDate(bookRecordDetail.getRecordDate(),"yyyy"));
+
+		List<BookRecordDetail> list = bookRecordDetailDao.findListByMonthAndType(bookRecordDetail);
+		if(list.size()==1){
+			amount=list.get(0).getAmount();
+		}else if (list.size()==0){
+			bookRecordDetail.setBookRecordType(BookRecordType.CREATE_OPENING);
+			list = bookRecordDetailDao.findListByMonthAndType(bookRecordDetail);
+			if(list.size()==1)	amount=list.get(0).getAmount();
+		}
+		return amount;
 	}
 
 	private String getSumAmount(Book book){
@@ -161,4 +186,5 @@ public class BookService extends TreeService<BookDao, Book> {
 
 		return sumAmountf != 0 ? sumAmountf+"":"0.00";
 	}
+
 }

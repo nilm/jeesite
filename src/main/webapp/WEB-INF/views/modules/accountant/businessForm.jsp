@@ -125,9 +125,6 @@
 
 							</td>
 							<td>
-							<%--<sys:treeselect id="bizBookTemplateList{{idx}}_bookId" name="bizBookTemplateList[{{idx}}].book.id" value="{{row.book.id}}" labelName="bookName" labelValue="{{row.bookName}}"--%>
-					<%--title="选择账本" url="/accountant/book/treeData" extId="bizBookTemplateList[{{idx}}].book.id}" cssClass="" allowClear="true"/>--%>
-
 							<sys:accountbookselect  id="bizBookTemplateList{{idx}}_bookId" name="bizBookTemplateList[{{idx}}].book.id" value="{{row.book.id}}" labelName="bookName" labelValue="{{row.bookName}}"
 								title="选择账本"  cssClass="" allowClear="true"/>
 							</td>

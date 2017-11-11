@@ -47,4 +47,6 @@ public interface BookRecordDetailDao extends CrudDao<BookRecordDetail> {
      */
     public List<BookRecordDetail> findBookRecordDetailPage(BookRecordDetail bookRecordDetail);
 
+    List<BookRecordDetail> findListByMonthAndType(BookRecordDetail bookRecordDetail);
+    
 }

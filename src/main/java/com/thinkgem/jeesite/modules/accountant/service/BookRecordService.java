@@ -180,6 +180,7 @@ public class BookRecordService extends CrudService<BookRecordDao, BookRecord> {
 //						}
 //					}
 					bookRecordDetail.setRecordTimestamp(DateUtils.getCurrentTimeMillis());
+					bookRecordDetail.setRecordDate(bookRecord.getRecordDate());
 //TODO: 规则检验  有左必有右 左右必相等
 					bookRecordDetailDao.insert(bookRecordDetail);
 				}else{

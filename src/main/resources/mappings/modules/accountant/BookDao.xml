@@ -81,6 +81,9 @@
 			<if test="accountantCategory != null and accountantCategory != ''">
 				AND a.accountant_category = #{accountantCategory}
 			</if>
+			<if test="assetsCategory != null and assetsCategory != ''">
+				AND a.assets_category = #{assetsCategory}
+			</if>
 			<if test="property != null and property != ''">
 				AND a.property = #{property}
 			</if>
@@ -122,6 +125,9 @@
 
 			<if test="accountantCategory != null and accountantCategory != ''">
 				AND a.accountant_category = #{accountantCategory}
+			</if>
+			<if test="assetsCategory != null and assetsCategory != ''">
+				AND a.assets_category = #{assetsCategory}
 			</if>
 
 			<if test="finalStage != null and finalStage != ''">

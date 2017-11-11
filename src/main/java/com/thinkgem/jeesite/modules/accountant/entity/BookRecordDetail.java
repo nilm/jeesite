@@ -23,6 +23,7 @@ public class BookRecordDetail extends DataEntity<BookRecordDetail> {
 	private String amount;		// 金额
 	private String balance;		// 余额
 	private String direction;		// 栏类型 left right
+	private Date recordDate;
 	private Date createDate;
 	private long recordTimestamp;
 	private BookRecordType bookRecordType=BookRecordType.DAILY;
@@ -32,6 +33,23 @@ public class BookRecordDetail extends DataEntity<BookRecordDetail> {
 	private String bookName;
 	private float leftSumAmount;// 左栏余额
 	private float rightSumAmount;// 右栏余额
+	private String recDate;//按月查询辅助字段
+
+	public String getRecDate() {
+		return recDate;
+	}
+
+	public void setRecDate(String recDate) {
+		this.recDate = recDate;
+	}
+
+	public Date getRecordDate() {
+		return recordDate;
+	}
+
+	public void setRecordDate(Date recordDate) {
+		this.recordDate = recordDate;
+	}
 
 	public float getLeftSumAmount() {
 		return leftSumAmount;

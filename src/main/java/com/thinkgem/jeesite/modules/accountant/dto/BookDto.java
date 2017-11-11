@@ -8,6 +8,16 @@ public class BookDto {
 
 	private String sumAmount;
 
+	private String beginningAmount;//科目期初金额
+
+	public String getBeginningAmount() {
+		return beginningAmount;
+	}
+
+	public void setBeginningAmount(String beginningAmount) {
+		this.beginningAmount = beginningAmount;
+	}
+
 	public String getId() {
 		return id;
 	}

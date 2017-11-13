@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.accountant.enums.AssetsCategory;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,7 @@ public class BookController extends BaseController {
 		if (entity == null){
 			entity = new Book();
 		}
+
 		return entity;
 	}
 	
@@ -91,6 +93,7 @@ public class BookController extends BaseController {
 		if (book.getSort() == null){
 			book.setSort(30);
 		}
+		model.addAttribute("assetsCategory", AssetsCategory.getALLlist());
 		model.addAttribute("book", book);
 		return "modules/accountant/bookForm";
 	}
@@ -148,7 +151,7 @@ public class BookController extends BaseController {
 		Book form = new Book();
 		Book b = new Book();
 		b.setId("0");
-		form.setParent(b);form.setCompanyId("");
+		form.setParent(b);
 		List<Book> nodes = bookService.findList(form);
 		List<Map<String,Object>> tempDate=new ArrayList<Map<String,Object>>();
 		for(Book node:nodes){
@@ -205,6 +208,14 @@ public class BookController extends BaseController {
 		User user = UserUtils.getUser();
 		for (String id : idsArray) {
 			Book book = bookService.get(id);
+			System.out.println(book.getParent().getName());
+			Book form = new Book();
+			form.setCompanyId(user.getCompany().getId());
+			form.setName(book.getName());
+			List<Book> findList = bookService.findList(form);
+			if(findList!=null && findList.size()>0){
+				continue;
+			}
 			Book b = new Book();
 			b.setAccountantCategory(book.getAccountantCategory());
 			b.setAssetsCategory(book.getAssetsCategory());
@@ -219,14 +230,25 @@ public class BookController extends BaseController {
 			b.setFinalStage(book.getFinalStage());
 			b.setIsNewRecord(book.getIsNewRecord());
 			b.setName(book.getName());
-			b.setParent(book.getParent());
-			b.setParentIds(book.getParentIds());
+			if(book.getParent().getId().equals("0")){
+				b.setParent(book.getParent());
+				b.setParentIds(book.getParentIds());
+			}else{
+				form.setName(book.getParent().getName());
+				List<Book> parentList = bookService.findList(form);
+				if(parentList!=null && parentList.size()>0){
+					b.setParent(parentList.get(0));
+					b.setParentIds(parentList.get(0).getParentIds()+parentList.get(0).getId()+",");
+				}
+			}
 			b.setProfitsCategory(book.getProfitsCategory());
 			b.setProperty(book.getProperty());
 			b.setRemarks(book.getRemarks());
 			b.setStatus(book.getStatus());
 			b.setType(book.getType());
 			b.setUser(user);
+			b.setSort(book.getSort());
+			b.setLevel(book.getLevel());
 			bookService.save(b);
 		}
 		return "success";
@@ -238,7 +260,7 @@ public class BookController extends BaseController {
 		List<Book> list = Lists.newArrayList();
 		User user = UserUtils.getUser();
 		Book form = new Book();
-//		form.setCompanyId(user.getCompany().getId());
+		form.setCompanyId(user.getCompany().getId());
 		List<Book> sourcelist = bookService.findList(form);
 		sortList(list,sourcelist,"0",true);
 		model.addAttribute("list", list);
@@ -257,7 +279,7 @@ public class BookController extends BaseController {
 			List<Book> list = Lists.newArrayList();
 			User user = UserUtils.getUser();
 			Book form = new Book();
-//			form.setCompanyId(user.getCompany().getId());
+			form.setCompanyId(user.getCompany().getId());
 			List<Book> sourcelist = bookService.findList(form);
 			sortList(list,sourcelist,book.getParentId(),false);
 		}

@@ -119,7 +119,7 @@ input{padding:0 0; border-width:0; }
 	    $(list+idx+"_"+name).val(val);
 	}
 	function viewRow(list, idx, tpl, row){
-        debugger;
+//        debugger;
 		$(list).append(Mustache.render(tpl, {
 			idx: idx, delBtn: true, row: row, leftDirection:(row.direction=='left'),rightDirection:(row.direction=='right')
 		}));

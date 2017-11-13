@@ -6,7 +6,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.accountant.entity.BookRecordDetail;
 import com.thinkgem.jeesite.modules.accountant.enums.BookRecordType;
+import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -84,8 +86,21 @@ public class AccountRecordController  extends BaseController {
 	@RequiresPermissions("accountant:bookRecord:view")
 	@RequestMapping(value = "accountForm")
 	public String accountForm(BookRecord bookRecord, Model model) {
-		bookRecord.setRecordDate(new Date());
+
+		if (bookRecord==null || StringUtils.isBlank(bookRecord.getId())){
+			bookRecord.setRecordDate(new Date());
+		}
+
+		List<BookRecordDetail> bookRecordDetails = bookRecord.getBookRecordDetailList();
+		for (BookRecordDetail bookRecordDetail : bookRecordDetails) {
+			String lr = bookRecordDetail.getBook().getCategory();
+			String bookDisplayName =bookRecordDetail.getBookName()+"（"+ DictUtils.getDictLabel(lr,"accountant_left_right","")+"）";
+			bookRecordDetail.setBookName(bookDisplayName);
+		}
+		bookRecord.setBookRecordDetailList(bookRecordDetails);
+
 		model.addAttribute("bookRecord", bookRecord);
+
 		Business business = new Business();
 		business.setDelFlag("0");
 		business.setShowHide("1");

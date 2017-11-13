@@ -9,6 +9,7 @@ import com.thinkgem.jeesite.modules.accountant.service.BizBookTemplateService;
 import com.thinkgem.jeesite.modules.accountant.service.BookRecordService;
 import com.thinkgem.jeesite.modules.accountant.service.BookService;
 import com.thinkgem.jeesite.modules.accountant.service.BusinessService;
+import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +105,16 @@ public class AccountOpeningController extends BaseController {
 			}
 //            bookRecord=list.get(0);
 //			bookRecord= bookRecordService.get(search);
+		}else{
+			List<BookRecordDetail> bookRecordDetails = bookRecord.getBookRecordDetailList();
+			for (BookRecordDetail bookRecordDetail : bookRecordDetails) {
+				String lr = bookRecordDetail.getBook().getCategory();
+				String bookDisplayName =bookRecordDetail.getBookName()+"（"+ DictUtils.getDictLabel(lr,"accountant_left_right","")+"）";
+				bookRecordDetail.setBookName(bookDisplayName);
+			}
+			bookRecord.setBookRecordDetailList(bookRecordDetails);
 		}
+
 		Business business = new Business();
 		business.setDelFlag("0");
 		business.setName("账本期初");

@@ -53,7 +53,8 @@ public class BookService extends TreeService<BookDao, Book> {
 	
 	@Transactional(readOnly = false)
 	public Book save(Book book) {
-		return super.save(book);
+		bookDao.insert(book);
+		return book;
 	}
 	
 	@Transactional(readOnly = false)

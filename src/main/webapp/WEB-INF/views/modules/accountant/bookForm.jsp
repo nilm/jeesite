@@ -94,14 +94,17 @@
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
-		<!--
+
 		<div class="control-group">
 			<label class="control-label">资产负债表分类：</label>
 			<div class="controls">
-				<form:input path="assetsCategory" htmlEscape="false" maxlength="125" class="input-xlarge "/>
+				<form:select path="assetsCategory" class="input-xlarge">
+					<form:option value="" label=""/>
+					<form:options items="${assetsCategory}" itemLabel="text" itemValue="val" htmlEscape="false"/>
+				</form:select>
 			</div>
 		</div>
-
+		<!--
 		<div class="control-group">
 			<label class="control-label">利润表分类：</label>
 			<div class="controls">

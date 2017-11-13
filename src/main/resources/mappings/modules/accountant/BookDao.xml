@@ -245,5 +245,4 @@
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id} OR parent_ids LIKE concat('%',#{id},'%')
 	</update>
-	
 </mapper>

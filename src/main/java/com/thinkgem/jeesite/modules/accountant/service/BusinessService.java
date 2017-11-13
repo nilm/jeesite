@@ -5,6 +5,8 @@ package com.thinkgem.jeesite.modules.accountant.service;
 
 import java.util.List;
 
+import com.thinkgem.jeesite.modules.accountant.dao.BookDao;
+import com.thinkgem.jeesite.modules.accountant.entity.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,9 @@ public class BusinessService extends CrudService<BusinessDao, Business> {
 
 	@Autowired
 	private BusinessDao businessDao;
+
+	@Autowired
+	private BookDao bookDao;
 
 	public Business get(String id) {
 		Business business = super.get(id);
@@ -61,6 +66,9 @@ public class BusinessService extends CrudService<BusinessDao, Business> {
 				bizBookTemplate.setUseCount("10");
 			}
 			if (BizBookTemplate.DEL_FLAG_NORMAL.equals(bizBookTemplate.getDelFlag())){
+				String bookId = bizBookTemplate.getBook().getId();
+				Book book = bookDao.get(bookId);
+				bizBookTemplate.setCategory(book.getCategory());
 				if (StringUtils.isBlank(bizBookTemplate.getId())){
 					bizBookTemplate.setBiz(business);
 					bizBookTemplate.preInsert();

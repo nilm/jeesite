@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.thinkgem.jeesite.modules.accountant.entity.BizBookTemplate;
 import com.thinkgem.jeesite.modules.accountant.entity.Book;
 import com.thinkgem.jeesite.modules.accountant.service.BookService;
+import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
 import groovy.text.markup.TemplateConfiguration;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,12 +70,9 @@ public class BusinessController extends BaseController {
 	public String form(Business business,Book book, Model model) {
 		List<BizBookTemplate> bizBookTemplateList = business.getBizBookTemplateList();
 		for (BizBookTemplate bizBookTemplate : bizBookTemplateList) {
-			String category = bizBookTemplate.getCategory();
-			if(category.equals(bizBookTemplate.getDirection())){
-				bizBookTemplate.setDirection("1");
-			}else {
-				bizBookTemplate.setDirection("0");
-			}
+			String lr = bizBookTemplate.getBook().getCategory();
+			String bookDisplayName =bizBookTemplate.getBookName()+"（"+ DictUtils.getDictLabel(lr,"accountant_left_right","")+"）";
+			bizBookTemplate.setBookName(bookDisplayName);
 		}
 		business.setBizBookTemplateList(bizBookTemplateList);
 		model.addAttribute("business", business);

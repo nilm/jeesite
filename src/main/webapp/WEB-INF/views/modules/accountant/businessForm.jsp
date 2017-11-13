@@ -71,13 +71,13 @@
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
-		<div class="control-group">
+<%--		<div class="control-group">
 			<label class="control-label">业务类型：</label>
 			<div class="controls">
 				<form:radiobuttons path="bizType" items="${fns:getDictList('accountant_biz_type')}" itemLabel="label" itemValue="value" htmlEscape="false" class="required"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
-		</div>
+		</div>--%>
 		<div class="control-group">
 			<label class="control-label">排序：</label>
 			<div class="controls">
@@ -130,12 +130,10 @@
 							</td>
 
 							<td>
-									<span><input id="bizBookTemplateList{{idx}}_lrDirection" name="bizBookTemplateList[{{idx}}].lrDirection" type="radio" value="left_left" data-value="{{row.lrDirection}}"><label for="bizBookTemplateList{{idx}}_lrDirection">增加</label></span>
-									<span><input id="bizBookTemplateList{{idx}}_lrDirection" name="bizBookTemplateList[{{idx}}].lrDirection" type="radio" value="right_left" data-value="{{row.lrDirection}}"><label for="bizBookTemplateList{{idx}}_lrDirection">减少</label></span>
+									<span><input id="bizBookTemplateList{{idx}}_direction" name="bizBookTemplateList[{{idx}}].direction" type="radio" value="left" data-value="{{row.direction}}"><label for="bizBookTemplateList{{idx}}_direction">填写</label></span>
 							</td>
 							<td>
-									<span><input id="bizBookTemplateList{{idx}}_lrDirection" name="bizBookTemplateList[{{idx}}].lrDirection" type="radio" value="right_right" data-value="{{row.lrDirection}}"><label for="bizBookTemplateList{{idx}}_lrDirection">增加</label></span>
-									<span><input id="bizBookTemplateList{{idx}}_lrDirection" name="bizBookTemplateList[{{idx}}].lrDirection" type="radio" value="left_right" data-value="{{row.lrDirection}}"><label for="bizBookTemplateList{{idx}}_lrDirection">减少</label></span>
+									<span><input id="bizBookTemplateList{{idx}}_direction" name="bizBookTemplateList[{{idx}}].direction" type="radio" value="right" data-value="{{row.direction}}"><label for="bizBookTemplateList{{idx}}_direction">填写</label></span>
 							</td>
 							<td>
 								<c:forEach items="${fns:getDictList('yes_no')}" var="dict" varStatus="dictStatus">

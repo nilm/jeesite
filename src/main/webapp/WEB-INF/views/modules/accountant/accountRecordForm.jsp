@@ -331,11 +331,9 @@ input{padding:0 0; border-width:0; }
 								<input id="bookRecordDetailList{{idx}}_remarks" name="bookRecordDetailList[{{idx}}].remarks" type="text" style="border-width:0px;" value="{{row.remarks}}" />
 							</td>
 							<td>
-						<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="bookName" labelValue="{{row.bookName}}"
-					title="选择账本" url="/accountant/book/treeData" extId="bookRecordDetailList[{{idx}}]._bookId" cssClass="" allowClear="true"/>
-							<shiro:hasPermission name="accountant:bookRecord:edit">
-								{{#delBtn}}<a href="javascript:;" class="close" onclick="delRow(this, '#bookRecordDetailList{{idx}}')" title="删除本行">&times;</a>{{/delBtn}}
-							</shiro:hasPermission>
+						<sys:accountbookselect  id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="bookName" labelValue="{{row.bookName}}"
+					title="选择账本"  cssClass="" allowClear="true"/>
+
 							</td>
 							<td>
 								<input id="bookRecordDetailList{{idx}}_customer" name="bookRecordDetailList[{{idx}}].customer" type="text" value="{{row.customer}}" />

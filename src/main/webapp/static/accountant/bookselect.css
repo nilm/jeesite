@@ -1,0 +1,12 @@
+*{margin:0; padding:0; }
+html,body{height:100%; }
+
+.popup_table{font-size:16px; line-height:36px; position:absolute; top:50%; left:50%; overflow:hidden; overflow:auto; width:600px; max-height:100%; margin:0 auto; transform:translate(-50%, -50%); text-indent:65px; border:2px solid #a7bfc3; border-bottom:none; border-radius:10px; }
+.account_table{font-size:16px; width:100%; table-layout:fixed; border-collapse:collapse; text-indent:65px; color:#333; background:url(bg.png); }
+.account_table td{width:50%; vertical-align:top; }
+.account_table .col_1{border-right:2px solid #f00; }
+.account_table .col_2{border-left:2px solid #f00; }
+.account_table div{line-height: 38px;height: 38px;}
+.account_table .row_1{position: relative;border-bottom: 2px solid #f00;line-height: 36px;height: 36px;}
+.account_table .col_1 .row_1:after{content:'';position: absolute;width:2px;height: 36px;background: #fff;right: -2px;}
+.account_table .row_last{border-bottom: none;}

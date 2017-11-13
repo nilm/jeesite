@@ -125,21 +125,17 @@
 
 							</td>
 							<td>
-							<%--<sys:treeselect id="bizBookTemplateList{{idx}}_bookId" name="bizBookTemplateList[{{idx}}].book.id" value="{{row.book.id}}" labelName="bookName" labelValue="{{row.bookName}}"--%>
-					<%--title="选择账本" url="/accountant/book/treeData" extId="bizBookTemplateList[{{idx}}].book.id}" cssClass="" allowClear="true"/>--%>
-							<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="bookName" labelValue="{{row.bookName}}"
-								title="选择账本" url="/accountant/book/treeData" extId="bookRecordDetailList[{{idx}}]._bookId" cssClass="" allowClear="true"/>
+							<sys:accountbookselect  id="bizBookTemplateList{{idx}}_bookId" name="bizBookTemplateList[{{idx}}].book.id" value="{{row.book.id}}" labelName="bookName" labelValue="{{row.bookName}}"
+								title="选择账本"  cssClass="" allowClear="true"/>
 							</td>
 
 							<td>
-							<c:forEach items="${fns:getDictList('accountant_biz_plus_minus')}" var="dict" varStatus="dictStatus">
-									<span><input id="bizBookTemplateList{{idx}}_lrDirection${dictStatus.index}" name="bizBookTemplateList[{{idx}}].lrDirection" type="radio" value="left_${dict.value}" data-value="{{row.lrDirection}}"><label for="bizBookTemplateList{{idx}}_lrDirection${dictStatus.index}">${dict.label}</label></span>
-								</c:forEach>
+									<span><input id="bizBookTemplateList{{idx}}_lrDirection" name="bizBookTemplateList[{{idx}}].lrDirection" type="radio" value="left_left" data-value="{{row.lrDirection}}"><label for="bizBookTemplateList{{idx}}_lrDirection">增加</label></span>
+									<span><input id="bizBookTemplateList{{idx}}_lrDirection" name="bizBookTemplateList[{{idx}}].lrDirection" type="radio" value="right_left" data-value="{{row.lrDirection}}"><label for="bizBookTemplateList{{idx}}_lrDirection">减少</label></span>
 							</td>
 							<td>
-							<c:forEach items="${fns:getDictList('accountant_biz_plus_minus')}" var="dict" varStatus="dictStatus">
-									<span><input id="bizBookTemplateList{{idx}}_lrDirection${dictStatus.index}" name="bizBookTemplateList[{{idx}}].lrDirection" type="radio" value="right_${dict.value}" data-value="{{row.lrDirection}}"><label for="bizBookTemplateList{{idx}}_lrDirection${dictStatus.index}">${dict.label}</label></span>
-								</c:forEach>
+									<span><input id="bizBookTemplateList{{idx}}_lrDirection" name="bizBookTemplateList[{{idx}}].lrDirection" type="radio" value="right_right" data-value="{{row.lrDirection}}"><label for="bizBookTemplateList{{idx}}_lrDirection">增加</label></span>
+									<span><input id="bizBookTemplateList{{idx}}_lrDirection" name="bizBookTemplateList[{{idx}}].lrDirection" type="radio" value="left_right" data-value="{{row.lrDirection}}"><label for="bizBookTemplateList{{idx}}_lrDirection">减少</label></span>
 							</td>
 							<td>
 								<c:forEach items="${fns:getDictList('yes_no')}" var="dict" varStatus="dictStatus">
@@ -164,6 +160,8 @@
 						var bizBookTemplateRowIdx = 0, bizBookTemplateTpl = $("#bizBookTemplateTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
 						$(document).ready(function() {
 							var data = ${fns:toJson(business.bizBookTemplateList)};
+
+							console.log(data);
 							for (var i=0; i<data.length; i++){
 								addRow('#bizBookTemplateList', bizBookTemplateRowIdx, bizBookTemplateTpl, data[i]);
 								bizBookTemplateRowIdx = bizBookTemplateRowIdx + 1;

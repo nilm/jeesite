@@ -168,7 +168,8 @@ public class BookRecordController extends BaseController {
 			BizBookTemplateDto dto = new BizBookTemplateDto();
 			dto.setBizId(template.getBiz().getId());
 			dto.setBookId(template.getBook().getId());
-			dto.setBookName(template.getBook().getCode()+" "+template.getBookName());
+			dto.setBookName(template.getBookName());
+//			dto.setBookName(template.getBook().getCode()+" "+template.getBookName());
 			dto.setDirection(template.getDirection());
 			dto.setLrDirection(template.getLrDirection());
 			dto.setFixed(template.getFixed());

@@ -141,15 +141,15 @@ public class BizBookTemplate extends DataEntity<BizBookTemplate> {
 //		}else if (this.direction.equals("0") && this.category.equals("right")){
 //			return "r0";
 //		}
-		return this.category+"_"+this.direction;
+		return this.direction+"_"+this.category;
 	}
 
 	public void setLrDirection(String lrDirection) {
 		this.lrDirection = lrDirection;
 		String lr_direction[] = lrDirection.split("_");
 		if(lr_direction.length>0){
-			this.category=lr_direction[0];
-			this.direction=lr_direction[1];
+			this.direction=lr_direction[0];
+			this.category=lr_direction[1];
 		}
 //		if ("left_0".equals(lrDirection)){
 //			this.direction = "0";//注意这里与字典值一致

@@ -102,6 +102,32 @@
 			</otherwise>
 		</choose>
 	</select>
+	<select id="findListByMonthAndType" resultType="BookRecordDetail">
+		SELECT
+			<include refid="bookRecordDetailColumns"/>
+		FROM accountant_book_record_detail a
+		<include refid="bookRecordDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="bookId !=null and bookId != ''">
+				AND a.book_id = #{bookId}
+			</if>
+			<if test="bookRecordType != null and bookRecordType != ''">
+				AND a.bookrecord_type = #{bookRecordType}
+			</if>
+			<if test="recDate != null and recDate != ''">
+				AND a.DATE_FORMAT(a.record_date,'%Y-%m') = #{recDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY record_timestamp DESC
+			</otherwise>
+		</choose>
+	</select>
 
 	<select id="findBookRecordDetailPage" resultType="BookRecordDetail">
 

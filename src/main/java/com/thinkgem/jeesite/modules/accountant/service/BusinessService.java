@@ -57,6 +57,9 @@ public class BusinessService extends CrudService<BusinessDao, Business> {
 			if (bizBookTemplate.getId() == null){
 				continue;
 			}
+			if(bizBookTemplate.getUseCount() == null || "".equals(bizBookTemplate.getUseCount())){
+				bizBookTemplate.setUseCount("10");
+			}
 			if (BizBookTemplate.DEL_FLAG_NORMAL.equals(bizBookTemplate.getDelFlag())){
 				if (StringUtils.isBlank(bizBookTemplate.getId())){
 					bizBookTemplate.setBiz(business);

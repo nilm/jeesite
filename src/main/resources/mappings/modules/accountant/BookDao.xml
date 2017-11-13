@@ -11,6 +11,7 @@
 		a.user_id AS "user.id",
 		a.company_id AS "companyId",
 		a.name AS "name",
+		a.level AS "level",
 		a.assist_code AS "assistCode",
 		a.category AS "category",
 		a.accountant_category AS "accountantCategory",
@@ -80,6 +81,9 @@
 			<if test="accountantCategory != null and accountantCategory != ''">
 				AND a.accountant_category = #{accountantCategory}
 			</if>
+			<if test="assetsCategory != null and assetsCategory != ''">
+				AND a.assets_category = #{assetsCategory}
+			</if>
 			<if test="property != null and property != ''">
 				AND a.property = #{property}
 			</if>
@@ -122,9 +126,16 @@
 			<if test="accountantCategory != null and accountantCategory != ''">
 				AND a.accountant_category = #{accountantCategory}
 			</if>
+			<if test="assetsCategory != null and assetsCategory != ''">
+				AND a.assets_category = #{assetsCategory}
+			</if>
 
 			<if test="finalStage != null and finalStage != ''">
 				AND a.final_stage = #{finalStage}
+			</if>
+
+			<if test="level != null and level != ''">
+				AND a.level = #{level}
 			</if>
 
 			<if test="companyId != null and companyId != ''">
@@ -157,6 +168,7 @@
 			user_id,
 			company_id,
 			name,
+			level,
 			assist_code,
 			category,
 			accountant_category,
@@ -178,6 +190,7 @@
 			#{user.id},
 			#{companyId},
 			#{name},
+			#{level},
 			#{assistCode},
 			#{category},
 			#{accountantCategory},
@@ -201,6 +214,7 @@
 			code = #{code},
 			sort = #{sort},
 			name = #{name},
+			level = #{level},
 			assist_code = #{assistCode},
 			category = #{category},
 			accountant_category = #{accountantCategory},
@@ -219,6 +233,7 @@
 		UPDATE accountant_book SET 
 			parent_id = #{parent.id}, 
 			parent_ids = #{parentIds}
+			level = #{level}
 		WHERE id = #{id}
 	</update>
 	

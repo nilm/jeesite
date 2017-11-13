@@ -24,6 +24,7 @@ public class Book extends TreeEntity<Book> {
 	private User user;		// 用户id
 	private String companyId;		// 商户id
 	private String name;		// 账本名称
+	private String level;		// 账本级别
 	private String assistCode;		// 辅助码
 	private String category;		// 账本方向
 	private String accountantCategory;		// 账本性质
@@ -104,7 +105,15 @@ public class Book extends TreeEntity<Book> {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
 	@Length(min=0, max=128, message="辅助码长度必须介于 0 和 128 之间")
 	public String getAssistCode() {
 		return assistCode;

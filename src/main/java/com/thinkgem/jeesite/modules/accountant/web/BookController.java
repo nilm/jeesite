@@ -4,6 +4,7 @@
 package com.thinkgem.jeesite.modules.accountant.web;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,10 @@ import com.thinkgem.jeesite.modules.accountant.dao.BookDao;
 import com.thinkgem.jeesite.modules.accountant.dto.BookDto;
 import com.thinkgem.jeesite.modules.accountant.entity.Book;
 import com.thinkgem.jeesite.modules.accountant.service.BookService;
+import com.thinkgem.jeesite.modules.base.entity.WebUser;
+import com.thinkgem.jeesite.modules.sys.entity.Menu;
+import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
  * 会计国标账本(科目)Controller
@@ -111,10 +116,13 @@ public class BookController extends BaseController {
 	
 	@RequiresPermissions("accountant:book:edit")
 	@RequestMapping(value = "delete")
-	public String delete(Book book, RedirectAttributes redirectAttributes) {
+	public String delete(Book book, RedirectAttributes redirectAttributes,@RequestParam(required=false) String id) {
+		if(id!=null && id!=""){
+			book = bookService.get(id);
+		}
 		bookService.delete(book);
-		addMessage(redirectAttributes, "删除会计账本(科目)成功");
-		return "redirect:"+Global.getAdminPath()+"/accountant/book/?repage";
+		addMessage(redirectAttributes, "删除会计国标账本(科目)成功");
+		return "redirect:"+Global.getAdminPath()+"/accountant/book/listShow?repage";
 	}
 
 	@RequiresPermissions("user")
@@ -136,13 +144,14 @@ public class BookController extends BaseController {
 		return mapList;
 	}
 	
+	@RequiresPermissions("accountant:book:import:view")
 	@RequestMapping(value = "listView")
 	public String listView(HttpServletRequest request, Model model) {
 		List<Map<Object, Object>> mapList = Lists.newArrayList();
 		Book form = new Book();
 		Book b = new Book();
 		b.setId("0");
-		form.setParent(b);form.setCompanyId("");
+		form.setParent(b);
 		List<Book> nodes = bookService.findList(form);
 		List<Map<String,Object>> tempDate=new ArrayList<Map<String,Object>>();
 		for(Book node:nodes){
@@ -169,7 +178,7 @@ public class BookController extends BaseController {
 			list.add(obj);
 		}
 		model.addAttribute("list", JSONUtils.toJSONString(list));
-		return "modules/accountant/bookListView";
+		return "modules/accountant/book/bookListView";
 	}
 	public Map<String, Object> changeFunToMap(Book childNode) {
 		Map<String,Object> obj=new HashMap<String, Object>();
@@ -190,19 +199,133 @@ public class BookController extends BaseController {
 		return obj;
 	}
 	
+	@RequiresPermissions("accountant:book:import:edit")
 	@RequestMapping(value = "add")
 	@ResponseBody
 	public String add(HttpServletRequest request, Model model) {
 		String ids = request.getParameter("ids");
 		String[] idsArray = ids.split(",");
+		User user = UserUtils.getUser();
 		for (String id : idsArray) {
 			Book book = bookService.get(id);
+			System.out.println(book.getParent().getName());
+			Book form = new Book();
+			form.setCompanyId(user.getCompany().getId());
+			form.setName(book.getName());
+			List<Book> findList = bookService.findList(form);
+			if(findList!=null && findList.size()>0){
+				continue;
+			}
 			Book b = new Book();
-
+			b.setAccountantCategory(book.getAccountantCategory());
+			b.setAssetsCategory(book.getAssetsCategory());
+			b.setAssistCode(book.getAssistCode());
+			b.setCategory(book.getCategory());
+			b.setCreateBy(user);
+			b.setCode(book.getCode());
+			b.setCompanyId(user.getCompany().getId());
+			b.setCreateDate(new Date());
+			b.setCurrentUser(user);
+			b.setDelFlag(book.getDelFlag());
+			b.setFinalStage(book.getFinalStage());
+			b.setIsNewRecord(book.getIsNewRecord());
+			b.setName(book.getName());
+			if(book.getParent().getId().equals("0")){
+				b.setParent(book.getParent());
+				b.setParentIds(book.getParentIds());
+			}else{
+				form.setName(book.getParent().getName());
+				List<Book> parentList = bookService.findList(form);
+				if(parentList!=null && parentList.size()>0){
+					b.setParent(parentList.get(0));
+					b.setParentIds(parentList.get(0).getParentIds()+parentList.get(0).getId()+",");
+				}
+			}
+			b.setProfitsCategory(book.getProfitsCategory());
+			b.setProperty(book.getProperty());
+			b.setRemarks(book.getRemarks());
+			b.setStatus(book.getStatus());
+			b.setType(book.getType());
+			b.setUser(user);
+			b.setSort(book.getSort());
+			b.setLevel(book.getLevel());
+			bookService.save(b);
 		}
 		return "success";
 	}
-
+	
+	@RequiresPermissions("accountant:book:my:view")
+	@RequestMapping(value = "listShow")
+	public String listShow(HttpServletRequest request, Model model) {
+		List<Book> list = Lists.newArrayList();
+		User user = UserUtils.getUser();
+		Book form = new Book();
+		form.setCompanyId(user.getCompany().getId());
+		List<Book> sourcelist = bookService.findList(form);
+		sortList(list,sourcelist,"0",true);
+		model.addAttribute("list", list);
+		return "modules/accountant/book/bookListShow";
+	}
+	
+	@RequiresPermissions("accountant:book:my:edit")
+	@RequestMapping(value = "bookform")
+	public String formBook(Book book, Model model) {
+//		if (book.getParent()==null||book.getParent().getId()==null){
+//			book.setParent(new Book("0"));
+//		}
+		book.setParent(bookService.get(book.getParent().getId()));
+		// 获取排序号，最末节点排序号+30
+		if (StringUtils.isBlank(book.getId())){
+			List<Book> list = Lists.newArrayList();
+			User user = UserUtils.getUser();
+			Book form = new Book();
+			form.setCompanyId(user.getCompany().getId());
+			List<Book> sourcelist = bookService.findList(form);
+			sortList(list,sourcelist,book.getParentId(),false);
+		}
+		model.addAttribute("menu", book);
+		return "modules/accountant/book/bookForm";
+	}
+	
+	@RequiresPermissions("accountant:book:my:edit")
+	@RequestMapping(value = "savechild")
+	public String savechild(Book book, Model model, RedirectAttributes redirectAttributes) {
+		if(!UserUtils.getUser().isAdmin()){
+			addMessage(redirectAttributes, "越权操作，只有超级管理员才能添加或修改数据！");
+			return "redirect:" + adminPath + "/sys/role/?repage";
+		}
+		if(book.getParent()==null){
+			addMessage(redirectAttributes, "父账本不能为空");
+		}
+		bookService.saveChild(book);
+		addMessage(redirectAttributes, "保存菜单'" + book.getName() + "'成功");
+		return "redirect:" + adminPath + "/accountant/book/listShow";
+	}
+	
+	/***
+	 * 递归处理节点的关系（谁是谁的父节点、子节点）
+	 * @param list
+	 * @param sourcelist
+	 * @param parentId
+	 * @param cascade
+	 */
+	private void sortList(List<Book> list,List<Book> sourcelist,String parentId,Boolean cascade){
+		for(int i=0;i<sourcelist.size();i++){
+			Book book = sourcelist.get(i);
+			if(book.getParent()!=null && book.getParent().getId().equals(parentId)){
+				list.add(book);
+				if(cascade){
+					for(int j=0;j<sourcelist.size();j++){
+						Book b = sourcelist.get(j);
+						if(b.getParent()!=null && b.getParent().getId().equals(book.getId())){
+							sortList(list,sourcelist,book.getId(),true);
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
 	/**
 	 * 树结构选择标签（treeselect.tag）
 	 */

@@ -28,10 +28,11 @@
 	</sql>
 	
 	<sql id="bookJoins">
+	left join accountant_book b on a.parent_id=b.id
 	</sql>
     
 	<select id="get" resultType="Book">
-		SELECT 
+		SELECT b.name AS "parent.name",
 			<include refid="bookColumns"/>
 		FROM accountant_book a
 		<include refid="bookJoins"/>
@@ -59,6 +60,9 @@
 			</if>
 			<if test="user != null and user.id != null and user.id != ''">
 				AND a.user_id = #{user.id}
+			</if>
+			<if test="companyId == null ">
+				AND a.company_id  is null
 			</if>
 			<if test="companyId != null and companyId != ''">
 				AND a.company_id = #{companyId}
@@ -239,7 +243,6 @@
 	<update id="delete">
 		UPDATE accountant_book SET 
 			del_flag = #{DEL_FLAG_DELETE}
-		WHERE id = #{id} OR parent_ids LIKE '%,'||#{id}||',%'
+		WHERE id = #{id} OR parent_ids LIKE concat('%',#{id},'%')
 	</update>
-	
 </mapper>

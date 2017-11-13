@@ -1,0 +1,9 @@
+@charset "utf-8";
+
+body{background: none;}
+.mars9527_table{width:100%; border-collapse:collapse; background-color:#e9e9e9; border:1px solid #c5c5c5;}
+.mars9527_table thead td{border-top:1px solid #dd4b39; border-bottom:1px solid #dd4b39; background-color:#f8f9f8; }
+.mars9527_table tbody td{font-size:12px; padding:8px 2px; vertical-align:top; border:1px solid #c5c5c5; background-color:#fff; }
+.tc{text-align: center;}
+.m_button{height:30px; margin-right:10px; padding:0 18px; cursor:pointer; cursor:pointer; color:#333; border:1px solid #cecece; border-radius:3px; background-color:#f2f2f2; background-image:-moz-linear-gradient(top, #fafafa, #e7e7e7); background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0, #fafafa), color-stop(1, #e7e7e7)); }
+.level{background: #54b4eb}

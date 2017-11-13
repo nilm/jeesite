@@ -2,8 +2,11 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<link rel="stylesheet" href="http://www.ztree.me/v3/css/common.css?2013031101" type="text/css">
-<link rel='stylesheet' href='http://www.ztree.me/v3/css/zTreeStyle/zTreeStyleForDemo.css?2013031101' type='text/css'> 
+<!-- <link rel="stylesheet" href="http://www.ztree.me/v3/css/common.css?2013031101" type="text/css">
+<link rel='stylesheet' href='http://www.ztree.me/v3/css/zTreeStyle/zTreeStyleForDemo.css?2013031101' type='text/css'>  -->
+<link rel="stylesheet" href="${ctxStatic}/css/common.css">
+<link rel="stylesheet" href="${ctxStatic}/css/zTreeStyleForDemo.css">
+<link rel="stylesheet" href="${ctxStatic}/css/bookListView.css">
 <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <script type="text/javascript" src="http://www.ztree.me/v3/js/jquery.ztree.core.js?2013031101"></script>
 <style type="text/css">
@@ -16,9 +19,11 @@
     <div class="zTreeDemoBackground left">
         <ul id="treeDemo" class="ztree"></ul>
     </div>
+    <shiro:hasPermission name="accountant:book:import:edit">
         <button id="toRight">添加</button>
         <button id="toLeft">删除</button>
         <button id="show">保存</button>
+        </shiro:hasPermission>
     <div class="right">
         <ul id="treeDemo2" class="ztree"></ul>
     </div>
@@ -105,18 +110,31 @@
             }
             return parentNodes;
         }        
+        function findParentNodes2(treeNode, parentNodes,chileNodes){
+            if(treeNode != null && treeNode.getParentNode()!= null){
+	            parentNodes += "{id:"+treeNode.getParentNode().id+",pId:"+treeNode.getParentNode().pId+
+	            ",name:\""+treeNode.getParentNode().name+"\",open:"+treeNode.getParentNode().open+"},";
+                parentNodes =findParentNodes2(treeNode.getParentNode(),parentNodes,treeNode);
+                 
+            }
+            parentNodes += "{id:"+chileNodes.id+",pId:"+chileNodes.pId+
+            ",name:\""+chileNodes.name+"\",open:"+chileNodes.open+"},";
+            return parentNodes;
+        }        
         //移动节点
         function moveNodes(zTreeFrom,treeNode,zTreeTo,divStrFrom,divStrTo){
             /////////////////////////////////treeNode的所有父节点
             var parentNodes ="[";
+            var chileNodes="";
             if(treeNode.pId != null){
-                parentNodes = findParentNodes(treeNode,parentNodes);
+                parentNodes = findParentNodes2(treeNode,parentNodes,treeNode);
                 parentNodes = parentNodes.substring(0,parentNodes.length-1);
             }
              
             parentNodes +="]";
             //alert(parentNodes);
             var parentNodesArray = eval(parentNodes);
+            
             ///////////////////////////////
             var nodes = "[";
             nodes+= "{id:"+treeNode.id+",pId:"+treeNode.pId+",name:\""+treeNode.name+"\",open:"+treeNode.open+"},";
@@ -134,14 +152,16 @@
                 }
             }
              
-            divToArray = divToArray.concat(nodesArray);//增加节点
             divToArray = divToArray.concat(parentNodesArray);
+            divToArray = divToArray.concat(nodesArray);//增加节点
              
             ///////////////////////////////////////////////////////////////////////////////////////去重复
             divFromArray = divFromArray.unique();
             divToArray = divToArray.unique();
             ///////////////////////////////////////////////////////////////////////////////////////////去重复
-             
+            /*  var par = divToArray[1];
+             divToArray.splice(1,1);
+             divToArray.splice(0,0,par); */
             if(zTreeFrom.setting.treeId == "treeDemo"){
                 leftDivStr = divFromArray.toSource();
                 rightDivStr =divToArray.toSource();
@@ -194,13 +214,12 @@
                             rightDiv[i] = rightDivStrArray[i].id;
                         }
                    if(rightDiv.length>0){
-                    alert(rightDiv);
                     $.ajax({
                     	type:"post",
                     	url:"${ctx}/accountant/book/add/",
                     	data:"ids="+rightDiv,
                     	success:function(data){
-                    		alert(data);
+                    		window.location.href="${ctx}/accountant/book/listShow/";
                     	}
                     })
                    }else{

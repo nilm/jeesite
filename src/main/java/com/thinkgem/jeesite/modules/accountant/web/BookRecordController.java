@@ -8,11 +8,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.modules.accountant.dto.BizBookTemplateDto;
 import com.thinkgem.jeesite.modules.accountant.entity.BizBookTemplate;
+import com.thinkgem.jeesite.modules.accountant.entity.BookRecordDetail;
 import com.thinkgem.jeesite.modules.accountant.entity.Business;
 import com.thinkgem.jeesite.modules.accountant.service.BizBookTemplateService;
 import com.thinkgem.jeesite.modules.accountant.service.BookService;
 import com.thinkgem.jeesite.modules.accountant.service.BusinessService;
 import com.thinkgem.jeesite.modules.rest.json.BaseJson;
+import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,11 +84,21 @@ public class BookRecordController extends BaseController {
 	@RequiresPermissions("accountant:bookRecord:view")
 	@RequestMapping(value = "form")
 	public String form(BookRecord bookRecord, Model model) {
+
+		List<BookRecordDetail> bookRecordDetails = bookRecord.getBookRecordDetailList();
+		for (BookRecordDetail bookRecordDetail : bookRecordDetails) {
+			String lr = bookRecordDetail.getBook().getCategory();
+			String bookDisplayName =bookRecordDetail.getBookName()+"（"+ DictUtils.getDictLabel(lr,"accountant_left_right","")+"）";
+			bookRecordDetail.setBookName(bookDisplayName);
+		}
+		bookRecord.setBookRecordDetailList(bookRecordDetails);
+
 		model.addAttribute("bookRecord", bookRecord);
+
+		// 查询business 列表
 		Business business = new Business();
 		business.setDelFlag("0");
 		business.setShowHide("1");
-
 		List<Business> businesses = businessService.findList(business);
 		model.addAttribute("businesses",businesses);
 		return "modules/accountant/bookRecordForm";
@@ -168,7 +180,9 @@ public class BookRecordController extends BaseController {
 			BizBookTemplateDto dto = new BizBookTemplateDto();
 			dto.setBizId(template.getBiz().getId());
 			dto.setBookId(template.getBook().getId());
-			dto.setBookName(template.getBookName());
+			String lr = template.getBook().getCategory();
+			String bookDisplayName =template.getBookName()+"（"+DictUtils.getDictLabel(lr,"accountant_left_right","")+"）";
+			dto.setBookName(bookDisplayName);
 //			dto.setBookName(template.getBook().getCode()+" "+template.getBookName());
 			dto.setDirection(template.getDirection());
 			dto.setLrDirection(template.getLrDirection());

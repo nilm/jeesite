@@ -15,34 +15,39 @@
 					<div class="row_1">左账本</div>
 					<div style="padding-left: 10px;color: #00aa00;font-weight: 600;">资产类</div>
 						<c:forEach items="${assets_category}" var="row">
-							<div><a href="javascript:selectBook(${row.id},'${row.name}')">${row.name}</a></div>
+							<div><a href="javascript:selectBook('${row.id}','${row.name}',0)">${row.name}</a></div>
 						</c:forEach>
 					<div  style="padding-left: 10px;color: #7aba7b;font-weight: 600;">费用类</div>
 					<c:forEach items="${expenses_category}" var="row">
-						<div><a href="javascript:selectBook(${row.id},'${row.name}')">${row.name}</a></div>
+						<div><a href="javascript:selectBook('${row.id}','${row.name}',0)">${row.name}</a></div>
 					</c:forEach>
 				</td>
 				<td class="col_2">
 					<div class="row_1">右账本</div>
 					<div  style="padding-left: 10px;color: #cf9311;font-weight: 600;">所有者权益类</div>
 					<c:forEach items="${owners_equity_category}" var="row">
-						<div><a href="javascript:selectBook(${row.id},'${row.name}')">${row.name}</a></div>
+						<div><a href="javascript:selectBook('${row.id}','${row.name}',1)">${row.name}</a></div>
 					</c:forEach>
 					<div  style="padding-left: 10px;color: #cf9311;font-weight: 600;">负债类</div>
 					<c:forEach items="${liabilities_category}" var="row">
-						<div><a href="javascript:selectBook(${row.id},'${row.name}')">${row.name}</a></div>
+						<div><a href="javascript:selectBook('${row.id}','${row.name}',1)">${row.name}</a></div>
 					</c:forEach>
 					<div  style="padding-left: 10px;color: #cf9311;font-weight: 600;">收入类</div>
 					<c:forEach items="${income_category}" var="row">
-						<div><a href="javascript:selectBook(${row.id},'${row.name}')">${row.name}</a></div>
+						<div><a href="javascript:selectBook('${row.id}','${row.name}',1)">${row.name}</a></div>
 					</c:forEach>
 				</td>
 			</tr>
 		</table>
 	</div>
 <script type="text/javascript">
-	function selectBook(bookId,bookName) {
+	function selectBook(bookId,bookName,lr) {
 		$("#select_bookId").val(bookId);
+		if(lr == 0){
+            bookName= bookName+"(左)";
+		}else if (lr == 1){
+            bookName= bookName+"(右)";
+        }
 		$("#select_bookName").val(bookName);
         top.$.jBox.getBox().find("button[value='ok']").trigger("click");
     }

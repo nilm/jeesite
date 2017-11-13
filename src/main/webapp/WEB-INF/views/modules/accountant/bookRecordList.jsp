@@ -42,9 +42,9 @@
 			<li><label>金额：</label>
 				<form:input path="amount" htmlEscape="false" class="input-medium"/>
 			</li>
-			<li><label>当前状态：</label>
-				<form:input path="status" htmlEscape="false" maxlength="125" class="input-medium"/>
-			</li>
+			<%--<li><label>当前状态：</label>--%>
+				<%--<form:input path="status" htmlEscape="false" maxlength="125" class="input-medium"/>--%>
+			<%--</li>--%>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
 			<li class="clearfix"></li>
 		</ul>
@@ -54,7 +54,7 @@
 		<thead>
 			<tr>
 				<th>用户</th>
-				<th>公司</th>
+				<%--<th>公司</th>--%>
 				<th>业务</th>
 				<th>摘要</th>
 				<th>金额</th>
@@ -66,14 +66,16 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="bookRecord">
 			<tr>
-				<td><a href="${ctx}/accountant/bookRecord/form?id=${bookRecord.id}">
+				<td>
 					${bookRecord.user.name}
-				</a></td>
-				<td>
-					${bookRecord.company.name}
 				</td>
+				<%--<td>--%>
+					<%--${bookRecord.company.name}--%>
+				<%--</td>--%>
 				<td>
+					<a href="${ctx}/accountant/bookRecord/form?id=${bookRecord.id}">
 					${bookRecord.biz.name}
+					</a>
 				</td>
 				<td>
 					${bookRecord.digest}

@@ -29,10 +29,10 @@
 				<sys:treeselect id="user" name="user.id" value="${bookRecord.user.id}" labelName="user.name" labelValue="${bookRecord.user.name}"
 					title="用户" url="/sys/office/treeData?type=3" cssClass="input-small" allowClear="true" notAllowSelectParent="true"/>
 			</li>
-			<li><label>公司：</label>
-				<sys:treeselect id="company" name="company.id" value="${bookRecord.company.id}" labelName="company.name" labelValue="${bookRecord.company.name}"
-					title="部门" url="/sys/office/treeData?type=2" cssClass="input-small" allowClear="true" notAllowSelectParent="true"/>
-			</li>
+			<%--<li><label>公司：</label>--%>
+				<%--<sys:treeselect id="company" name="company.id" value="${bookRecord.company.id}" labelName="company.name" labelValue="${bookRecord.company.name}"--%>
+					<%--title="部门" url="/sys/office/treeData?type=2" cssClass="input-small" allowClear="true" notAllowSelectParent="true"/>--%>
+			<%--</li>--%>
 			<li><label>业务：</label>
 				<form:select path="bizId" class="input-medium">
 					<form:option value="" label=""/>
@@ -42,9 +42,9 @@
 			<li><label>金额：</label>
 				<form:input path="amount" htmlEscape="false" class="input-medium"/>
 			</li>
-			<li><label>当前状态：</label>
-				<form:input path="status" htmlEscape="false" maxlength="125" class="input-medium"/>
-			</li>
+			<%--<li><label>当前状态：</label>--%>
+				<%--<form:input path="status" htmlEscape="false" maxlength="125" class="input-medium"/>--%>
+			<%--</li>--%>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
 			<li class="clearfix"></li>
 		</ul>
@@ -54,7 +54,7 @@
 		<thead>
 			<tr>
 				<th>用户</th>
-				<th>公司</th>
+				<%--<th>公司</th>--%>
 				<th>业务</th>
 				<th>摘要</th>
 				<th>金额</th>
@@ -66,14 +66,16 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="bookRecord">
 			<tr>
-				<td><a href="${ctx}/accountant/account/accountForm?id=${bookRecord.id}">
+				<td>
 					${bookRecord.user.name}
-				</a></td>
-				<td>
-					${bookRecord.company.name}
 				</td>
+				<%--<td>--%>
+					<%--${bookRecord.company.name}--%>
+				<%--</td>--%>
 				<td>
+					<a href="${ctx}/accountant/account/accountForm?id=${bookRecord.id}">
 					${bookRecord.biz.name}
+					</a>
 				</td>
 				<td>
 					${bookRecord.digest}

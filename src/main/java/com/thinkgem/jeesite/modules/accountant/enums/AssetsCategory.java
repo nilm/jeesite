@@ -20,7 +20,7 @@ public enum AssetsCategory {
     interest_receivables("应收利息"),
     dividends_receivables("应收股利"),
     other_receivables("其他应收款"),
-    inventory("存货"),
+    inventory("库存商品"),
     non_current_assets_within_one_year("一年内到期的非流动资产"),
     other_current("其他流动资产"),
     available_for_sale_financial_assets("可供出售金融资产"),
@@ -73,6 +73,7 @@ public enum AssetsCategory {
     ownershipInteres("所有者权益");
 
     private String text;
+    private String val;
 
     AssetsCategory(String text) {
         this.text = text;
@@ -80,6 +81,9 @@ public enum AssetsCategory {
 
     public String getText() {
         return text;
+    }
+    public String getVal() {
+        return toString();
     }
 
 
@@ -190,6 +194,18 @@ public enum AssetsCategory {
         list.add(capital_surplus);
         list.add(surplus_reserve);
         list.add(undistributed_profits);
+        return list;
+    }
+    /**
+     * 获取所有者权益项目集合
+     * @return
+     */
+    public static List<AssetsCategory> getALLlist(){
+        list = AssetsCategory.getCurrentAssets();
+        list = AssetsCategory.getNonCurrentAssets();
+        list = AssetsCategory.getCurrentLiabilities();
+        list = AssetsCategory.getNonCurrentLiabilities();
+        list = AssetsCategory.getOwnershipInteres();
         return list;
     }
 

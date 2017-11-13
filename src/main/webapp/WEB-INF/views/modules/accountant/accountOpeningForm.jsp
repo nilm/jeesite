@@ -33,7 +33,7 @@ input{padding:0 0; border-width:0; }
 <script type="text/javascript">
 	
 	$(document).ready(function() {
-	    debugger;
+	    //debugger;
 		var idStr=$("#id").val();
 		var id=parseInt(idStr);
 	    if(isNaN(id)){
@@ -92,7 +92,7 @@ input{padding:0 0; border-width:0; }
             }
 	    });
 	    //alert($("#bizId").val());
-		debugger;
+//		debugger;
         if(isNaN(id)){
         	initFirstSelectItem($("#bizId").val());
         }
@@ -317,7 +317,7 @@ input{padding:0 0; border-width:0; }
 								<input id="bookRecordDetailList{{idx}}_remark" name="bookRecordDetailList[{{idx}}].digest" enums="text" style="border-width:0px;" value="{{row.digest}}" />
 							</td>--%>
 							<td>
-								<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="" labelValue="{{row.book.code}} {{row.bookName}}"
+								<sys:treeselect id="bookRecordDetailList{{idx}}_book" name="bookRecordDetailList[{{idx}}].bookId" value="{{row.bookId}}" labelName="" labelValue="{{row.bookName}}"
 							title="选择账本" url="/accountant/book/treeData"  cssClass="" allowClear="true"/>
 							<shiro:hasPermission name="accountant:bookRecord:edit">
 								{{#delBtn}}<a href="javascript:;" class="close" onclick="delRow(this, '#bookRecordDetailList{{idx}}')" title="删除本行">&times;</a>{{/delBtn}}
@@ -349,7 +349,7 @@ input{padding:0 0; border-width:0; }
                     var bookRecordDetailRowIdx = 0, bookRecordDetailTpl = $("#bookRecordDetailTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
                     $(document).ready(function() {
                         var data = ${fns:toJson(bookRecord.bookRecordDetailList)};
-                        debugger;
+//                        debugger;
                         for (var i=0; i<data.length; i++){
                             viewRow('#bookRecordDetailList', bookRecordDetailRowIdx, bookRecordDetailTpl, data[i]);
                             bookRecordDetailRowIdx = bookRecordDetailRowIdx + 1;

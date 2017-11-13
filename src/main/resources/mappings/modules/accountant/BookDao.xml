@@ -233,7 +233,6 @@
 		UPDATE accountant_book SET 
 			parent_id = #{parent.id}, 
 			parent_ids = #{parentIds}
-			level = #{level}
 		WHERE id = #{id}
 	</update>
 	

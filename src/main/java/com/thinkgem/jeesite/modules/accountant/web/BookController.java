@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.accountant.enums.AssetsCategory;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ public class BookController extends BaseController {
 		if (entity == null){
 			entity = new Book();
 		}
+
 		return entity;
 	}
 	
@@ -86,6 +88,7 @@ public class BookController extends BaseController {
 		if (book.getSort() == null){
 			book.setSort(30);
 		}
+		model.addAttribute("assetsCategory", AssetsCategory.getALLlist());
 		model.addAttribute("book", book);
 		return "modules/accountant/bookForm";
 	}

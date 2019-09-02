@@ -30,12 +30,12 @@ public enum AssetsCategory {
     investment_property("投资性房地产"),
     fixed_assets("固定资产"),
     construction_in_process("在建工程"),
-    construction_material("工程物资"),
+    construction_material("工程物资"),// 元材料?
     fixed_assets_pending_for_disposal("固定资产清理"),
     bearer_biological_assets("生产性生物资产"),
     oil_and_gas_assets("油气资产"),
     intangible_assets("无形资产"),
-    development_costs("开发支出"),
+    development_costs("开发支出"),//生产成本?
     goodwill("商誉"),
     long_term_prepaid_expenses("长期待摊费用"),
     deferred_tax_assets("递延所得税资产"),

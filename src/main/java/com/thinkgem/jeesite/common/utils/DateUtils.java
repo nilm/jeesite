@@ -4,6 +4,7 @@
 package com.thinkgem.jeesite.common.utils;
 
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -169,7 +170,22 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 		long afterTime = after.getTime();
 		return (afterTime - beforeTime) / (1000 * 60 * 60 * 24);
 	}
-
+	/**
+	 * 获取两个日期之间的月数
+	 * 
+	 * @param before
+	 * @param after
+	 * @return
+	 */
+	public static int getMonthNumOfTwoDate(Date before, Date after) {
+		  Calendar start = Calendar.getInstance();
+	        Calendar end = Calendar.getInstance();
+	        start.setTime(before);
+	        end.setTime(after);
+	        int result = end.get(Calendar.MONTH) - start.get(Calendar.MONTH);
+	        int month = (end.get(Calendar.YEAR) - start.get(Calendar.YEAR)) * 12;
+	        return Math.abs(month + result);
+	}
 	/**
 	 * 获取当前时间戳
 	 * @return
@@ -196,6 +212,8 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 			System.out.println("==="+f);
 //			System.out.print(f.substring(f.lastIndexOf("."),f.length()));
 		}
-
+for(int i=0;i<5;i++){
+	System.out.println(i);
+}
 	}
 }

@@ -15,6 +15,16 @@
         	return false;
         }
 	</script>
+		<style type="text/css">
+			 .table  .amount{
+				width: 120px;
+				text-align: right;
+			}
+			 .table th{
+				width: 120px;
+				text-align: center;
+			}
+		</style>
 </head>
 <body>
 	<ul class="nav nav-tabs">
@@ -54,21 +64,25 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="bookRecordDetail">
 			<tr>
-				<td>
-					<fmt:formatDate value="${bookRecordDetail.createDate}" pattern="yyyy-MM-dd HH:mm:ss" />
+				<td style="width: 68px;">
+					<fmt:formatDate value="${bookRecordDetail.createDate}" pattern="yyyy-MM-dd" />
 
 				</td>
 				<td>
 					${bookRecordDetail.record.digest}
 				</td>
-				<td>
-					<c:if test="${bookRecordDetail.direction == 'left'}">${bookRecordDetail.amount}</c:if>
+				<td class="amount">
+					<c:if test="${bookRecordDetail.direction == 'left'}">
+						<fmt:formatNumber pattern="000,000.00" value="${bookRecordDetail.amount}"></fmt:formatNumber>
+					</c:if>
 				</td>
-				<td>
-					<c:if test="${bookRecordDetail.direction == 'right'}">${bookRecordDetail.amount}</c:if>
+				<td class="amount">
+					<c:if test="${bookRecordDetail.direction == 'right'}">
+						<fmt:formatNumber pattern="000,000.00" value="${bookRecordDetail.amount}"></fmt:formatNumber>
+					</c:if>
 				</td>
-				<td>
-					${bookRecordDetail.balance}
+				<td class="amount">
+					<fmt:formatNumber pattern="000,000.00" value="${bookRecordDetail.balance}"></fmt:formatNumber>
 				</td>
 			</tr>
 		</c:forEach>

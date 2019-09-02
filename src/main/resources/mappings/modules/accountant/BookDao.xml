@@ -146,6 +146,20 @@
 		ORDER BY a.sort ASC
 	</select>
 
+	<select id="findByParentIdsLike" resultType="Book">
+		SELECT
+		a.id,
+		a.parent_id AS "parent.id",
+		a.parent_ids
+		FROM accountant_book a
+		<include refid="bookJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND a.parent_ids LIKE #{parentIds}
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+
 	<select id="getParentNames" resultType="Book">
 		SELECT
 			a.id,

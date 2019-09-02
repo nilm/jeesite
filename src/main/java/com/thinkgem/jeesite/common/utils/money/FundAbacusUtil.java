@@ -183,6 +183,10 @@ public class FundAbacusUtil {
 	public static BigDecimal multiply(BigDecimal p1,int p2){
 		return multiply(p1, String.valueOf(p2));
 	}
+	
+	public static BigDecimal multiply(String p1,String p2){
+		return multiply(new BigDecimal(p1), p2);
+	}
 	/**
 	 * 两数相除
 	 * @param p1
